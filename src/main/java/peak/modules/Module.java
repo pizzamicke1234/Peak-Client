@@ -44,6 +44,18 @@ public class Module {
         return name;
     }
 
+    public void enable() {
+        if(!toggled) {
+            toggle();
+        }
+    }
+
+    public void disable() {
+        if(toggled) {
+            toggle();
+        }
+    }
+
     public enum Category {
         COMBAT,
         MOVEMENT,

@@ -2,6 +2,7 @@ package peak.modules.render;
 
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
+import peak.ui.clickguis.ClickGui;
 
 import java.security.Key;
 
@@ -12,7 +13,7 @@ public class ClickGuimod extends Module {
     }
 
     public void on_Enable() {
-        
+        mc.displayGuiScreen(new ClickGui());
     }
 
     public void on_Disable() {

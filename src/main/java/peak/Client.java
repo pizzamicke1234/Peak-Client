@@ -7,6 +7,7 @@ import peak.modules.combat.Killaura;
 import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
+import peak.modules.render.ClickGuimod;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,6 +29,8 @@ public class Client {
         modules.add(new Speed());
 
         modules.add(new Killaura());
+
+        modules.add(new ClickGuimod());
     }
 
     public static void on_Tick() {
