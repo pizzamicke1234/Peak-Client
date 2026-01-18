@@ -184,6 +184,7 @@ import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
+import peak.Client;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -233,7 +234,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private Entity renderViewEntity;
     public Entity pointedEntity;
     public EffectRenderer effectRenderer;
-    private final Session session;
+    public Session session;
     private boolean isGamePaused;
 
     /** The font renderer used for displaying and measuring text */
@@ -568,6 +569,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.checkGLError("Post startup");
         this.ingameGUI = new GuiIngame(this);
 
+        Client.startup();
+
         if (this.serverName != null)
         {
             this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
@@ -624,7 +627,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private void createDisplay() throws LWJGLException
     {
         Display.setResizable(true);
-        Display.setTitle("Minecraft 1.8.9");
+        Display.setTitle("Loading " + Client.name);
 
         try
         {
@@ -1943,6 +1946,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
+                        //Update Key Listener
+                        Client.on_keyPress(k);
+
                         if (k == 1)
                         {
                             this.displayInGameMenu();

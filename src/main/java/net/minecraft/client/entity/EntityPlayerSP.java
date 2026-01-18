@@ -51,6 +51,7 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import peak.Client;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -188,6 +189,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onUpdateWalkingPlayer()
     {
+
+        Client.on_Tick();
+
         boolean flag = this.isSprinting();
 
         if (flag != this.serverSprintState)

@@ -41,6 +41,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
+import peak.ui.HUD;
 
 public class GuiIngame extends Gui
 {
@@ -335,6 +336,8 @@ public class GuiIngame extends Gui
         {
             this.renderScoreboard(scoreobjective1, scaledresolution);
         }
+
+        HUD.init();
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
