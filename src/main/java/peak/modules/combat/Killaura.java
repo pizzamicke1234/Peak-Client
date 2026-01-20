@@ -10,7 +10,7 @@ import peak.modules.Module;
 public class Killaura extends Module {
 
     public Killaura() {
-        super("Killaura", Keyboard.KEY_B, Category.COMBAT);
+        super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
     }
 
     public void on_Tick() {

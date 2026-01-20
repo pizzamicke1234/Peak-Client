@@ -9,15 +9,17 @@ import java.security.Key;
 public class ClickGuimod extends Module {
 
     public ClickGuimod() {
-        super("ClickGui", Keyboard.KEY_RSHIFT, Category.RENDER);
+        super("ClickGui", Keyboard.KEY_RSHIFT, Category.RENDER, false);
     }
 
+    @Override
     public void on_Enable() {
         mc.displayGuiScreen(new ClickGui());
     }
 
+    @Override
     public void on_Disable() {
-
+        mc.displayGuiScreen(null);
     }
 
 }

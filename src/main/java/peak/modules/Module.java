@@ -9,13 +9,16 @@ public class Module {
     public boolean toggled;
     public Category category;
 
+    public boolean inClickGui;
+
     public Minecraft mc = Minecraft.getMinecraft();
 
-    public Module(String name, int key, Category category) {
+    public Module(String name, int key, Category category, boolean inClickGui) {
 
         this.name = name;
         this.key = key;
         this.category = category;
+        this.inClickGui = inClickGui;
 
     }
 

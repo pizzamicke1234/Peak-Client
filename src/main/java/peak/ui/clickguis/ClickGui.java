@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import peak.Client;
 import peak.modules.Module;
 import peak.ui.clickguis.elements.CategoryRect;
+import peak.ui.clickguis.elements.ModuleRect;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class ClickGui extends GuiScreen {
     public FontRenderer fr = mc.fontRendererObj;
 
     ArrayList<CategoryRect> categoryRects = new ArrayList<CategoryRect>();
+    ArrayList<ModuleRect> moduleRects = new ArrayList<ModuleRect>();
 
     boolean elementdraw = false;
 
@@ -57,7 +59,10 @@ public class ClickGui extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        for(CategoryRect mr : categoryRects) {
+        for(CategoryRect cr : categoryRects) {
+            cr.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+        for(ModuleRect mr : moduleRects) {
             mr.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
@@ -79,7 +84,26 @@ public class ClickGui extends GuiScreen {
     }
 
     public void initClickGui() {
-        addCategories();
+        int categorycount = 0;
+        int categoryoffset = 100;
+
+        int moduleoffset = 20;
+
+        for(Module.Category c : Module.Category.values()) {
+            int modulecount = 0;
+            CategoryRect categoryRect = new CategoryRect(c.name(), 50 + (categoryoffset * categorycount),
+                    50, 130 + (categoryoffset * categorycount), 70, 0xBB000000, true);
+            categoryRects.add(categoryRect);
+
+            for(Module m : Client.modules) {
+                if(m.category == c && m.inClickGui) {
+                    ModuleRect moduleRect = new ModuleRect(m, categoryRect, 20 + (19 * modulecount), 0x77000000, true);
+                    moduleRects.add(moduleRect);
+                    modulecount++;
+                }
+            }
+            categorycount++;
+        }
     }
 
     public void drawCategories(int x, int y) {
@@ -88,8 +112,15 @@ public class ClickGui extends GuiScreen {
         }
     }
 
+    public void drawModules() {
+        for(ModuleRect mr : moduleRects) {
+            mr.draw();
+        }
+    }
+
     public void drawClickGui(int x, int y) {
         drawCategories(x, y);
+        drawModules();
     }
 
 }

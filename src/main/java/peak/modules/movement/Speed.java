@@ -6,7 +6,7 @@ import peak.modules.Module;
 public class Speed extends Module {
 
     public Speed() {
-        super("Speed", Keyboard.KEY_X, Category.MOVEMENT);
+        super("Speed", Keyboard.KEY_X, Category.MOVEMENT, true);
     }
 
     boolean autojump = true;
