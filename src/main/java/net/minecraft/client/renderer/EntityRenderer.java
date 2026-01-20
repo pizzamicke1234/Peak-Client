@@ -65,6 +65,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
+import peak.Client;
+import peak.modules.render.ESP;
 
 public class EntityRenderer implements IResourceManagerReloadListener
 {
@@ -172,6 +174,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
     private double cameraYaw;
     private double cameraPitch;
     private ShaderGroup theShaderGroup;
+    private ShaderGroup entityOutlineShader;
     private static final ResourceLocation[] shaderResourceLocations = new ResourceLocation[] {new ResourceLocation("shaders/post/notch.json"), new ResourceLocation("shaders/post/fxaa.json"), new ResourceLocation("shaders/post/art.json"), new ResourceLocation("shaders/post/bumpy.json"), new ResourceLocation("shaders/post/blobs2.json"), new ResourceLocation("shaders/post/pencil.json"), new ResourceLocation("shaders/post/color_convolve.json"), new ResourceLocation("shaders/post/deconverge.json"), new ResourceLocation("shaders/post/flip.json"), new ResourceLocation("shaders/post/invert.json"), new ResourceLocation("shaders/post/ntsc.json"), new ResourceLocation("shaders/post/outline.json"), new ResourceLocation("shaders/post/phosphor.json"), new ResourceLocation("shaders/post/scan_pincushion.json"), new ResourceLocation("shaders/post/sobel.json"), new ResourceLocation("shaders/post/bits.json"), new ResourceLocation("shaders/post/desaturate.json"), new ResourceLocation("shaders/post/green.json"), new ResourceLocation("shaders/post/blur.json"), new ResourceLocation("shaders/post/wobble.json"), new ResourceLocation("shaders/post/blobs.json"), new ResourceLocation("shaders/post/antialias.json"), new ResourceLocation("shaders/post/creeper.json"), new ResourceLocation("shaders/post/spider.json")};
     public static final int shaderCount = shaderResourceLocations.length;
     private int shaderIndex;
@@ -1318,6 +1321,16 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
 
         this.mc.mcProfiler.endSection();
+
+        //ESP
+        if (this.entityOutlineShader == null) {
+            this.loadEntityOutlineShader();
+        }
+
+        ESP esp = (ESP) Client.getModulebyName("ESP");
+        if(esp.toggled) {
+            this.renderEntityOutlineFramebuffer(partialTicks);
+        }
     }
 
     private void renderWorldPass(int pass, float partialTicks, long finishTimeNano)
@@ -2047,4 +2060,22 @@ public class EntityRenderer implements IResourceManagerReloadListener
     {
         return this.theMapItemRenderer;
     }
+
+    public void renderEntityOutlineFramebuffer(float partialTicks) {
+        if (OpenGlHelper.shadersSupported && this.entityOutlineShader != null) {
+            RenderHelper.disableStandardItemLighting();
+            this.entityOutlineShader.loadShaderGroup(partialTicks);
+            RenderHelper.enableStandardItemLighting();
+        }
+    }
+
+    public void loadEntityOutlineShader() {
+        try {
+            this.entityOutlineShader = new ShaderGroup(this.mc.getTextureManager(), this.resourceManager, this.mc.getFramebuffer(), new ResourceLocation("shaders/post/entity_outline.json"));
+            this.entityOutlineShader.createBindFramebuffers(this.mc.displayWidth, this.mc.displayHeight);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

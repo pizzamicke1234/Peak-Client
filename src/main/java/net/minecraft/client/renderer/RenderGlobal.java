@@ -130,7 +130,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private Framebuffer entityOutlineFramebuffer;
 
     /** Stores the shader group for the entity_outline shader */
-    private ShaderGroup entityOutlineShader;
+    public static ShaderGroup entityOutlineShader;
     private double frustumUpdatePosX = Double.MIN_VALUE;
     private double frustumUpdatePosY = Double.MIN_VALUE;
     private double frustumUpdatePosZ = Double.MIN_VALUE;

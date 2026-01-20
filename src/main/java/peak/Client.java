@@ -8,6 +8,7 @@ import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
 import peak.modules.render.ClickGuimod;
+import peak.modules.render.ESP;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,11 +32,12 @@ public class Client {
         modules.add(new Killaura());
 
         modules.add(new ClickGuimod());
+        modules.add(new ESP());
     }
 
     public static void on_Tick() {
-        for(Module m : modules) {
-            if(!m.toggled) {
+        for (Module m : modules) {
+            if (!m.toggled) {
                 continue;
             }
             m.on_Tick();
@@ -43,11 +45,19 @@ public class Client {
     }
 
     public static void on_keyPress(int key) {
-        for(Module m : modules) {
-            if(m.key == key) {
+        for (Module m : modules) {
+            if (m.key == key) {
                 m.toggle();
             }
         }
     }
 
+    public static Module getModulebyName(String name) {
+        for (Module m : modules) {
+            if (m.name.equalsIgnoreCase(name)) {
+                return m;
+            }
+        }
+        return null;
+    }
 }
