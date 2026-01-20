@@ -633,6 +633,7 @@ public abstract class EntityPlayer extends EntityLivingBase
 
         this.setAIMoveSpeed((float)iattributeinstance.getAttributeValue());
         float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+
         float f1 = (float)(Math.atan(-this.motionY * 0.20000000298023224D) * 15.0D);
 
         if (f > 0.1F)

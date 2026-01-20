@@ -8,9 +8,11 @@ import peak.modules.combat.Killaura;
 import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
+import peak.modules.player.NoSlow;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
 
+import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client {
@@ -36,6 +38,8 @@ public class Client {
 
         modules.add(new ClickGuimod());
         modules.add(new ESP());
+
+        modules.add(new NoSlow());
     }
 
     public static void on_Tick() {
