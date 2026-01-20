@@ -2,6 +2,7 @@ package peak;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.lwjgl.opengl.Display;
+import peak.managers.font.FontUtil;
 import peak.modules.Module;
 import peak.modules.combat.Killaura;
 import peak.modules.movement.Fly;
@@ -24,6 +25,8 @@ public class Client {
 
         System.out.println("Launched " + name + " " + version);
         Display.setTitle(name + " " + version);
+
+        FontUtil.bootstrap();
 
         modules.add(new Fly());
         modules.add(new Sprint());
