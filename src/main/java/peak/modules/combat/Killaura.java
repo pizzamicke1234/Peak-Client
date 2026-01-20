@@ -1,5 +1,6 @@
 package peak.modules.combat;
 
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,6 +14,14 @@ public class Killaura extends Module {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
     }
 
+    boolean autoblock = true;
+
+    @Override
+    public void on_Disable() {
+        if(autoblock) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+    }
+
+    @Override
     public void on_Tick() {
         for(Entity e : mc.theWorld.loadedEntityList) {
             String entityType = EntityList.getEntityString(e);
@@ -23,7 +32,9 @@ public class Killaura extends Module {
 
             if(e instanceof EntityLivingBase) {
                 float distance = mc.thePlayer.getDistanceToEntity(e);
+
                 if(distance <= 4) {
+                    if(autoblock) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
                     mc.playerController.attackEntity(mc.thePlayer, e);
                     mc.thePlayer.swingItem();
                 }
