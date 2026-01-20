@@ -74,20 +74,9 @@ public class ClickGui extends GuiScreen {
         }
     }
 
-    public void addCategories() {
-        int count = 0;
-        int offset = 100;
-        for(Module.Category c : Module.Category.values()) {
-            categoryRects.add(new CategoryRect(c.name(), 50 + (offset * count), 50, 130 + (offset * count), 70, 0xFF000000, true));
-            count++;
-        }
-    }
-
     public void initClickGui() {
         int categorycount = 0;
         int categoryoffset = 100;
-
-        int moduleoffset = 20;
 
         for(Module.Category c : Module.Category.values()) {
             int modulecount = 0;

@@ -4,6 +4,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
@@ -24,7 +26,7 @@ public class Killaura extends Module {
     @Override
     public void on_Tick() {
         for(Entity e : mc.theWorld.loadedEntityList) {
-            String entityType = EntityList.getEntityString(e);
+            ItemStack usedItem = mc.thePlayer.getHeldItem();
 
             if(e == mc.thePlayer) {
                 continue;
@@ -34,7 +36,11 @@ public class Killaura extends Module {
                 float distance = mc.thePlayer.getDistanceToEntity(e);
 
                 if(distance <= 4) {
-                    if(autoblock) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+                    if(autoblock && usedItem.getItem() instanceof ItemSword) {
+                        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+                    }else {
+                        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+                    }
                     mc.playerController.attackEntity(mc.thePlayer, e);
                     mc.thePlayer.swingItem();
                 }

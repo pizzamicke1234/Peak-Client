@@ -1330,6 +1330,12 @@ public class EntityRenderer implements IResourceManagerReloadListener
         ESP esp = (ESP) Client.getModulebyName("ESP");
         if(esp.toggled) {
             this.renderEntityOutlineFramebuffer(partialTicks);
+
+            this.mc.getFramebuffer().bindFramebuffer(false);
+            GlStateManager.enableBlend();
+            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.enableAlpha();
+            OpenGlHelper.glUseProgram(0);
         }
     }
 
