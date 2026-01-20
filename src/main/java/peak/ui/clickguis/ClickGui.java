@@ -10,16 +10,29 @@ import peak.modules.Module;
 import peak.modules.render.ClickGuimod;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ClickGui extends GuiScreen {
 
     public Minecraft mc = Minecraft.getMinecraft();
     public FontRenderer fr = mc.fontRendererObj;
 
+    ArrayList<MovableRect> movableRects = new ArrayList<MovableRect>();
+
+    int c = 0;
+
+    public void initGui()
+    {
+        if(c == 0) {
+            movableRects.add(new MovableRect(50, 50, 70, 70, 0xFF000000));
+            c++;
+        }
+    }
+
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //this.drawDefaultBackground();
         fr.drawStringWithShadow("Test", 100, 100, 1);
-        Gui.drawRect(100, 100, 200, 200,0xFF121111);
+        drawRects();
     }
 
     public void onGuiClosed()
@@ -38,8 +51,36 @@ public class ClickGui extends GuiScreen {
         }
     }
 
-    public void testdraw() {
-        Gui.drawRect(60, 60, 80, 80, 1);
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if(mouseButton == 0) {
+
+            for(MovableRect mr : movableRects) {
+                if(mr.isClicked(mouseX, mouseY)) {
+                    System.out.println("A Rect was clicked!");
+                }
+            }
+
+        }
+
+    }
+
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    {
+        if(clickedMouseButton == 0) {
+
+            for(MovableRect mr : movableRects) {
+                if(mr.isClicked(mouseX, mouseY)) {
+                    mr.move(mouseX, mouseY);
+                }
+            }
+
+        }
+    }
+
+    public void drawRects() {
+        for(MovableRect mr : movableRects) {
+            mr.draw();
+        }
     }
 
 }
