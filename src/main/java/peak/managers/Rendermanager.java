@@ -1,11 +1,7 @@
 package peak.managers;
 
-public class Rendermanager {
+import net.minecraft.client.gui.Gui;
 
-    public static boolean forceOutline = false;
-
-    public static void toggleOutline(boolean enable) {
-        forceOutline = enable;
-    }
+public class Rendermanager extends Gui {
 
 }
