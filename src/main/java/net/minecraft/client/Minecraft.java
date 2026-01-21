@@ -185,6 +185,7 @@ import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 import peak.Client;
+import peak.ui.mainmenus.PeakMainMenu;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -577,7 +578,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
         else
         {
-            this.displayGuiScreen(new GuiMainMenu());
+            // Peak Client Background
+            //this.displayGuiScreen(new GuiMainMenu());
+            this.displayGuiScreen(new PeakMainMenu());
         }
 
         this.renderEngine.deleteTexture(this.mojangLogo);
