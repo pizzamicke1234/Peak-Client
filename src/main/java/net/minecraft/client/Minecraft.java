@@ -574,7 +574,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         if (this.serverName != null)
         {
-            this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+            //this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+            this.displayGuiScreen(new GuiConnecting(new PeakMainMenu(), this, this.serverName, this.serverPort));
         }
         else
         {

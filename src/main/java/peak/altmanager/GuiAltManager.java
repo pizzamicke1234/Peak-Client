@@ -1,14 +1,13 @@
 package peak.altmanager;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
 import net.minecraft.util.Session;
+import peak.ui.mainmenus.PeakMainMenu;
+
 import java.io.IOException;
-import java.util.Optional;
 
 public class GuiAltManager extends GuiScreen {
     private GuiTextField nameField;
@@ -30,7 +29,7 @@ public class GuiAltManager extends GuiScreen {
         }
 
         if (button.id == 2) { // Back Button
-            this.mc.displayGuiScreen(new GuiMainMenu());
+            this.mc.displayGuiScreen(new PeakMainMenu());
         }
     }
 
@@ -44,16 +43,11 @@ public class GuiAltManager extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
-        // 1. Textfeld-Eingaben verarbeiten
         this.nameField.textboxKeyTyped(typedChar, keyCode);
 
-        // 2. ESC-Taste prüfen (Keycode 1 ist Escape)
         if (keyCode == 1) {
-            this.mc.displayGuiScreen(new GuiMainMenu()); // Oder null, um zum Spiel zurückzukehren
+            this.mc.displayGuiScreen(new PeakMainMenu());
         }
-
-        // Alternativ: super.keyTyped(typedChar, keyCode);
-        // Aber bei eigenen Menüs ist die direkte Zuweisung (oben) sicherer.
     }
 
     @Override

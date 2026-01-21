@@ -6,6 +6,7 @@ import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.realms.RealmsBridge;
+import peak.ui.mainmenus.PeakMainMenu;
 
 public class GuiIngameMenu extends GuiScreen
 {
@@ -58,16 +59,19 @@ public class GuiIngameMenu extends GuiScreen
 
                 if (flag)
                 {
-                    this.mc.displayGuiScreen(new GuiMainMenu());
+                    //this.mc.displayGuiScreen(new GuiMainMenu());
+                    this.mc.displayGuiScreen(new PeakMainMenu());
                 }
                 else if (flag1)
                 {
                     RealmsBridge realmsbridge = new RealmsBridge();
-                    realmsbridge.switchToRealms(new GuiMainMenu());
+                    //realmsbridge.switchToRealms(new GuiMainMenu());
+                    realmsbridge.switchToRealms(new PeakMainMenu());
                 }
                 else
                 {
-                    this.mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+                    //this.mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+                    this.mc.displayGuiScreen(new GuiMultiplayer(new PeakMainMenu()));
                 }
 
             case 2:
