@@ -19,6 +19,9 @@ public class PeakMainMenu extends GuiScreen {
 
     @Override
     public void initGui() {
+
+        buttons = new ArrayList<>();
+
         btnsingleplayer = new PeakButton(0, this.width / 2 - 80, this.height / 2 - 10, width / 2 + 80, this.height / 2 + 10, "Singeplayer");
         btnmultiplayer = new PeakButton(1, this.width / 2 - 80, this.height / 2 - 10 + 30, width / 2 + 80, this.height / 2 + 10 + 30, "Multiplayer");
         btnaltmanager = new PeakButton(2, this.width / 2 - 80, this.height / 2 - 10 + 60, width / 2 + 80, this.height / 2 + 10 + 60, "AltManager");
