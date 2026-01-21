@@ -10,6 +10,7 @@ import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
 import peak.modules.player.NoSlow;
+import peak.modules.render.Animations;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
 
@@ -41,6 +42,7 @@ public class Client {
 
         modules.add(new ClickGuimod());
         modules.add(new ESP());
+        modules.add(new Animations());
 
         modules.add(new NoSlow());
     }

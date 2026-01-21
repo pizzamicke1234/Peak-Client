@@ -44,15 +44,16 @@ public class Arraylist extends GuiScreen {
     }
 
     public static int getModuleTextWidth(Module m) {
-        int settingsWidth = 0;
+        int Width = (int)Math.ceil(FontUtil.normal.getStringWidth(m.name)) + 7;
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
-                if(s.showonArraylist) settingsWidth += FontUtil.normal.getStringWidth(s.current_value);
+                if(s.showonArraylist){
+                    Width += (5 + FontUtil.normal.getStringWidth(s.current_value));
+                }
             }
         }
-
-        return (int)(FontUtil.normal.getStringWidth(m.name) + settingsWidth);
+        return Width;
     }
 
     public static List<Module> sortModules() {
@@ -66,9 +67,10 @@ public class Arraylist extends GuiScreen {
         int moduleOffsetX = getSettingsOffset(m);
         int settingsoffsetX = 0;
 
-        Gui.drawRect(width  - (int)FontUtil.normal.getStringWidth(m.name) - (7 - moduleOffsetX),
-                (2 + FontUtil.normal.getHeight()) * count, width,
-                FontUtil.normal.getHeight() + 2 + (2 + FontUtil.normal.getHeight()) * count, 0x55000000);
+        int totalWidth = getModuleTextWidth(m);
+        int yPos = (2 + FontUtil.normal.getHeight()) * count;
+
+        Gui.drawRect(width - totalWidth, yPos, width, yPos + FontUtil.normal.getHeight() + 2, 0x55000000);
 
         FontUtil.normal.drawString(m.name, width - FontUtil.normal.getStringWidth(m.name) - 4 + moduleOffsetX,
                 1 + (2 + FontUtil.normal.getHeight()) * count, ColorManager.getColorWave(count * 500L));

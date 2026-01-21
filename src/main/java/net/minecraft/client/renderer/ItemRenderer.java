@@ -26,6 +26,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.MapData;
 import org.lwjgl.opengl.GL11;
+import peak.Client;
+import peak.modules.Module;
+import peak.modules.render.Animations;
 
 public class ItemRenderer
 {
@@ -365,6 +368,8 @@ public class ItemRenderer
         GlStateManager.enableRescaleNormal();
         GlStateManager.pushMatrix();
 
+        Animations animations = (Animations) Client.getModulebyName("Animations");
+
         if (this.itemToRender != null)
         {
             if (this.itemToRender.getItem() == Items.filled_map)
@@ -388,9 +393,19 @@ public class ItemRenderer
                         break;
 
                     case BLOCK:
-                        this.transformFirstPersonItem(f, f1);
-                        this.doBlockTransformations();
-                        break;
+                        if(animations.toggled) {
+                            switch (animations.animationmode.current_value) {
+                                case "1.7":
+                                    this.transformFirstPersonItem(f, f1);
+                                    this.doBlockTransformations();
+                                    break;
+                            }
+                            break;
+                        }else {
+                            this.transformFirstPersonItem(f, 1F);
+                            this.doBlockTransformations();
+                            break;
+                        }
 
                     case BOW:
                         this.transformFirstPersonItem(f, 0.0F);

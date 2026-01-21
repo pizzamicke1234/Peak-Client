@@ -33,8 +33,6 @@ public class ClickGui extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //this.drawDefaultBackground();
-        fr.drawStringWithShadow("Test", 100, 100, 1);
-
         drawClickGui(mouseX, mouseY);
 
     }
