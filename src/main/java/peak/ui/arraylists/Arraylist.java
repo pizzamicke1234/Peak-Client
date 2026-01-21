@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import peak.Client;
+import peak.managers.ColorManager;
 import peak.managers.font.FontUtil;
 import peak.modules.Module;
 import peak.modules.settings.Setting;
@@ -70,7 +71,7 @@ public class Arraylist extends GuiScreen {
                 FontUtil.normal.getHeight() + 2 + (2 + FontUtil.normal.getHeight()) * count, 0x55000000);
 
         FontUtil.normal.drawString(m.name, width - FontUtil.normal.getStringWidth(m.name) - 4 + moduleOffsetX,
-                1 + (2 + FontUtil.normal.getHeight()) * count, -1);
+                1 + (2 + FontUtil.normal.getHeight()) * count, ColorManager.getColorWave(count * 500L));
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
