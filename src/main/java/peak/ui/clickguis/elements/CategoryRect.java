@@ -2,6 +2,8 @@ package peak.ui.clickguis.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
+import peak.managers.font.FontUtil;
 
 
 public class CategoryRect {
@@ -54,8 +56,12 @@ public class CategoryRect {
         }
         Gui.drawRect(this.left, this.top, this.right, this.bottom, this.color);
         if(this.hasText){
-            Gui.drawCenteredStringWithoutShadow(mc.fontRendererObj, name, this.left + (this.right - this.left) / 2,
-                    this.top + (this.bottom - this.top) / 2 - 3, -1);
+            float scale = 0.9F;
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, scale);
+            FontUtil.normal.drawCenteredString(name, (this.left + (this.right - this.left) / 2) / scale,
+                    (this.top + (this.bottom - this.top - FontUtil.normal.getHeight()) / 2 + 1) / scale, -1);
+            GlStateManager.popMatrix();
         }
     }
 

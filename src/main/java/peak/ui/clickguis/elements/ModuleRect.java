@@ -2,6 +2,8 @@ package peak.ui.clickguis.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
+import peak.managers.font.FontUtil;
 import peak.modules.Module;
 
 
@@ -13,13 +15,14 @@ public class ModuleRect {
     public CategoryRect categoryrect;
 
     final boolean hasText;
-    public int offsetY, color;
+    public int offsetY, color, hovercolor;
     int thickness = 20;
 
-    public ModuleRect(Module module, CategoryRect categoryrect,int offsetY, int color, boolean hasText) {
+    public ModuleRect(Module module, CategoryRect categoryrect,int offsetY, int color, int hovercolor, boolean hasText) {
         this.module = module;
         this.offsetY = offsetY;
         this.color = color;
+        this.hovercolor = hovercolor;
         this.hasText = hasText;
         this.categoryrect = categoryrect;
     }
@@ -39,16 +42,33 @@ public class ModuleRect {
         return false;
     }
 
-    public void draw() {
+    public void draw(int x, int y) {
         int left = categoryrect.left;
         int top = categoryrect.top + this.offsetY;
         int right = categoryrect.right;
         int bottom = top + thickness;
 
-        Gui.drawRect(left, top, right, bottom, this.color);
+        int rectcolor;
+
+        if(isHovered(x, y)) rectcolor = this.hovercolor;
+        else rectcolor = this.color;
+
+        Gui.drawRect(left, top, right, bottom, rectcolor);
+
         if(this.hasText){
-            Gui.drawCenteredStringWithoutShadow(mc.fontRendererObj, module.name, left + (right - left) / 2,
-                    top + (bottom - top) / 2 - 3, -1);
+            float scale = 0.9F;
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, scale);
+
+            int c;
+
+            if(module.toggled) c = 0xff0069ff;
+            else c = -1;
+
+            FontUtil.normal.drawCenteredString(module.name, (left + (right - left) / 2) / scale,
+                    (top + (bottom - top - FontUtil.normal.getHeight()) / 2 + 1) / scale, c);
+
+            GlStateManager.popMatrix();
         }
     }
 

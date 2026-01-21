@@ -1,6 +1,10 @@
 package peak.modules;
 
 import net.minecraft.client.Minecraft;
+import peak.modules.settings.Setting;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Module {
 
@@ -10,6 +14,8 @@ public class Module {
     public Category category;
 
     public boolean inClickGui;
+
+    public ArrayList<Setting> settings = new ArrayList<Setting>();
 
     public Minecraft mc = Minecraft.getMinecraft();
 
@@ -57,6 +63,14 @@ public class Module {
         if(toggled) {
             toggle();
         }
+    }
+
+    public void addSetting(Setting... settingstoadd) {
+        settings.addAll(Arrays.asList(settingstoadd));
+    }
+
+    public ArrayList<Setting> getSettings() {
+        return settings;
     }
 
     public enum Category {

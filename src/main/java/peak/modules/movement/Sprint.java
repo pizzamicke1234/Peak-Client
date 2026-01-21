@@ -2,13 +2,16 @@ package peak.modules.movement;
 
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
+import peak.modules.settings.ModeSetting;
 
 
 public class Sprint extends Module {
 
+    ModeSetting sprintmode = new ModeSetting("sprintmode", "Legit", true, "Legit", "OmniSprint");
+
     public Sprint() {
         super("Sprint", Keyboard.KEY_NONE, Category.MOVEMENT, true);
-
+        addSetting(sprintmode);
         toggled = true;
     }
 
@@ -21,8 +24,16 @@ public class Sprint extends Module {
     }
 
     public void on_Tick() {
-        if(mc.gameSettings.keyBindForward.isKeyDown()) {
-            mc.thePlayer.setSprinting(true);
+
+        switch (sprintmode.current_value) {
+            case "Legit":
+                if(mc.gameSettings.keyBindForward.isKeyDown()) {
+                    mc.thePlayer.setSprinting(true);
+                }
+                break;
+            case "Omnisprint":
+                mc.thePlayer.setSprinting(true);
+                break;
         }
     }
 

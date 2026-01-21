@@ -5,6 +5,7 @@ import org.lwjgl.opengl.Display;
 import peak.managers.font.FontUtil;
 import peak.modules.Module;
 import peak.modules.combat.Killaura;
+import peak.modules.misc.TestModule;
 import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
@@ -19,7 +20,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.1";
+    public static String version = "0.2";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
 
@@ -29,6 +30,8 @@ public class Client {
         Display.setTitle(name + " " + version);
 
         FontUtil.bootstrap();
+
+        modules.add(new TestModule());
 
         modules.add(new Fly());
         modules.add(new Sprint());

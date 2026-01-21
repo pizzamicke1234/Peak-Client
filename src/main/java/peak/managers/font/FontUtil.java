@@ -30,7 +30,7 @@ public class FontUtil {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error loading font");
-            font = new Font("default", Font.PLAIN, +20);
+            font = new Font("default", Font.PLAIN, +25);
         }
 
         return font;

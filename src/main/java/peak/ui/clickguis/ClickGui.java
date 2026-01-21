@@ -86,7 +86,7 @@ public class ClickGui extends GuiScreen {
 
             for(Module m : Client.modules) {
                 if(m.category == c && m.inClickGui) {
-                    ModuleRect moduleRect = new ModuleRect(m, categoryRect, 20 + (19 * modulecount), 0x77000000, true);
+                    ModuleRect moduleRect = new ModuleRect(m, categoryRect, 20 + (20 * modulecount), 0x77000000, 0x44000000, true);
                     moduleRects.add(moduleRect);
                     modulecount++;
                 }
@@ -101,15 +101,15 @@ public class ClickGui extends GuiScreen {
         }
     }
 
-    public void drawModules() {
+    public void drawModules(int x, int y) {
         for(ModuleRect mr : moduleRects) {
-            mr.draw();
+            mr.draw(x, y);
         }
     }
 
     public void drawClickGui(int x, int y) {
         drawCategories(x, y);
-        drawModules();
+        drawModules(x, y);
     }
 
 }
