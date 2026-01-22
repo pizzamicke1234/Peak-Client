@@ -6,8 +6,8 @@ import peak.modules.settings.NumberSetting;
 
 public class Fly extends Module {
 
-    public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.5,
-            5, 2, 0.25);
+    public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
+            10, 1, 0.25);
 
     public Fly() {
         super("Fly", Keyboard.KEY_Y, Category.MOVEMENT, true);

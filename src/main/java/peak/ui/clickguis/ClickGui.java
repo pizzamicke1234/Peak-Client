@@ -70,6 +70,9 @@ public class ClickGui extends GuiScreen {
         for(CategoryRect mr : categoryRects) {
             mr.mouseReleased(mouseX, mouseY, state);
         }
+        for(ModuleRect mr : moduleRects) {
+            mr.mouseReleased(mouseX, mouseY, state);
+        }
     }
 
     public void initClickGui() {

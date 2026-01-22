@@ -2,6 +2,8 @@ package peak.modules.settings;
 
 public class NumberSetting extends Setting {
 
+    public boolean dragging;
+
     public double minValue, maxValue, defaultValue, increment;
 
     public double cValue; // second current (local) value
@@ -29,6 +31,12 @@ public class NumberSetting extends Setting {
             cValue -= increment;
             current_value = String.valueOf(cValue);
         }
+    }
+
+    public void setcValue(double value) {
+        double precision = 1.0 / increment;
+        this.cValue = Math.round(Math.max(minValue, Math.min(maxValue, value)) * precision) / precision;
+        this.current_value = String.valueOf(cValue);
     }
 
 }

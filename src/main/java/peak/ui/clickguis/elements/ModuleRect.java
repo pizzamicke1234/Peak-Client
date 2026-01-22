@@ -32,12 +32,23 @@ public class ModuleRect {
         this.settingsRect = new SettingsRect(this);
     }
 
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        if (showSettings) {
+            settingsRect.mouseReleased(mouseX, mouseY, state);
+        }
+    }
+
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0 && isHovered(mouseX, mouseY)) {
             module.toggle();
         }else if(mouseButton == 1 && isHovered(mouseX, mouseY)) {
             if(module.getSettings().size() > 0) showSettings = !showSettings;
         }
+
+        if (showSettings) {
+            settingsRect.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+
     }
 
     private boolean isHovered(int mouseX, int mouseY) {
@@ -65,21 +76,16 @@ public class ModuleRect {
         int y1 = top + (bottom - top - FontUtil.normal.getHeight()) / 2 + 1;
 
         // Draw SettingRect
-        this.settingsRect.draw(x1, y1);
+        this.settingsRect.draw(x, y);
 
         if(this.hasText){
-            float scale = 0.9F;
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, scale);
 
             int c;
 
             if(module.toggled) c = 0xff0069ff;
             else c = -1;
 
-            FontUtil.normal.drawCenteredString(module.name, x1 / scale, y1 / scale, c);
-
-            GlStateManager.popMatrix();
+            FontUtil.normal.drawCenteredString(module.name, x1 , y1, c);
         }
     }
 

@@ -56,12 +56,8 @@ public class CategoryRect {
         }
         Gui.drawRect(this.left, this.top, this.right, this.bottom, this.color);
         if(this.hasText){
-            float scale = 0.9F;
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, scale);
-            FontUtil.normal.drawCenteredString(name, (this.left + (this.right - this.left) / 2) / scale,
-                    (this.top + (this.bottom - this.top - FontUtil.normal.getHeight()) / 2 + 1) / scale, -1);
-            GlStateManager.popMatrix();
+            FontUtil.normal.drawCenteredString(name, (this.left + (this.right - this.left) / 2),
+                    (this.top + (this.bottom - this.top - FontUtil.normal.getHeight()) / 2 + 1), -1);
         }
     }
 

@@ -47,7 +47,7 @@ public class PeakButton extends Gui {
 
         drawHorizontalGradientRect(this.left, this.top, this.right, this.bottom, startcolor, endcolor);
 
-        FontUtil.normal.drawCenteredString(this.buttonText, this.left + (this.right - this.left) / 2, this.top + (this.bottom - this.top) / 2 - 6, -1);
+        FontUtil.normal.drawCenteredString(this.buttonText, this.left + (this.right - this.left) / 2, this.top + (this.bottom - this.top) / 2 - 4, -1);
 
         drawOutline(left, top, right, bottom, 2, 0xFF0040FF);
 

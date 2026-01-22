@@ -20,7 +20,7 @@ public class Arraylist extends GuiScreen {
     public static Minecraft mc = Minecraft.getMinecraft();
     public static FontRenderer fr = mc.fontRendererObj;
 
-    static List<Module>  modules = sortModules();
+    // List<Module>  modules = sortModules();
 
     public static void draw() {
 
@@ -68,18 +68,21 @@ public class Arraylist extends GuiScreen {
         int settingsoffsetX = 0;
 
         int totalWidth = getModuleTextWidth(m);
-        int yPos = (2 + FontUtil.normal.getHeight()) * count;
+        int yPos = (6 + FontUtil.normal.getHeight()) * count;
 
-        Gui.drawRect(width - totalWidth, yPos, width, yPos + FontUtil.normal.getHeight() + 2, 0x55000000);
+        Gui.drawRect(width - totalWidth, yPos, width, yPos + FontUtil.normal.getHeight() + 6, 0x55000000);
 
         FontUtil.normal.drawString(m.name, width - FontUtil.normal.getStringWidth(m.name) - 4 + moduleOffsetX,
-                1 + (2 + FontUtil.normal.getHeight()) * count, ColorManager.getColorWave(count * 500L));
+                4 + (6 + FontUtil.normal.getHeight()) * count, ColorManager.getColorWave(count * 500L));
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
                 if(s.onArraylist) {
+
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+
                     FontUtil.normal.drawString(s.current_value, width - FontUtil.normal.getStringWidth(s.current_value) - 4 + settingsoffsetX,
-                            1 + (2 + FontUtil.normal.getHeight()) * count, 0xFFcecece);
+                            4 + (6 + FontUtil.normal.getHeight()) * count, 0xFFcecece);
 
                     settingsoffsetX -= (5 + FontUtil.normal.getStringWidth(s.current_value));
                 }
@@ -100,8 +103,11 @@ public class Arraylist extends GuiScreen {
 
     public static void drawModules() {
         int count = 0;
-        for(Module m : modules) {
-            if(!m.toggled) continue;
+
+        List<Module> sortedList = sortModules();
+
+        for (Module m : sortedList) {
+            if (!m.toggled) continue;
             drawModuleLine(m, count);
             count++;
         }

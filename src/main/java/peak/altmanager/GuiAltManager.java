@@ -4,11 +4,13 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import fr.litarvan.openauth.model.AuthAgent;
 import fr.litarvan.openauth.model.response.AuthResponse;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import org.lwjgl.Sys;
 import peak.ui.mainmenus.PeakMainMenu;
@@ -17,6 +19,7 @@ import peak.ui.mainmenus.elements.PeakButton;
 import java.io.IOException;
 
 public class GuiAltManager extends GuiScreen {
+    public final ResourceLocation background = new ResourceLocation("backgrounds/menu.jpg");
     private GuiTextField nameField, pwField;
     public PeakButton btnExit, btnmicrosoft;
 
@@ -46,7 +49,9 @@ public class GuiAltManager extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
+        //this.drawDefaultBackground();
+        this.mc.getTextureManager().bindTexture(background);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, (float)this.width, (float)this.height);
         this.nameField.drawTextBox();
         this.pwField.drawTextBox();
         super.drawScreen(mouseX, mouseY, partialTicks);
