@@ -3,22 +3,23 @@ package peak.modules.misc;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
+import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 
 public class TestModule extends Module {
 
-    ModeSetting Testmode = new ModeSetting("Testmode", "Test", true, "Test", "Test1", "Test2", "Test3");
+    ModeSetting Mode = new ModeSetting("Mode", true, "Test", "Test", "Test1", "Test2", "Test3");
+    ModeSetting Mode1 = new ModeSetting("Mode1", true, "Test", "Test", "Test1", "Test2", "Test3");
+    BoolSetting Testbool = new BoolSetting("Testbool", true, false);
 
     public TestModule() {
         super("TestModule", Keyboard.KEY_J, Category.MISC, true);
-        addSetting(Testmode);
+        addSetting(Mode, Mode1, Testbool);
     }
 
     @Override
     public void on_Enable() {
-        System.out.println("TestModule was enabled!");
-        System.out.println(Testmode.current_value + " ; " + Testmode.modes);
-        Testmode.nextMode();
+        Mode.nextMode();
     }
 
     @Override

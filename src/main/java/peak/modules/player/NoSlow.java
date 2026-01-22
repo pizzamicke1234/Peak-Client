@@ -6,7 +6,7 @@ import peak.modules.settings.ModeSetting;
 
 public class NoSlow extends Module {
 
-    ModeSetting noslowmode = new ModeSetting("NoSlowmode", "Vanilla", true, "Vanilla");
+    ModeSetting noslowmode = new ModeSetting("NoSlowmode", true, "Vanilla", "Vanilla");
 
     public NoSlow() {
         super("NoSlow", Keyboard.KEY_NONE, Category.PLAYER, true);

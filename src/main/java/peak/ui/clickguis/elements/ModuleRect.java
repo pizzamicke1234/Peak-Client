@@ -14,9 +14,13 @@ public class ModuleRect {
     public Module module;
     public CategoryRect categoryrect;
 
+    public boolean showSettings = false;
+
     final boolean hasText;
     public int offsetY, color, hovercolor;
     int thickness = 20;
+
+    public SettingsRect settingsRect;
 
     public ModuleRect(Module module, CategoryRect categoryrect,int offsetY, int color, int hovercolor, boolean hasText) {
         this.module = module;
@@ -25,12 +29,14 @@ public class ModuleRect {
         this.hovercolor = hovercolor;
         this.hasText = hasText;
         this.categoryrect = categoryrect;
+        this.settingsRect = new SettingsRect(this);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0 && isHovered(mouseX, mouseY)) {
-            System.out.println("Toggled module: " + module.name);
             module.toggle();
+        }else if(mouseButton == 1 && isHovered(mouseX, mouseY)) {
+            if(module.getSettings().size() > 0) showSettings = !showSettings;
         }
     }
 
@@ -55,6 +61,12 @@ public class ModuleRect {
 
         Gui.drawRect(left, top, right, bottom, rectcolor);
 
+        int x1 = left + (right - left) / 2;
+        int y1 = top + (bottom - top - FontUtil.normal.getHeight()) / 2 + 1;
+
+        // Draw SettingRect
+        this.settingsRect.draw(x1, y1);
+
         if(this.hasText){
             float scale = 0.9F;
             GlStateManager.pushMatrix();
@@ -65,8 +77,7 @@ public class ModuleRect {
             if(module.toggled) c = 0xff0069ff;
             else c = -1;
 
-            FontUtil.normal.drawCenteredString(module.name, (left + (right - left) / 2) / scale,
-                    (top + (bottom - top - FontUtil.normal.getHeight()) / 2 + 1) / scale, c);
+            FontUtil.normal.drawCenteredString(module.name, x1 / scale, y1 / scale, c);
 
             GlStateManager.popMatrix();
         }

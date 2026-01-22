@@ -48,7 +48,7 @@ public class Arraylist extends GuiScreen {
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
-                if(s.showonArraylist){
+                if(s.onArraylist){
                     Width += (5 + FontUtil.normal.getStringWidth(s.current_value));
                 }
             }
@@ -77,7 +77,7 @@ public class Arraylist extends GuiScreen {
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
-                if(s.showonArraylist) {
+                if(s.onArraylist) {
                     FontUtil.normal.drawString(s.current_value, width - FontUtil.normal.getStringWidth(s.current_value) - 4 + settingsoffsetX,
                             1 + (2 + FontUtil.normal.getHeight()) * count, 0xFFcecece);
 
@@ -92,7 +92,7 @@ public class Arraylist extends GuiScreen {
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
-                if(s.showonArraylist) settingsOffset -= (5 + FontUtil.normal.getStringWidth(s.current_value));
+                if(s.onArraylist) settingsOffset -= (5 + FontUtil.normal.getStringWidth(s.current_value));
             }
         }
         return settingsOffset;

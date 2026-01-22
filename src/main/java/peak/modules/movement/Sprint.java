@@ -7,7 +7,7 @@ import peak.modules.settings.ModeSetting;
 
 public class Sprint extends Module {
 
-    ModeSetting sprintmode = new ModeSetting("sprintmode", "Legit", true, "Legit", "OmniSprint");
+    ModeSetting sprintmode = new ModeSetting("sprintmode",true,  "Legit", "Legit", "OmniSprint");
 
     public Sprint() {
         super("Sprint", Keyboard.KEY_NONE, Category.MOVEMENT, true);

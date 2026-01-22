@@ -8,11 +8,11 @@ public class ModeSetting extends Setting{
 
     public List<String> modes;
 
-    public ModeSetting(String name, String defaultmode, boolean showonArraylist, String... modes) {
+    public ModeSetting(String name, boolean onArraylist, String defaultmode, String... modes) {
         this.name = name;
         this.modes = Arrays.asList(modes);
         this.current_value = defaultmode;
-        this.showonArraylist = showonArraylist;
+        this.onArraylist = onArraylist;
 
     }
 
