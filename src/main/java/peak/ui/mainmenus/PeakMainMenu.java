@@ -47,7 +47,7 @@ public class PeakMainMenu extends GuiScreen {
         if(mouseButton == 0) {
             for(PeakButton button : buttons) {
 
-                if(button.hovered) {
+                if(button.isClicked(mouseX, mouseY)) {
                     switch (button.buttonid) {
                         case 0:
                             this.mc.displayGuiScreen(new GuiSelectWorld(this));

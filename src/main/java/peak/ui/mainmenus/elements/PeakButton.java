@@ -22,6 +22,10 @@ public class PeakButton extends Gui {
         this.buttonText = buttonText;
     }
 
+    public boolean isClicked(int mouseX, int mouseY) {
+        return mouseX >= left && mouseY >= top && mouseX <= right && mouseY <= bottom;
+    }
+
     public void drawButton(int mouseX, int mouseY) {
 
         hovered = mouseX >= left && mouseY >= top && mouseX <= right && mouseY <= bottom;
