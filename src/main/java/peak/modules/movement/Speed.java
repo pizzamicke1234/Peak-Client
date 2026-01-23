@@ -2,6 +2,7 @@ package peak.modules.movement;
 
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
+import peak.tickevents.TickEvent;
 
 public class Speed extends Module {
 
@@ -19,7 +20,9 @@ public class Speed extends Module {
 
     }
 
-    public void on_Tick() {
+    public void on_Tick(TickEvent.TickType tickType) {
+
+        if(tickType == TickEvent.TickType.POST) return;
 
         if(mc.thePlayer.onGround && autojump){
             mc.thePlayer.jump();

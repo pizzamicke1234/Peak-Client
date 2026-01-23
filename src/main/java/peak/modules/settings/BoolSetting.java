@@ -14,4 +14,17 @@ public class BoolSetting extends Setting{
         return status;
     }
 
+    public void toggle() {
+        System.out.println("Toggled bool");
+        this.status = !this.status;
+    }
+
+    public void enable() {
+        this.status = true;
+    }
+
+    public void disable() {
+        this.status = false;
+    }
+
 }

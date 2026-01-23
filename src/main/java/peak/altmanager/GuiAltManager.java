@@ -19,7 +19,7 @@ import peak.ui.mainmenus.elements.PeakButton;
 import java.io.IOException;
 
 public class GuiAltManager extends GuiScreen {
-    public final ResourceLocation background = new ResourceLocation("backgrounds/menu.jpg");
+    public final ResourceLocation background = new ResourceLocation("backgrounds/background1.png");
     private GuiTextField nameField, pwField;
     public PeakButton btnExit, btnmicrosoft;
 
@@ -102,10 +102,10 @@ public class GuiAltManager extends GuiScreen {
                     "microsoft"
             );
 
-            System.out.println("Login erfolgreich: " + result.getProfile().getName());
+            System.out.println("Login succesful: " + result.getProfile().getName());
 
         }).exceptionally(ex -> {
-            System.out.println("Login abgebrochen oder Fehler: " + ex.getMessage());
+            System.out.println("Login Error: " + ex.getMessage());
             return null;
         });
     }

@@ -13,6 +13,7 @@ import peak.modules.player.NoSlow;
 import peak.modules.render.Animations;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
+import peak.tickevents.TickEvent;
 
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -47,12 +48,12 @@ public class Client {
         modules.add(new NoSlow());
     }
 
-    public static void on_Tick() {
+    public static void on_Tick(TickEvent.TickType tickType) {
         for (Module m : modules) {
             if (!m.toggled) {
                 continue;
             }
-            m.on_Tick();
+            m.on_Tick(tickType);
         }
     }
 

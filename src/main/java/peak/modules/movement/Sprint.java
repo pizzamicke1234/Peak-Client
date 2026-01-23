@@ -3,6 +3,7 @@ package peak.modules.movement;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
+import peak.tickevents.TickEvent;
 
 
 public class Sprint extends Module {
@@ -23,7 +24,9 @@ public class Sprint extends Module {
 
     }
 
-    public void on_Tick() {
+    public void on_Tick(TickEvent.TickType tickType) {
+
+        if(tickType == TickEvent.TickType.POST) return;
 
         switch (sprintmode.current_value) {
             case "Legit":

@@ -1,7 +1,10 @@
 package peak.ui.clickguis.elements;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import peak.managers.font.FontUtil;
+import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
 import peak.modules.settings.Setting;
@@ -37,8 +40,20 @@ public class SettingsRect {
                 drawModeLine(s, left + 5, top, left, top, right, bottom);
             } else if (s instanceof NumberSetting) {
                 drawNumberLine(s, left + 5, top, left, top, right, bottom, mouseX, mouseY);
+            } else if (s instanceof BoolSetting) {
+                drawBoolLine(s, left + 5, top);
             }
             lines++;
+        }
+    }
+
+    private void drawBoolLine(Setting s, int x, int y) {
+        BoolSetting boolsetting = (BoolSetting) s;
+        GlStateManager.color(255, 255, 255);
+        if(boolsetting.isTrue()) {
+            FontUtil.smaller.drawString(s.name, x, y + (lineHeight * lines) + 7, 0xff0069ff);
+        }else {
+            FontUtil.smaller.drawString(s.name, x, y + (lineHeight * lines) + 7, -1);
         }
     }
 
@@ -131,6 +146,11 @@ public class SettingsRect {
                 if (mouseX >= sliderLeft && mouseX <= right && mouseY >= lineTop && mouseY <= lineBottom) {
                     if (mouseButton == 0) ((NumberSetting) s).dragging = true;
                 }
+            }else if (s instanceof BoolSetting) {
+
+                if (mouseX >= left && mouseX <= right && mouseY >= lineTop && mouseY <= lineBottom) {
+                    if (mouseButton == 0) onBoolClick((BoolSetting) s);
+                }
             }
             currentLine++;
         }
@@ -146,6 +166,10 @@ public class SettingsRect {
 
     private void onModeClick(ModeSetting s) {
         s.nextMode();
+    }
+
+    private void onBoolClick(BoolSetting s) {
+        s.toggle();
     }
 
     public int getRectWidth() {

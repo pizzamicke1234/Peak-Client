@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class PeakMainMenu extends GuiScreen {
 
-    public final ResourceLocation background = new ResourceLocation("backgrounds/menu.jpg");
+    public final ResourceLocation background = new ResourceLocation("backgrounds/background1.png");
     public final ResourceLocation logo = new ResourceLocation("backgrounds/logo.png");
 
 

@@ -85,6 +85,7 @@ public class ModuleRect {
             if(module.toggled) c = 0xff0069ff;
             else c = -1;
 
+            GlStateManager.color(255, 255, 255);
             FontUtil.normal.drawCenteredString(module.name, x1 , y1, c);
         }
     }

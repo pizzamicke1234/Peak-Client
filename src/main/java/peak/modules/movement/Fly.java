@@ -3,6 +3,7 @@ package peak.modules.movement;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.NumberSetting;
+import peak.tickevents.TickEvent;
 
 public class Fly extends Module {
 
@@ -23,10 +24,13 @@ public class Fly extends Module {
         mc.thePlayer.capabilities.allowFlying = false;
     }
 
-    public void on_Tick() {
+    public void on_Tick(TickEvent.TickType tickType) {
+
+        if(tickType == TickEvent.TickType.POST) return;
+
         mc.thePlayer.capabilities.isFlying = true;
 
-        double speed = 2.5;
+        double speed = motionsetting.cValue;
         float yaw = mc.thePlayer.rotationYaw;
 
         if(mc.gameSettings.keyBindJump.isKeyDown()) {

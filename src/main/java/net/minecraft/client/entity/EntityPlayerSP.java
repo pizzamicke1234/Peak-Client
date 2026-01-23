@@ -52,6 +52,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import peak.Client;
+import peak.tickevents.TickEvent;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -190,7 +191,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     public void onUpdateWalkingPlayer()
     {
 
-        Client.on_Tick();
+        Client.on_Tick(TickEvent.TickType.PRE);
 
         boolean flag = this.isSprinting();
 
@@ -275,6 +276,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 this.lastReportedPitch = this.rotationPitch;
             }
         }
+        Client.on_Tick(TickEvent.TickType.POST);
     }
 
     /**

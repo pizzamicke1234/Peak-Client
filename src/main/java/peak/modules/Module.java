@@ -2,6 +2,7 @@ package peak.modules;
 
 import net.minecraft.client.Minecraft;
 import peak.modules.settings.Setting;
+import peak.tickevents.TickEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class Module {
 
     }
 
-    public void on_Tick() {
+    public void on_Tick(TickEvent.TickType tickType) {
 
     }
 
