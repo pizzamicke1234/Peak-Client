@@ -15,7 +15,6 @@ public class BoolSetting extends Setting{
     }
 
     public void toggle() {
-        System.out.println("Toggled bool");
         this.status = !this.status;
     }
 

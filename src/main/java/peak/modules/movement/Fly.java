@@ -16,12 +16,12 @@ public class Fly extends Module {
     }
 
     public void on_Enable() {
-        mc.thePlayer.capabilities.allowFlying = true;
+        //mc.thePlayer.capabilities.allowFlying = true;
     }
 
     public void on_Disable() {
         mc.thePlayer.capabilities.isFlying = false;
-        mc.thePlayer.capabilities.allowFlying = false;
+        //mc.thePlayer.capabilities.allowFlying = false;
     }
 
     public void on_Tick(TickEvent.TickType tickType) {

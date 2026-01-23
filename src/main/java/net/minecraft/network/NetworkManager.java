@@ -48,6 +48,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import peak.Client;
+import peak.managers.NotificationManager;
+import peak.managers.PacketManager;
+import peak.modules.Module;
+import peak.modules.misc.Disabler;
+import peak.modules.render.Animations;
 
 public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 {
@@ -174,6 +180,28 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 
     public void sendPacket(Packet packetIn)
     {
+
+        Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
+
+        if (disabler.toggled) {
+            if (disabler.handleBoatFly(packetIn)) {
+                return;
+            }
+        }
+
+        if(disabler.toggled && disabler.debug.isTrue()) {
+            NotificationManager.addChat("Got Packet | " + packetIn.getClass().getSimpleName());
+        }
+
+        if (PacketManager.shouldCancel(packetIn)) {
+
+            if(disabler.toggled && disabler.debug.isTrue()) {
+                NotificationManager.addChat("Canceled Packet | " + packetIn.getClass().getSimpleName());
+            }
+
+            return;
+        }
+
         if (this.isChannelOpen())
         {
             this.flushOutboundQueue();
@@ -220,7 +248,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
      * Will commit the packet to the channel. If the current thread 'owns' the channel it will write and flush the
      * packet, otherwise it will add a task for the channel eventloop thread to do that.
      */
-    private void dispatchPacket(final Packet inPacket, final GenericFutureListener <? extends Future <? super Void >> [] futureListeners)
+    public void dispatchPacket(final Packet inPacket, final GenericFutureListener<? extends Future<? super Void>>[] futureListeners)
     {
         final EnumConnectionState enumconnectionstate = EnumConnectionState.getFromPacket(inPacket);
         final EnumConnectionState enumconnectionstate1 = (EnumConnectionState)this.channel.attr(attrKeyConnectionState).get();

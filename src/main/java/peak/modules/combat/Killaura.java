@@ -6,6 +6,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.world.gen.ChunkProviderSettings;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -27,7 +29,7 @@ public class Killaura extends Module {
 
     public Random random = new Random();
 
-    public double legitreach = 3.1;
+    public double legitreach = 3.4;
 
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
@@ -124,9 +126,8 @@ public class Killaura extends Module {
                         KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
                     }
 
-                    System.out.println("Trying to attack: " + selectedtarget.getName());
-
-                    mc.thePlayer.swingItem();
+                    System.out.println("Distance: " + distance);
+                    //mc.thePlayer.swingItem();
                     mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
                 }
             }
