@@ -1,5 +1,6 @@
 package peak.modules.misc;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -40,11 +41,14 @@ public class TestModule extends Module {
     public void on_Tick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
 
-        if(PacketListener.isTrue()) {
-            //PacketManager.cancelPacketType(C);
-        }else {
-            PacketManager.uncancelPacketType(C0FPacketConfirmTransaction.class);
+        ItemStack heldStack = mc.thePlayer.getHeldItem();
+
+        if(heldStack == null) {
+            NotificationManager.addChat("Held Item | null");
+            return;
         }
+
+        NotificationManager.addChat("Held Item | " + mc.thePlayer.getHeldItem().getItem());
 
     }
 

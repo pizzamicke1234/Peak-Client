@@ -3,8 +3,11 @@ package peak.managers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import peak.Client;
+import peak.modules.combat.Velocity;
 import peak.modules.misc.Disabler;
 
 import java.util.ArrayList;
@@ -17,7 +20,8 @@ public class PacketManager {
     private static final List<Class<? extends Packet>> canceledTypes = new ArrayList<>();
     public static Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
 
-    public static boolean cancelTransactions = false;
+    private static boolean velotransaction = false;
+
     public static final List<Packet<?>> blinkBuffer = new ArrayList<>();
 
     public static void sendPacket(Packet<?> packet) {
@@ -61,15 +65,45 @@ public class PacketManager {
             if (type.isInstance(packet)) {
                 return true;
             }
-            if (cancelTransactions && packet instanceof net.minecraft.network.play.client.C0FPacketConfirmTransaction) {
-                return true;
-            }
         }
         return false;
     }
 
     public static void clearCanceledTypes() {
         canceledTypes.clear();
+    }
+
+    public static boolean handlePacketReceive(Packet<?> packet) {
+        Velocity velocity = (Velocity) Client.getModulebyName("Velocity");
+
+        if (packet instanceof S12PacketEntityVelocity) {
+            S12PacketEntityVelocity s12 = (S12PacketEntityVelocity) packet;
+
+            if (mc.thePlayer != null && s12.getEntityID() == mc.thePlayer.getEntityId()) {
+                if (velocity.toggled) {
+
+                    switch (velocity.velocityMode.current_value) {
+
+                        case "Vanilla":
+                            return true;
+
+                        case "Vulcan":
+                            cancelPacketType(C0FPacketConfirmTransaction.class);
+                            int p;
+                            short p1;
+                            if(velotransaction) p = 1;
+                            else p = -1;
+                            p1 = (short) (p * -1);
+                            //uncancelPacketType(C0FPacketConfirmTransaction.class);
+                            sendPacket(new C0FPacketConfirmTransaction(p, p1, true));
+                            velotransaction = !velotransaction;
+                            uncancelPacketType(C0FPacketConfirmTransaction.class);
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

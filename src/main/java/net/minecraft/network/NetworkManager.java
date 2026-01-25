@@ -2,6 +2,9 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.viaversion.viaversion.api.connection.UserConnection;
+import com.viaversion.viaversion.connection.UserConnectionImpl;
+import com.viaversion.viaversion.protocol.ProtocolPipelineImpl;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
@@ -53,7 +56,12 @@ import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.misc.Disabler;
+import peak.modules.movement.Fly;
 import peak.modules.render.Animations;
+import peak.viaversion.vialoadingbase.ViaLoadingBase;
+import peak.viaversion.vialoadingbase.netty.event.CompressionReorderEvent;
+import peak.viaversion.viamcp.MCPVLBPipeline;
+import peak.viaversion.viamcp.ViaMCP;
 
 public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 {
@@ -156,6 +164,11 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
         if (this.channel.isOpen())
         {
+
+            if (PacketManager.handlePacketReceive(p_channelRead0_2_)) {
+                return;
+            }
+
             try
             {
                 p_channelRead0_2_.processPacket(this.packetListener);
@@ -182,12 +195,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
 
         Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
-
-        if (disabler.toggled) {
-            if (disabler.handleBoatFly(packetIn)) {
-                return;
-            }
-        }
 
         if(disabler.toggled && disabler.debug.isTrue()) {
             NotificationManager.addChat("Got Packet | " + packetIn.getClass().getSimpleName());
@@ -405,6 +412,14 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
                 }
 
                 p_initChannel_1_.pipeline().addLast((String)"timeout", (ChannelHandler)(new ReadTimeoutHandler(30))).addLast((String)"splitter", (ChannelHandler)(new MessageDeserializer2())).addLast((String)"decoder", (ChannelHandler)(new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast((String)"prepender", (ChannelHandler)(new MessageSerializer2())).addLast((String)"encoder", (ChannelHandler)(new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast((String)"packet_handler", (ChannelHandler)networkmanager);
+
+                if (p_initChannel_1_ instanceof SocketChannel && ViaLoadingBase.getInstance().getTargetVersion().getVersion() != ViaMCP.NATIVE_VERSION) {
+                    final UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
+                    new ProtocolPipelineImpl(user);
+
+                    p_initChannel_1_.pipeline().addLast(new MCPVLBPipeline(user));
+                }
+
             }
         })).channel(oclass)).connect(address, serverPort).syncUninterruptibly();
         return networkmanager;
@@ -513,6 +528,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
                 this.channel.pipeline().remove("compress");
             }
         }
+        this.channel.pipeline().fireUserEventTriggered(new CompressionReorderEvent());
     }
 
     public void checkDisconnected()

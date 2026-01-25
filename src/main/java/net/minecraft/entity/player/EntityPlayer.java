@@ -46,6 +46,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.potion.Potion;
 import net.minecraft.scoreboard.IScoreObjectiveCriteria;
@@ -74,6 +75,11 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import peak.Client;
+import peak.managers.PacketManager;
+import peak.modules.combat.Killaura;
+import peak.modules.combat.Velocity;
+import peak.modules.movement.Speed;
 
 @SuppressWarnings("incomplete-switch")
 public abstract class EntityPlayer extends EntityLivingBase
@@ -1355,12 +1361,22 @@ public abstract class EntityPlayer extends EntityLivingBase
 
                     if (flag2)
                     {
+                        Killaura killaura = (Killaura) Client.getModulebyName("Killaura");
+                        Speed speed = (Speed) Client.getModulebyName("Speed");
+
                         if (i > 0)
                         {
                             targetEntity.addVelocity((double)(-MathHelper.sin(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
-                            this.motionX *= 0.6D;
-                            this.motionZ *= 0.6D;
-                            this.setSprinting(false);
+                            if(killaura.keepSprint.isTrue()) {
+                                if(killaura.killauramode.current_value != "Vanilla" && !speed.toggled) {
+                                    this.motionX *= 0.6D;
+                                    this.motionZ *= 0.6D;
+                                }
+                            }else {
+                                this.motionX *= 0.6D;
+                                this.motionZ *= 0.6D;
+                                this.setSprinting(false);
+                            }
                         }
 
                         if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged)

@@ -20,6 +20,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MathHelper;
@@ -28,6 +29,7 @@ import net.minecraft.world.storage.MapData;
 import org.lwjgl.opengl.GL11;
 import peak.Client;
 import peak.modules.Module;
+import peak.modules.combat.Killaura;
 import peak.modules.render.Animations;
 
 public class ItemRenderer
@@ -395,11 +397,21 @@ public class ItemRenderer
 
         if (this.itemToRender != null)
         {
+
+            boolean isFakeBlocking = false;
+            ItemStack helditem = mc.thePlayer.getHeldItem();
+
+            if(helditem != null) {
+                if(mc.thePlayer.getHeldItem().getItem() instanceof ItemSword && this.itemToRender.getItem() instanceof ItemSword) {
+                    if(Killaura.fakeblocking) isFakeBlocking  = true;
+                }
+            }
+
             if (this.itemToRender.getItem() == Items.filled_map)
             {
                 this.renderItemMap(abstractclientplayer, f2, f, f1);
             }
-            else if (abstractclientplayer.getItemInUseCount() > 0)
+            else if (abstractclientplayer.getItemInUseCount() > 0 || isFakeBlocking)
             {
                 EnumAction enumaction = this.itemToRender.getItemUseAction();
 

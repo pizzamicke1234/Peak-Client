@@ -2,14 +2,12 @@ package peak.modules.combat;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.world.gen.ChunkProviderSettings;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
@@ -23,23 +21,27 @@ public class Killaura extends Module {
 
     public ModeSetting killauramode = new ModeSetting("Mode", true, "Vanilla", "Vanilla", "Vulcan");
     //public ModeSetting hitmode = new ModeSetting("")
-    public BoolSetting autoblock = new BoolSetting("Autoblock", false, false);
+    public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Fake");
     public NumberSetting mincps = new NumberSetting("MinCPS", true, 1, 20, 10, 1);
     public NumberSetting maxcps = new NumberSetting("MaxCPS", true, 1, 20, 10, 1);
 
+    public BoolSetting keepSprint = new BoolSetting("KeepSprint", false, false);
+
     public Random random = new Random();
 
-    public double legitreach = 3.4;
+    private int lastTick = -1;
+    public static boolean fakeblocking = false;
 
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
-        addSetting(killauramode, maxcps, mincps, autoblock);
+        addSetting(killauramode, maxcps, mincps, autoblock, keepSprint);
     }
 
 
     @Override
     public void on_Disable() {
-        if(autoblock.isTrue()) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+        fakeblocking = false;
     }
 
     @Override
@@ -57,21 +59,28 @@ public class Killaura extends Module {
     }
 
     public boolean canClick() {
-        int randomcps = random.nextInt((int)maxcps.cValue - (int)mincps.cValue + 1) + (int)mincps.cValue;
-        if(mc.thePlayer.ticksExisted % (20 / randomcps) != 0) return false;
-        return true;
+        if (mc.thePlayer.ticksExisted == lastTick) {
+            return false;
+        }
+
+        double currentCPS = mincps.cValue + (maxcps.cValue - mincps.cValue) * random.nextDouble();
+        if (random.nextDouble() < (currentCPS / 20.0)) {
+            lastTick = mc.thePlayer.ticksExisted;
+            return true;
+        }
+        return false;
     }
 
     public void vaillaKillaura(TickEvent.TickType tickType) {
 
         if(tickType == TickEvent.TickType.POST) return;
-
         if(!canClick()) return;
 
-        for(Entity e : mc.theWorld.loadedEntityList) {
-            ItemStack usedItem = mc.thePlayer.getHeldItem();
+        ItemStack usedItem = mc.thePlayer.getHeldItem();
 
-            if(e == mc.thePlayer || e == null) {
+        for(Entity e : mc.theWorld.loadedEntityList) {
+
+            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
                 continue;
             }
 
@@ -80,14 +89,10 @@ public class Killaura extends Module {
 
                 if(distance <= 7) {
 
-                    if(autoblock.isTrue() && usedItem != null) {
-                        if(usedItem.getItem() instanceof ItemSword) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-                        else KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-                    }else {
-                        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-                    }
+                    manageAutoblock(e);
                     mc.thePlayer.swingItem();
                     mc.playerController.attackEntity(mc.thePlayer, e);
+
                 }
             }
         }
@@ -102,34 +107,59 @@ public class Killaura extends Module {
         if(!canClick()) return;
 
         Entity selectedtarget = null;
+        ItemStack usedItem = mc.thePlayer.getHeldItem();
 
         for(Entity e : mc.theWorld.loadedEntityList) {
-            ItemStack usedItem = mc.thePlayer.getHeldItem();
 
-            if(e == mc.thePlayer || e == null) {
+            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
                 continue;
             }
 
             if(e instanceof EntityLivingBase) {
                 float distance = mc.thePlayer.getDistanceToEntity(e);
-
-                if(distance <= legitreach) {
+                if(distance <= 3.6) {
 
                     if(selectedtarget == null) {
                         selectedtarget = e;
                     }
-
-                    if(autoblock.isTrue() && usedItem != null) {
-                        if(usedItem.getItem() instanceof ItemSword) KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-                        else KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-                    }else {
-                        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-                    }
-
-                    System.out.println("Distance: " + distance);
-                    //mc.thePlayer.swingItem();
-                    mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
                 }
+            }
+
+        }
+
+        if(selectedtarget == null){
+            fakeblocking = false;
+            return;
+        }
+
+        manageAutoblock(selectedtarget);
+
+        mc.thePlayer.swingItem();
+        mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
+
+    }
+
+    public void manageAutoblock(Entity e) {
+
+        if(mc.thePlayer.getHeldItem() == null) return;
+
+        Item helditem = mc.thePlayer.getHeldItem().getItem();
+
+        if(autoblock.current_value == "Off" || helditem == null){
+            return;
+        }
+
+        if(helditem instanceof  ItemSword) {
+            if(autoblock.current_value == "Fake") {
+                fakeblocking = true;
+            }else {
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+            }
+        }else {
+            if(autoblock.current_value == "Fake") {
+                fakeblocking = false;
+            }else {
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
             }
         }
 

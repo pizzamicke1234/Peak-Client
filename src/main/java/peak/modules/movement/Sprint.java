@@ -8,7 +8,7 @@ import peak.tickevents.TickEvent;
 
 public class Sprint extends Module {
 
-    ModeSetting sprintmode = new ModeSetting("Mode",true,  "Legit", "Legit", "Omnisprint");
+    ModeSetting sprintmode = new ModeSetting("Mode",false,  "Legit", "Legit", "Omnisprint");
 
     public Sprint() {
         super("Sprint", Keyboard.KEY_NONE, Category.MOVEMENT, true);

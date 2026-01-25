@@ -187,6 +187,7 @@ import org.lwjgl.util.glu.GLU;
 import peak.Client;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.ui.mainmenus.elements.PeakButton;
+import peak.viaversion.viamcp.fixes.AttackOrder;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -1531,7 +1532,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (this.leftClickCounter <= 0)
         {
-            this.thePlayer.swingItem();
+            //this.thePlayer.swingItem();
+            AttackOrder.sendConditionalSwing(this.objectMouseOver);
 
             if (this.objectMouseOver == null)
             {
@@ -1547,7 +1549,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                 switch (this.objectMouseOver.typeOfHit)
                 {
                     case ENTITY:
-                        this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
+                        //this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
+                        AttackOrder.sendFixedAttack(this.thePlayer, this.objectMouseOver.entityHit);
                         break;
 
                     case BLOCK:
