@@ -1,5 +1,6 @@
 package peak.modules.movement;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
@@ -16,7 +17,7 @@ import peak.tickevents.TickEvent;
 
 public class Fly extends Module {
 
-    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan");
+    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Ground");
     public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
             10, 1, 0.25);
 
@@ -42,6 +43,10 @@ public class Fly extends Module {
                     this.toggle();
                 }
                 break;
+
+            case "Ground":
+                //PacketManager.cancelPacketType(C0FPacketConfirmTransaction.class);
+                break;
         }
 
     }
@@ -55,6 +60,10 @@ public class Fly extends Module {
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionZ = 0;
                 mc.timer.timerSpeed = 1.0f;
+                break;
+
+            case "Ground":
+                //PacketManager.uncancelPacketType(C0FPacketConfirmTransaction.class);
                 break;
         }
 
@@ -76,6 +85,10 @@ public class Fly extends Module {
 
             case "Vulcan":
                 vulcanFly();
+                break;
+
+            case "Ground":
+                groundFly();
                 break;
         }
 
@@ -161,6 +174,11 @@ public class Fly extends Module {
             mc.thePlayer.motionZ = 0;
         }
 
+    }
+
+    public void groundFly() {
+        mc.thePlayer.onGround = true;
+        mc.thePlayer.motionY = 0;
     }
 
     public boolean getInNearestEntity() {

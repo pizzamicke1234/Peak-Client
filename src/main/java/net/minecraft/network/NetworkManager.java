@@ -197,16 +197,24 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
 
         if(disabler.toggled && disabler.debug.isTrue()) {
-            NotificationManager.addChat("Got Packet | " + packetIn.getClass().getSimpleName());
+            //NotificationManager.addChat("Got Packet | " + packetIn.getClass().getSimpleName());
         }
 
-        if (PacketManager.shouldCancel(packetIn)) {
+        if (PacketManager.shouldCancel(packetIn) && PacketManager.allowedPacket != packetIn) {
 
             if(disabler.toggled && disabler.debug.isTrue()) {
                 NotificationManager.addChat("Canceled Packet | " + packetIn.getClass().getSimpleName());
             }
 
             return;
+        }
+
+        if(PacketManager.allowedPacket == packetIn) {
+            PacketManager.allowedPacket = null;
+            if(disabler.toggled && disabler.debug.isTrue()) {
+                NotificationManager.addChat("Allowed Packet | " + packetIn.getClass().getSimpleName());
+            }
+
         }
 
         if (this.isChannelOpen())

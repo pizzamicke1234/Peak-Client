@@ -18,37 +18,20 @@ public class PacketManager {
     public static Minecraft mc = Minecraft.getMinecraft();
 
     private static final List<Class<? extends Packet>> canceledTypes = new ArrayList<>();
+    public static Packet allowedPacket;
+
     public static Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
 
     private static boolean velotransaction = false;
 
-    public static final List<Packet<?>> blinkBuffer = new ArrayList<>();
-
     public static void sendPacket(Packet<?> packet) {
+        allowedPacket = packet;
         mc.thePlayer.sendQueue.addToSendQueue(packet);
         if(disabler.toggled && disabler.debug.isTrue()) {
             NotificationManager.addChat("Packet send | " + packet);
         }
     }
 
-    public static void releasePackets() {
-        if (blinkBuffer.isEmpty()) return;
-
-        try {
-            if (mc.getNetHandler() != null && mc.getNetHandler().getNetworkManager() != null) {
-                for (Packet<?> packet : blinkBuffer) {
-                    mc.getNetHandler().getNetworkManager().dispatchPacket(packet, null);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        blinkBuffer.clear();
-    }
-
-    public static boolean isCheckPacket(Packet<?> packet) {
-        return packet instanceof C0FPacketConfirmTransaction || packet instanceof C00PacketKeepAlive;
-    }
 
     public static void cancelPacketType(Class<? extends Packet> packetClass) {
         if (!canceledTypes.contains(packetClass)) {
