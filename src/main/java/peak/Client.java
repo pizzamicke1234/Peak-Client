@@ -28,7 +28,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.62";
+    public static String version = "0.7";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
 
