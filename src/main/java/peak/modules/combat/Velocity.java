@@ -45,7 +45,7 @@ public class Velocity extends Module {
 
                 if(packetEvent.getPacket() instanceof S32PacketConfirmTransaction) {
                     PacketManager.sendPacketWithoutEvent(new C0FPacketConfirmTransaction(i, (short)(i * -1), transaction));
-                    packetEvent.cancelPacket();
+                    //packetEvent.cancelPacket();
                     transaction = !transaction;
                 }
 
