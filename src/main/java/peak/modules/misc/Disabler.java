@@ -1,21 +1,21 @@
 package peak.modules.misc;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import org.lwjgl.input.Keyboard;
+import peak.events.PacketEvent;
 import peak.managers.NotificationManager;
-import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Disabler extends Module {
 
-    ModeSetting disablermode = new ModeSetting("Mode", true, "Test", "Test");
+    ModeSetting disablermode = new ModeSetting("Mode", true, "Deathzone Airlines", "Deathzone Airlines", "Test");
 
     public BoolSetting debug = new BoolSetting("Debug", false, false);
 
@@ -25,18 +25,29 @@ public class Disabler extends Module {
     }
 
     @Override
-    public void on_Enable() {
+    public void onEnable() {
 
     }
 
     @Override
-    public void on_Disable() {
+    public void onDisable() {
 
     }
 
     @Override
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
+
+    }
+
+    @Override
+    public void onPacket(PacketEvent packetEvent) {
+
+        NotificationManager.addChat("Recieved Packet | " + packetEvent.getPacket());
+        if(packetEvent.getPacket() instanceof C03PacketPlayer) {
+            packetEvent.cancelPacket();
+
+        }
 
     }
 

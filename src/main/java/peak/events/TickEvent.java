@@ -1,4 +1,4 @@
-package peak.tickevents;
+package peak.events;
 
 public class TickEvent {
 

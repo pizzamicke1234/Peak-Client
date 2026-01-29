@@ -13,12 +13,12 @@ public class ClickGuimod extends Module {
     }
 
     @Override
-    public void on_Enable() {
+    public void onEnable() {
         mc.displayGuiScreen(new ClickGui());
     }
 
     @Override
-    public void on_Disable() {
+    public void onDisable() {
         mc.displayGuiScreen(null);
     }
 

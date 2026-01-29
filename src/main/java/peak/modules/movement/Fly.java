@@ -1,23 +1,20 @@
 package peak.modules.movement;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import org.lwjgl.input.Keyboard;
 import peak.managers.NotificationManager;
-import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 public class Fly extends Module {
 
-    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Ground");
+    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Ground");
     public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
             10, 1, 0.25);
 
@@ -26,9 +23,9 @@ public class Fly extends Module {
         addSetting(flyMode, motionsetting);
     }
 
-    private int ticktimer = 0;
+    public int ticktimer = 0;
 
-    public void on_Enable() {
+    public void onEnable() {
 
         ticktimer = 0;
 
@@ -44,26 +41,28 @@ public class Fly extends Module {
                 }
                 break;
 
-            case "Ground":
-                //PacketManager.cancelPacketType(C0FPacketConfirmTransaction.class);
+            case "Deathzone":
                 break;
         }
 
     }
 
-    public void on_Disable() {
+    public void onDisable() {
 
+        mc.timer.timerSpeed = 1.0f;
         switch (flyMode.current_value) {
             case "Vulcan":
                 //mc.timer.timerSpeed = 1.0f;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionZ = 0;
-                mc.timer.timerSpeed = 1.0f;
                 break;
 
             case "Ground":
                 //PacketManager.uncancelPacketType(C0FPacketConfirmTransaction.class);
+                break;
+
+            case "Deathzone":
                 break;
         }
 
@@ -71,12 +70,11 @@ public class Fly extends Module {
 
     }
 
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
 
         if(tickType == TickEvent.TickType.POST) return;
 
         ticktimer++;
-        //NotificationManager.addChat(String.valueOf(ticktimer));
 
         switch (flyMode.current_value) {
             case "Motion":
@@ -89,6 +87,10 @@ public class Fly extends Module {
 
             case "Ground":
                 groundFly();
+                break;
+
+            case "Deathzone":
+                deathzoneFly();
                 break;
         }
 
@@ -181,12 +183,16 @@ public class Fly extends Module {
         mc.thePlayer.motionY = 0;
     }
 
+    public void deathzoneFly() {
+
+    }
+
     public boolean getInNearestEntity() {
         for(Entity e : mc.theWorld.loadedEntityList) {
             if(e instanceof EntityBoat || e instanceof EntityMinecart || e instanceof EntityHorse) {
 
                 if(mc.thePlayer.getDistanceToEntity(e) < 5) {
-                PacketManager.sendPacket(new C02PacketUseEntity(e, C02PacketUseEntity.Action.INTERACT));
+                mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(e, C02PacketUseEntity.Action.INTERACT));
                 return true;
                 }
             }

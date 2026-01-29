@@ -2,6 +2,7 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.connection.UserConnectionImpl;
 import com.viaversion.viaversion.protocol.ProtocolPipelineImpl;
@@ -52,12 +53,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import peak.Client;
+import peak.events.PacketEvent;
 import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
-import peak.modules.Module;
 import peak.modules.misc.Disabler;
-import peak.modules.movement.Fly;
-import peak.modules.render.Animations;
 import peak.viaversion.vialoadingbase.ViaLoadingBase;
 import peak.viaversion.vialoadingbase.netty.event.CompressionReorderEvent;
 import peak.viaversion.viamcp.MCPVLBPipeline;
@@ -165,10 +164,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         if (this.channel.isOpen())
         {
 
-            if (PacketManager.handlePacketReceive(p_channelRead0_2_)) {
-                return;
-            }
-
             try
             {
                 p_channelRead0_2_.processPacket(this.packetListener);
@@ -194,27 +189,15 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     public void sendPacket(Packet packetIn)
     {
 
-        Disabler disabler = (Disabler) Client.getModulebyName("Disabler");
-
-        if(disabler.toggled && disabler.debug.isTrue()) {
-            //NotificationManager.addChat("Got Packet | " + packetIn.getClass().getSimpleName());
+        if(!PacketManager.packetsWithoutEvent.contains(packetIn)) {
+            Client.onPacket(new PacketEvent(packetIn));
+        }else {
+            PacketManager.packetsWithoutEvent.remove(packetIn);
         }
 
-        if (PacketManager.shouldCancel(packetIn) && PacketManager.allowedPacket != packetIn) {
-
-            if(disabler.toggled && disabler.debug.isTrue()) {
-                NotificationManager.addChat("Canceled Packet | " + packetIn.getClass().getSimpleName());
-            }
-
+        if(PacketEvent.toCancelPackets.contains(packetIn)){
+            PacketEvent.toCancelPackets.remove(packetIn);
             return;
-        }
-
-        if(PacketManager.allowedPacket == packetIn) {
-            PacketManager.allowedPacket = null;
-            if(disabler.toggled && disabler.debug.isTrue()) {
-                NotificationManager.addChat("Allowed Packet | " + packetIn.getClass().getSimpleName());
-            }
-
         }
 
         if (this.isChannelOpen())

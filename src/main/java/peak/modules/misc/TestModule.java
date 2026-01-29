@@ -1,54 +1,48 @@
 package peak.modules.misc;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C02PacketUseEntity;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import peak.events.PacketEvent;
+import peak.managers.DamageManager;
 import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
-import peak.modules.settings.BoolSetting;
-import peak.modules.settings.ModeSetting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 public class TestModule extends Module {
 
-    ModeSetting Mode = new ModeSetting("Mode", true, "Test", "Test", "Test1", "Test2", "Test3");
-    ModeSetting Mode1 = new ModeSetting("Mode1", true, "Test", "Test", "Test1", "Test2", "Test3");
-    BoolSetting PacketListener = new BoolSetting("PacketListener", true, false);
-
     public TestModule() {
         super("TestModule", Keyboard.KEY_J, Category.MISC, true);
-        addSetting(Mode, Mode1, PacketListener);
     }
 
     @Override
-    public void on_Enable() {
+    public void onEnable() {
         NotificationManager.addChat("Enabled Test Module!");
-        PacketManager.sendPacket(new C02PacketUseEntity());
     }
 
     @Override
-    public void on_Disable() {
+    public void onDisable() {
         NotificationManager.addChat("Disabled Test Module!");
-        PacketManager.uncancelPacketType(C0FPacketConfirmTransaction.class);
     }
 
     @Override
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
 
-        ItemStack heldStack = mc.thePlayer.getHeldItem();
-
-        if(heldStack == null) {
-            NotificationManager.addChat("Held Item | null");
-            return;
+        if(mc.gameSettings.keyBindJump.isPressed()) {
+            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
         }
 
-        NotificationManager.addChat("Held Item | " + mc.thePlayer.getHeldItem().getItem());
+    }
+
+    @Override
+    public void onPacket(PacketEvent packetEvent) {
+
+        if(packetEvent.getPacket() instanceof C03PacketPlayer) {
+            packetEvent.cancelPacket();
+        }
 
     }
 

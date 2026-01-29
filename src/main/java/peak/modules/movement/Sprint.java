@@ -3,7 +3,7 @@ package peak.modules.movement;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 
 public class Sprint extends Module {
@@ -16,15 +16,15 @@ public class Sprint extends Module {
         toggled = true;
     }
 
-    public void on_Enable() {
+    public void onEnable() {
 
     }
 
-    public void on_Disable() {
+    public void onDisable() {
 
     }
 
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
 
         if(tickType == TickEvent.TickType.POST) return;
 

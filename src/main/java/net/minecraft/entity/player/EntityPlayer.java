@@ -46,7 +46,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.potion.Potion;
 import net.minecraft.scoreboard.IScoreObjectiveCriteria;
@@ -76,9 +75,7 @@ import net.minecraft.world.LockCode;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import peak.Client;
-import peak.managers.PacketManager;
 import peak.modules.combat.Killaura;
-import peak.modules.combat.Velocity;
 import peak.modules.movement.Speed;
 
 @SuppressWarnings("incomplete-switch")

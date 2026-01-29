@@ -6,9 +6,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.*;
 import org.lwjgl.input.Keyboard;
-import peak.managers.NotificationManager;
 import peak.modules.Module;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 public class ChestStealer extends Module {
 
@@ -17,7 +16,7 @@ public class ChestStealer extends Module {
     }
 
     @Override
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
 
 
         boolean shouldClose = true;

@@ -1,6 +1,8 @@
 package peak;
 
+import net.minecraft.network.Packet;
 import org.lwjgl.opengl.Display;
+import peak.events.PacketEvent;
 import peak.managers.font.FontUtil;
 import peak.modules.Module;
 import peak.modules.combat.Killaura;
@@ -11,11 +13,12 @@ import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
 import peak.modules.player.ChestStealer;
+import peak.modules.player.InvManager;
 import peak.modules.player.NoSlow;
 import peak.modules.render.Animations;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,7 +28,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.6";
+    public static String version = "0.61";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
 
@@ -58,6 +61,7 @@ public class Client {
         //PLAYER
         modules.add(new NoSlow());
         modules.add(new ChestStealer());
+        modules.add(new InvManager());
     }
 
     public static void setupViaVersion() {
@@ -69,12 +73,21 @@ public class Client {
         }
     }
 
-    public static void on_Tick(TickEvent.TickType tickType) {
+    public static void onTick(TickEvent.TickType tickType) {
         for (Module m : modules) {
             if (!m.toggled) {
                 continue;
             }
-            m.on_Tick(tickType);
+            m.onTick(tickType);
+        }
+    }
+
+    public static void onPacket(PacketEvent packetEvent) {
+        for(Module m : modules) {
+            if (!m.toggled) {
+                continue;
+            }
+            m.onPacket(packetEvent);
         }
     }
 

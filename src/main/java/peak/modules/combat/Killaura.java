@@ -7,13 +7,12 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 import java.util.Random;
 
@@ -39,13 +38,13 @@ public class Killaura extends Module {
 
 
     @Override
-    public void on_Disable() {
+    public void onDisable() {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
         fakeblocking = false;
     }
 
     @Override
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
 
         switch (killauramode.current_value) {
             case "Vanilla":

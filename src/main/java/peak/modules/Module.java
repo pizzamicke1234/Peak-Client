@@ -1,8 +1,10 @@
 package peak.modules;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.Packet;
+import peak.events.PacketEvent;
 import peak.modules.settings.Setting;
-import peak.tickevents.TickEvent;
+import peak.events.TickEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,24 +31,28 @@ public class Module {
 
     }
 
-    public void on_Enable() {
+    public void onEnable() {
 
     }
 
-    public void on_Disable() {
+    public void onDisable() {
 
     }
 
-    public void on_Tick(TickEvent.TickType tickType) {
+    public void onTick(TickEvent.TickType tickType) {
+
+    }
+
+    public void onPacket(PacketEvent packetEvent) {
 
     }
 
     public void toggle() {
         toggled = !toggled;
         if(toggled) {
-            on_Enable();
+            onEnable();
         }else{
-            on_Disable();
+            onDisable();
         }
     }
 
