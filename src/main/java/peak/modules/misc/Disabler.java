@@ -43,12 +43,6 @@ public class Disabler extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        NotificationManager.addChat("Recieved Packet | " + packetEvent.getPacket());
-        if(packetEvent.getPacket() instanceof C03PacketPlayer) {
-            packetEvent.cancelPacket();
-
-        }
-
     }
 
 }

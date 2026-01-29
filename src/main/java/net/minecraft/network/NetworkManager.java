@@ -164,6 +164,17 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         if (this.channel.isOpen())
         {
 
+            if(!PacketManager.packetsWithoutEvent.contains(p_channelRead0_2_)) {
+                Client.onPacket(new PacketEvent(p_channelRead0_2_));
+            }else {
+                PacketManager.packetsWithoutEvent.remove(p_channelRead0_2_);
+            }
+
+            if(PacketEvent.toCancelPackets.contains(p_channelRead0_2_)){
+                PacketEvent.toCancelPackets.remove(p_channelRead0_2_);
+                return;
+            }
+
             try
             {
                 p_channelRead0_2_.processPacket(this.packetListener);

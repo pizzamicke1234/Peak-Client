@@ -4,6 +4,7 @@ import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 import peak.events.PacketEvent;
+import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
@@ -26,7 +27,10 @@ public class Velocity extends Module {
 
             case "Vanilla":
                 if(packetEvent.getPacket() instanceof S12PacketEntityVelocity) {
-                    packetEvent.cancelPacket();
+                    S12PacketEntityVelocity packet = (S12PacketEntityVelocity) packetEvent.getPacket();
+                    if (mc.thePlayer != null && packet.getEntityID() == mc.thePlayer.getEntityId()) {
+                        packetEvent.cancelPacket();
+                    }
                 }
                 break;
 
@@ -46,7 +50,10 @@ public class Velocity extends Module {
                 }
 
                 if(packetEvent.getPacket() instanceof S12PacketEntityVelocity) {
-                    packetEvent.cancelPacket();
+                    S12PacketEntityVelocity packet = (S12PacketEntityVelocity) packetEvent.getPacket();
+                    if (mc.thePlayer != null && packet.getEntityID() == mc.thePlayer.getEntityId()) {
+                        packetEvent.cancelPacket();
+                    }
                 }
                 break;
         }
