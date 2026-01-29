@@ -281,6 +281,8 @@ public class Fly extends Module {
             return;
         }
 
+        NotificationManager.addChat((20 - ticktimer) + " Ticks left");
+
         if(dmgJumpCount == 11451) {
             if(!hasStarted){
                 return;
