@@ -77,7 +77,7 @@ public class ClickGui extends GuiScreen {
 
     public void initClickGui() {
         int categorycount = 0;
-        int categoryoffset = 100;
+        int categoryoffset = 150;
 
         for(Module.Category c : Module.Category.values()) {
             int modulecount = 0;

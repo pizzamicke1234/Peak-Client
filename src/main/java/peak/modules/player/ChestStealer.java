@@ -8,11 +8,21 @@ import net.minecraft.item.*;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.events.TickEvent;
+import peak.modules.settings.NumberSetting;
+
+import java.util.Random;
 
 public class ChestStealer extends Module {
 
+    public NumberSetting minDelay = new NumberSetting("MinDelay", false, 1, 20, 5, 1);
+    public NumberSetting maxDelay = new NumberSetting("MaxDelay", false, 1, 20, 5, 1);
+
+    public Random random = new Random();
+    private int lastTick = -1;
+
     public ChestStealer() {
         super("ChestStealer", Keyboard.KEY_F, Category.PLAYER, true);
+        addSetting(maxDelay, minDelay);
     }
 
     @Override
@@ -42,7 +52,7 @@ public class ChestStealer extends Module {
                     for(Slot playerSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
 
                         boolean empty = !playerSlot.getHasStack();
-                        if (empty) {
+                        if (empty && canSteal()) {
                             mc.playerController.windowClick(container.windowId, slotId, 0, 1, mc.thePlayer);
                             return;
                         }
@@ -59,6 +69,19 @@ public class ChestStealer extends Module {
 
         }
 
+    }
+
+    public boolean canSteal() {
+        if (mc.thePlayer.ticksExisted == lastTick) {
+            return false;
+        }
+
+        int randomDelay = random.nextInt((int) (maxDelay.cValue - minDelay.cValue) + 1) + (int) minDelay.cValue;
+        if (mc.thePlayer.ticksExisted % randomDelay == 0) {
+            lastTick = mc.thePlayer.ticksExisted;
+            return true;
+        }
+        return false;
     }
 
 

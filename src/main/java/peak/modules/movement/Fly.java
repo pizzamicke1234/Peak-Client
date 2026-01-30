@@ -104,7 +104,7 @@ public class Fly extends Module {
 
         if(tickType == TickEvent.TickType.POST) return;
 
-        ticktimer++;
+        //ticktimer++;
 
         switch (flyMode.current_value) {
             case "Motion":
@@ -276,12 +276,15 @@ public class Fly extends Module {
 
     public void deathzoneFly() {
 
+        if(hasStarted){
+            ticktimer++;
+            NotificationManager.addChat(("[" + ticktimer + "]"));
+        }
+
         if(ticktimer > 19) {
             this.toggle();
             return;
         }
-
-        NotificationManager.addChat((20 - ticktimer) + " Ticks left");
 
         if(dmgJumpCount == 11451) {
             if(!hasStarted){

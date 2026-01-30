@@ -8,16 +8,23 @@ import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.events.TickEvent;
+import peak.modules.settings.NumberSetting;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class InvManager extends Module {
 
+    public NumberSetting minDelay = new NumberSetting("MinDelay", false, 1, 20, 5, 1);
+    public NumberSetting maxDelay = new NumberSetting("MaxDelay", false, 1, 20, 5, 1);
     BoolSetting silent = new BoolSetting("Silent", false, false);
+
+    Random random = new Random();
+    int lastTick = -1;
 
     public InvManager() {
         super("InvManager", Keyboard.KEY_K, Category.PLAYER, true);
-        addSetting(silent);
+        addSetting(maxDelay, minDelay, silent);
     }
 
     @Override
@@ -58,7 +65,7 @@ public class InvManager extends Module {
 
         int targetHotbarSlot = 0; //Sword Slot
 
-        if (bestSlot != targetHotbarSlot) {
+        if (bestSlot != targetHotbarSlot && doDelay()) {
             int windowSlot = (bestSlot < 9) ? (bestSlot + 36) : bestSlot;
 
             mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, windowSlot, targetHotbarSlot, 2, mc.thePlayer);
@@ -68,13 +75,26 @@ public class InvManager extends Module {
         for (int i = 0; i < 36; i++) {
             ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
 
-            if (itemStack != null && itemStack.getItem() instanceof ItemSword && i != bestSlot) {
+            if (itemStack != null && itemStack.getItem() instanceof ItemSword && i != bestSlot && doDelay()) {
                 int worseSlot = (i < 9) ? (i + 36) : i;
 
                 mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, 1, 4, mc.thePlayer);
                 break;
             }
         }
+    }
+
+    public boolean doDelay() {
+        if (mc.thePlayer.ticksExisted == lastTick) {
+            return false;
+        }
+
+        int randomDelay = random.nextInt((int) (maxDelay.cValue - minDelay.cValue) + 1) + (int) minDelay.cValue;
+        if (mc.thePlayer.ticksExisted % randomDelay == 0) {
+            lastTick = mc.thePlayer.ticksExisted;
+            return true;
+        }
+        return false;
     }
 
     public void sortArmor() {
@@ -96,9 +116,11 @@ public class InvManager extends Module {
         if (bestHelmetSlot != -1 && (currentArmorStack == null || currentArmorStack.getItem() != bestHelmet)) {
             int bestWindowSlot = (bestHelmetSlot < 9) ? (bestHelmetSlot + 36) : bestHelmetSlot;
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 5, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            if(doDelay()) {
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 5, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            }
             return;
         }
 
@@ -108,7 +130,7 @@ public class InvManager extends Module {
             if (stack != null && stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
 
-                if (armor.armorType == 0) {
+                if (armor.armorType == 0 && doDelay()) {
                     mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, 1, 4, mc.thePlayer);
                 }
             }
@@ -126,9 +148,11 @@ public class InvManager extends Module {
         if (bestChestplateSlot != -1 && (currentArmorStack == null || currentArmorStack.getItem() != bestChestplate)) {
             int bestWindowSlot = (bestChestplateSlot < 9) ? (bestChestplateSlot + 36) : bestChestplateSlot;
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 6, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            if(doDelay()) {
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 6, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            }
             return;
         }
 
@@ -138,7 +162,7 @@ public class InvManager extends Module {
             if (stack != null && stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
 
-                if (armor.armorType == 1) {
+                if (armor.armorType == 1 && doDelay()) {
                     mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, 1, 4, mc.thePlayer);
                 }
             }
@@ -156,9 +180,11 @@ public class InvManager extends Module {
         if (bestLeggingsSlot != -1 && (currentArmorStack == null || currentArmorStack.getItem() != bestLeggings)) {
             int bestWindowSlot = (bestLeggingsSlot < 9) ? (bestLeggingsSlot + 36) : bestLeggingsSlot;
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 7, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            if(doDelay()) {
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 7, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            }
             return;
         }
 
@@ -168,7 +194,7 @@ public class InvManager extends Module {
             if (stack != null && stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
 
-                if (armor.armorType == 2) {
+                if (armor.armorType == 2 && doDelay()) {
                     mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, 1, 4, mc.thePlayer);
                 }
             }
@@ -186,9 +212,11 @@ public class InvManager extends Module {
         if (bestBootsSlot != -1 && (currentArmorStack == null || currentArmorStack.getItem() != bestBoots)) {
             int bestWindowSlot = (bestBootsSlot < 9) ? (bestBootsSlot + 36) : bestBootsSlot;
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 8, 0, 0, mc.thePlayer);
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            if(doDelay()) {
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, 8, 0, 0, mc.thePlayer);
+                mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, bestWindowSlot, 0, 0, mc.thePlayer);
+            }
             return;
         }
 
@@ -198,7 +226,7 @@ public class InvManager extends Module {
             if (stack != null && stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
 
-                if (armor.armorType == 3) {
+                if (armor.armorType == 3 && doDelay()) {
                     mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, 1, 4, mc.thePlayer);
                 }
             }
