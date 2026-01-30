@@ -295,7 +295,7 @@ public class Fly extends Module {
         }
 
         if(hasStarted) {
-            mc.timer.timerSpeed = 1.0f;
+            mc.timer.timerSpeed = 0.4f;
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;

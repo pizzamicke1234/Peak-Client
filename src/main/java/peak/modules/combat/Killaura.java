@@ -21,8 +21,10 @@ public class Killaura extends Module {
     public ModeSetting killauramode = new ModeSetting("Mode", true, "Vanilla", "Vanilla", "Vulcan");
     //public ModeSetting hitmode = new ModeSetting("")
     public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Fake");
-    public NumberSetting mincps = new NumberSetting("MinCPS", true, 1, 20, 10, 1);
-    public NumberSetting maxcps = new NumberSetting("MaxCPS", true, 1, 20, 10, 1);
+    public NumberSetting mincps = new NumberSetting("MinCPS", false, 1, 20, 10, 1);
+    public NumberSetting maxcps = new NumberSetting("MaxCPS", false, 1, 20, 10, 1);
+
+    public NumberSetting reach = new NumberSetting("Reach", true, 1, 8, 3, 0.20);
 
     public BoolSetting keepSprint = new BoolSetting("KeepSprint", false, false);
 
@@ -33,7 +35,7 @@ public class Killaura extends Module {
 
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
-        addSetting(killauramode, maxcps, mincps, autoblock, keepSprint);
+        addSetting(killauramode,reach,  maxcps, mincps, autoblock, keepSprint);
     }
 
 
@@ -86,7 +88,7 @@ public class Killaura extends Module {
             if(e instanceof EntityLivingBase) {
                 float distance = mc.thePlayer.getDistanceToEntity(e);
 
-                if(distance <= 7) {
+                if(distance <= reach.cValue * 1.1) {
 
                     manageAutoblock(e);
                     mc.thePlayer.swingItem();
@@ -116,7 +118,7 @@ public class Killaura extends Module {
 
             if(e instanceof EntityLivingBase) {
                 float distance = mc.thePlayer.getDistanceToEntity(e);
-                if(distance <= 3.6) {
+                if(distance <= reach.cValue * 1.1) {
 
                     if(selectedtarget == null) {
                         selectedtarget = e;

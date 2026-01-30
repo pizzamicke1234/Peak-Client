@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
+import peak.managers.TimeManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class Disabler extends Module {
 
-    ModeSetting disablermode = new ModeSetting("Mode", true, "Deathzone Airlines", "Deathzone Airlines", "Test");
+    ModeSetting disablermode = new ModeSetting("Mode", true, "Deathzone Airlines", "Deathzone Airlines", "Vulcan Combat");
 
     public BoolSetting debug = new BoolSetting("Debug", false, false);
 
@@ -25,6 +26,9 @@ public class Disabler extends Module {
         super("Disabler", Keyboard.KEY_R, Category.MISC, true);
         addSetting(disablermode, debug);
     }
+
+    ArrayList<Packet> packetList = new ArrayList<>();
+    TimeManager timer = new TimeManager();
 
     @Override
     public void onEnable() {
@@ -45,13 +49,18 @@ public class Disabler extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(disablermode.current_value == "Deathzone Airlines") {
+        if(disablermode.current_value == "Vulcan Combat") {
 
             if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
+                packetList.add(packetEvent.getPacket());
                 packetEvent.cancelPacket();
-                for(int i = 0; i < 21; i++) {
-                    PacketManager.sendPacketWithoutEvent(new C0FPacketConfirmTransaction(1, (short) -1, false));
-                }
+            }
+
+            if (timer.hasReached((long) (5000 + (Math.random() * 1000)))) {
+                packetList.forEach(PacketManager::sendPacketWithoutEvent);
+                packetList.clear();
+                NotificationManager.addChat("Packets busted faaaahhh");
+                timer.reset();
             }
 
         }
