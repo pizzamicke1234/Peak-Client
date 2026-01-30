@@ -8,6 +8,7 @@ import peak.modules.Module;
 import peak.modules.combat.Killaura;
 import peak.modules.combat.Velocity;
 import peak.modules.misc.Disabler;
+import peak.modules.misc.Phase;
 import peak.modules.misc.TestModule;
 import peak.modules.movement.Fly;
 import peak.modules.movement.Speed;
@@ -28,7 +29,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.71";
+    public static String version = "0.72";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
 
@@ -43,6 +44,7 @@ public class Client {
         //MISC
         modules.add(new TestModule());
         modules.add(new Disabler());
+        modules.add(new Phase());
 
         //MOVEMENT
         modules.add(new Fly());

@@ -102,7 +102,8 @@ public class DamageManager {
     public enum DamageType {
         POSITION_ROTATION,
         POSITION,
-        OLDVULCAN
+        OLDVULCAN,
+        OLDVULCANJUMP
     }
 
 }

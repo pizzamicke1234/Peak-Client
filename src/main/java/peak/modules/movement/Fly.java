@@ -1,10 +1,12 @@
 package peak.modules.movement;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
@@ -22,7 +24,7 @@ import peak.modules.settings.NumberSetting;
 
 public class Fly extends Module {
 
-    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Ground");
+    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Deathzone Exp", "Ground");
     public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
             10, 1, 0.25);
 
@@ -37,12 +39,14 @@ public class Fly extends Module {
     int dmgJumpCount = 0;
     boolean hasStarted = false;
     boolean waitFlag = false;
+    boolean packetCancel = true;
     double lastSentX;
     double lastSentY;
     double lastSentZ;
     double lastTickX = 0;
     double lastTickY = 0;
     double lastTickZ = 0;
+    double firstPosY;
 
     public void onEnable() {
 
@@ -68,6 +72,24 @@ public class Fly extends Module {
                 DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, true);
                 waitFlag = true;
                 break;
+
+            case "Deathzone Exp":
+                hasStarted = true;
+                firstPosY = mc.thePlayer.posY;
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.0784, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.41999998688697815, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.7531999805212, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.0, mc.thePlayer.posZ, true));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.4199999868869781, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.7531999805212, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 2.0, mc.thePlayer.posZ, true));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 2.419999986886978, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 2.7531999805212, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3.00133597911214, mc.thePlayer.posZ, false));
+                mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3.00133597911214, mc.thePlayer.posZ);
+                break;
         }
 
     }
@@ -89,6 +111,16 @@ public class Fly extends Module {
                 PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
                 PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
                 PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
+                hasStarted = false;
+                mc.thePlayer.motionX = 0;
+                mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionZ = 0;
+                break;
+
+            case "Deathzone Exp":
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
+                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
                 hasStarted = false;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionY = 0;
@@ -122,6 +154,10 @@ public class Fly extends Module {
             case "Deathzone":
                 deathzoneFly();
                 break;
+
+            case "Deathzone Exp":
+                deathzoneExpFly();
+                break;
         }
 
     }
@@ -129,60 +165,14 @@ public class Fly extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(flyMode.current_value != "Deathzone") return;
+        switch (flyMode.current_value) {
+            case "Deathzone":
+                deathzonePacket(packetEvent);
+                break;
 
-        Packet packet = packetEvent.getPacket();
-
-        if (packet instanceof C03PacketPlayer && waitFlag) {
-            packetEvent.cancelPacket();
-        }
-        if (packet instanceof C03PacketPlayer) {
-            //packet.set
-        }
-        if(hasStarted) {
-            if(packet instanceof C03PacketPlayer && (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)) {
-                double deltaX = ((C03PacketPlayer) packet).getPositionX() - lastSentX;
-                double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
-                double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
-
-                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 10) {
-                    deathzoneFlyTicks++;
-                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, false));
-                    lastSentX = lastTickX;
-                    lastSentY = lastTickY;
-                    lastSentZ = lastTickZ;
-                }
-                lastTickX = ((C03PacketPlayer) packet).getPositionX();
-                lastTickY = ((C03PacketPlayer) packet).getPositionY();
-                lastTickZ = ((C03PacketPlayer) packet).getPositionZ();
-                packetEvent.cancelPacket();
-            }else if(packet instanceof C03PacketPlayer) {
-                packetEvent.cancelPacket();
-            }
-        }
-
-        if(packet instanceof S08PacketPlayerPosLook) {
-            hasStarted = true;
-            waitFlag = false;
-        }
-
-        if (packet instanceof S08PacketPlayerPosLook) {
-            lastSentX = ((S08PacketPlayerPosLook) packet).getX();
-            lastSentY = ((S08PacketPlayerPosLook) packet).getY();
-            lastSentZ = ((S08PacketPlayerPosLook) packet).getZ();
-
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(((S08PacketPlayerPosLook) packet).getX(),
-                    ((S08PacketPlayerPosLook) packet).getY(), ((S08PacketPlayerPosLook) packet).getZ(),
-                    ((S08PacketPlayerPosLook) packet).getYaw(), ((S08PacketPlayerPosLook) packet).getPitch(),
-                    false));
-        }
-
-        if (packet instanceof C0FPacketConfirmTransaction) { //Make sure it works with Vulcan Velocity
-            int transUID = (((C0FPacketConfirmTransaction) packet).getUid());
-            if (transUID >= -31767 && transUID <= -30769) {
-                packetEvent.cancelPacket();
-                PacketManager.sendPacketWithoutEvent(packet);
-            }
+            case "Deathzone Exp":
+                deathzoneExpPacket(packetEvent);
+                break;
         }
 
     }
@@ -323,13 +313,154 @@ public class Fly extends Module {
 
     }
 
+    public void deathzonePacket(PacketEvent packetEvent) {
+        Packet packet = packetEvent.getPacket();
+
+        if (packet instanceof C03PacketPlayer && waitFlag) {
+            packetEvent.cancelPacket();
+        }
+        if (packet instanceof C03PacketPlayer) {
+            //packet.set
+        }
+        if(hasStarted) {
+            if(packet instanceof C03PacketPlayer && (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)) {
+                double deltaX = ((C03PacketPlayer) packet).getPositionX() - lastSentX;
+                double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
+                double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
+
+                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 10) {
+                    deathzoneFlyTicks++;
+                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, false));
+                    lastSentX = lastTickX;
+                    lastSentY = lastTickY;
+                    lastSentZ = lastTickZ;
+                }
+                lastTickX = ((C03PacketPlayer) packet).getPositionX();
+                lastTickY = ((C03PacketPlayer) packet).getPositionY();
+                lastTickZ = ((C03PacketPlayer) packet).getPositionZ();
+                packetEvent.cancelPacket();
+            }else if(packet instanceof C03PacketPlayer) {
+                packetEvent.cancelPacket();
+            }
+        }
+
+        if(packet instanceof S08PacketPlayerPosLook) {
+            hasStarted = true;
+            waitFlag = false;
+        }
+
+        if (packet instanceof S08PacketPlayerPosLook) {
+            lastSentX = ((S08PacketPlayerPosLook) packet).getX();
+            lastSentY = ((S08PacketPlayerPosLook) packet).getY();
+            lastSentZ = ((S08PacketPlayerPosLook) packet).getZ();
+
+            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(((S08PacketPlayerPosLook) packet).getX(),
+                    ((S08PacketPlayerPosLook) packet).getY(), ((S08PacketPlayerPosLook) packet).getZ(),
+                    ((S08PacketPlayerPosLook) packet).getYaw(), ((S08PacketPlayerPosLook) packet).getPitch(),
+                    false));
+        }
+
+        if (packet instanceof C0FPacketConfirmTransaction) { //Make sure it works with Vulcan Velocity
+            int transUID = (((C0FPacketConfirmTransaction) packet).getUid());
+            if (transUID >= -31767 && transUID <= -30769) {
+                packetEvent.cancelPacket();
+                PacketManager.sendPacketWithoutEvent(packet);
+            }
+        }
+    }
+
+    public void deathzoneExpFly() {
+
+        if(hasStarted) {
+            mc.thePlayer.motionY = 0;
+            MovementManager.strafe(0.2);
+        }
+
+        if(mc.thePlayer.posY < firstPosY) {
+            mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.05, mc.thePlayer.posZ);
+        }
+
+        if(mc.thePlayer.ticksExisted % 5 == 0) {
+            if(packetCancel) {
+                //PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
+                mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.15, mc.thePlayer.posZ);
+                packetCancel = !packetCancel;
+            }else {
+                //PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
+                mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.15, mc.thePlayer.posZ);
+
+                packetCancel = !packetCancel;
+            }
+        }
+
+    }
+
+    public void deathzoneExpPacket(PacketEvent packetEvent) {
+
+        Packet packet = packetEvent.getPacket();
+
+        if (packet instanceof C03PacketPlayer || packet instanceof C0FPacketConfirmTransaction || packet instanceof C00PacketKeepAlive) {
+            packetEvent.cancelPacket();
+        }
+        if (packet instanceof C03PacketPlayer) {
+            //packet.set
+        }
+        if(hasStarted) {
+            if(packet instanceof C03PacketPlayer && (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)) {
+                double deltaX = ((C03PacketPlayer) packet).getPositionX() - lastSentX;
+                double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
+                double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
+
+                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 10) {
+                    deathzoneFlyTicks++;
+                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, true));
+                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, true));
+                    lastSentX = lastTickX;
+                    lastSentY = lastTickY;
+                    lastSentZ = lastTickZ;
+                }
+                lastTickX = ((C03PacketPlayer) packet).getPositionX();
+                lastTickY = ((C03PacketPlayer) packet).getPositionY();
+                lastTickZ = ((C03PacketPlayer) packet).getPositionZ();
+                packetEvent.cancelPacket();
+            }else if(packet instanceof C03PacketPlayer) {
+                packetEvent.cancelPacket();
+            }
+        }
+
+        if(packet instanceof S08PacketPlayerPosLook) {
+            hasStarted = true;
+            waitFlag = false;
+        }
+
+        if (packet instanceof S08PacketPlayerPosLook) {
+            lastSentX = ((S08PacketPlayerPosLook) packet).getX();
+            lastSentY = ((S08PacketPlayerPosLook) packet).getY();
+            lastSentZ = ((S08PacketPlayerPosLook) packet).getZ();
+
+            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(((S08PacketPlayerPosLook) packet).getX(),
+                    ((S08PacketPlayerPosLook) packet).getY(), ((S08PacketPlayerPosLook) packet).getZ(),
+                    ((S08PacketPlayerPosLook) packet).getYaw(), ((S08PacketPlayerPosLook) packet).getPitch(),
+                    false));
+        }
+
+        if (packet instanceof C0FPacketConfirmTransaction) { //Make sure it works with Vulcan Velocity
+            int transUID = (((C0FPacketConfirmTransaction) packet).getUid());
+            if (transUID >= -31767 && transUID <= -30769) {
+                packetEvent.cancelPacket();
+                PacketManager.sendPacketWithoutEvent(packet);
+            }
+        }
+
+    }
+
     public boolean getInNearestEntity() {
         for(Entity e : mc.theWorld.loadedEntityList) {
             if(e instanceof EntityBoat || e instanceof EntityMinecart || e instanceof EntityHorse) {
 
                 if(mc.thePlayer.getDistanceToEntity(e) < 5) {
-                mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(e, C02PacketUseEntity.Action.INTERACT));
-                return true;
+                    mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(e, C02PacketUseEntity.Action.INTERACT));
+                    return true;
                 }
             }
         }

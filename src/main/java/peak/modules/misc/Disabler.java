@@ -1,10 +1,12 @@
 package peak.modules.misc;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.managers.NotificationManager;
+import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
@@ -42,6 +44,17 @@ public class Disabler extends Module {
 
     @Override
     public void onPacket(PacketEvent packetEvent) {
+
+        if(disablermode.current_value == "Deathzone Airlines") {
+
+            if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
+                packetEvent.cancelPacket();
+                for(int i = 0; i < 21; i++) {
+                    PacketManager.sendPacketWithoutEvent(new C0FPacketConfirmTransaction(1, (short) -1, false));
+                }
+            }
+
+        }
 
     }
 

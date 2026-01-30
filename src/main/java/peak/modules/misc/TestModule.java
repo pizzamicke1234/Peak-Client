@@ -20,6 +20,7 @@ public class TestModule extends Module {
     @Override
     public void onEnable() {
         NotificationManager.addChat("Enabled Test Module!");
+        DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, true);
     }
 
     @Override
@@ -39,10 +40,6 @@ public class TestModule extends Module {
 
     @Override
     public void onPacket(PacketEvent packetEvent) {
-
-        if(packetEvent.getPacket() instanceof C03PacketPlayer) {
-            packetEvent.cancelPacket();
-        }
 
     }
 
