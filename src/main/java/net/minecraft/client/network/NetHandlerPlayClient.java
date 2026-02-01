@@ -212,6 +212,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import peak.Client;
+import peak.managers.NotificationManager;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.viaversion.vialoadingbase.ViaLoadingBase;
 
@@ -292,6 +294,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         this.gameController.playerController.setGameType(packetIn.getGameType());
         this.gameController.gameSettings.sendSettingsToServer();
         this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
+
+        sendPeakHandshake();
     }
 
     /**
@@ -795,6 +799,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
      */
     public void onDisconnect(IChatComponent reason)
     {
+        Client.peakUsers.clear();
+
         this.gameController.loadWorld((WorldClient)null);
 
         if (this.guiScreenServer != null)
@@ -1862,6 +1868,33 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         {
             this.gameController.thePlayer.setClientBrand(packetIn.getBufferData().readStringFromBuffer(32767));
         }
+        //Getting Client users
+        else if (Client.name.equals(packetIn.getChannelName()))
+        {
+            try {
+                String rawData = packetIn.getBufferData().readStringFromBuffer(32767);
+                String[] data = rawData.split("\\|");
+
+                if (data.length >= 3) {
+                    String playerName = data[0];
+                    String clientName = data[1];
+                    String versionInfo = data[2];
+
+                    for (EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
+                        if (player.getName().equalsIgnoreCase(playerName)) {
+
+                            Client.peakUsers.add(player.getUniqueID());
+
+                            NotificationManager.addChat("Identified " + playerName + " using " + clientName + " " + versionInfo);
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Error identifying Peak user", e);
+            }
+        }
+
         else if ("MC|BOpen".equals(packetIn.getChannelName()))
         {
             ItemStack itemstack = this.gameController.thePlayer.getCurrentEquippedItem();
@@ -2110,6 +2143,19 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     public NetworkPlayerInfo getPlayerInfo(UUID p_175102_1_)
     {
         return (NetworkPlayerInfo)this.playerInfoMap.get(p_175102_1_);
+    }
+
+    public void sendPeakHandshake() {
+        // Format: PlayerName|ClientName|Version
+        String identity = Minecraft.getMinecraft().thePlayer.getName() + "|"
+                + Client.name + "|"
+                + Client.version;
+
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+        buf.writeString(identity);
+
+        // Sending via the "Peak" channel
+        this.addToSendQueue(new C17PacketCustomPayload("Peak", buf));
     }
 
     /**

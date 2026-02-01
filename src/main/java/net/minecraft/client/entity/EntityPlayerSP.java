@@ -193,6 +193,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
         Client.onTick(TickEvent.TickType.PRE);
 
+
+
         boolean flag = this.isSprinting();
 
         if (flag != this.serverSprintState)

@@ -7,7 +7,12 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.input.Keyboard;
+import peak.events.PacketEvent;
+import peak.managers.PacketManager;
+import peak.managers.RotationManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
@@ -19,7 +24,10 @@ import java.util.Random;
 public class Killaura extends Module {
 
     public ModeSetting killauramode = new ModeSetting("Mode", true, "Vanilla", "Vanilla", "Vulcan");
-    //public ModeSetting hitmode = new ModeSetting("")
+
+    public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Multi");
+    public static ModeSetting rotationMode = new ModeSetting("Rotations", false, "Off", "Off", "Normal", "Fake");
+
     public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Fake");
     public NumberSetting mincps = new NumberSetting("MinCPS", false, 1, 20, 10, 1);
     public NumberSetting maxcps = new NumberSetting("MaxCPS", false, 1, 20, 10, 1);
@@ -28,35 +36,83 @@ public class Killaura extends Module {
 
     public BoolSetting keepSprint = new BoolSetting("KeepSprint", false, false);
 
+    public Killaura() {
+        super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
+        addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint);
+    }
+
+    public static float serveryaw, serverpitch;
+
     public Random random = new Random();
 
     private int lastTick = -1;
     public static boolean fakeblocking = false;
-
-    public Killaura() {
-        super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
-        addSetting(killauramode,reach,  maxcps, mincps, autoblock, keepSprint);
-    }
-
+    public static Entity selectedtarget = null;
 
     @Override
     public void onDisable() {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
         fakeblocking = false;
+        selectedtarget = null;
     }
 
     @Override
     public void onTick(TickEvent.TickType tickType) {
+        if(tickType == TickEvent.TickType.POST) return;
+        if(!canClick()) return;
 
-        switch (killauramode.current_value) {
-            case "Vanilla":
-                vaillaKillaura(tickType);
-                break;
+        selectedtarget = null;
 
-            case "Vulcan":
-                vulcanKillaura(tickType);
-                break;
+        for(Entity e : mc.theWorld.loadedEntityList) {
+
+            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
+                continue;
+            }
+
+            if(e instanceof EntityLivingBase) {
+                float distance = mc.thePlayer.getDistanceToEntity(e);
+
+                if(distance <= reach.cValue) {
+
+                    if(targetMode.current_value.equals("Single")) {
+                        if(selectedtarget == null) {
+                            selectedtarget = e;
+                        }
+                    } else {
+                        selectedtarget = e;
+                    }
+
+                    manageRotations(selectedtarget, false);
+                    manageAutoblock(selectedtarget);
+
+                    mc.thePlayer.swingItem();
+                    mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
+                    if(targetMode.current_value.equals("Single")) {
+                        return;
+                    }
+
+                }
+            }
         }
+
+    }
+
+    @Override
+    public void onPacket(PacketEvent packetEvent) {
+        Packet packet = packetEvent.getPacket();
+
+        if(!rotationMode.current_value.equals("Off") && !rotationMode.current_value.equals("Fake")) {
+            if(selectedtarget != null) {
+                if(packet instanceof C03PacketPlayer) {
+                    manageRotations(selectedtarget, false);
+                }
+                if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
+                    manageRotations(selectedtarget, true);
+                    packetEvent.cancelPacket();
+                }
+            }
+        }
+
     }
 
     public boolean canClick() {
@@ -70,74 +126,6 @@ public class Killaura extends Module {
             return true;
         }
         return false;
-    }
-
-    public void vaillaKillaura(TickEvent.TickType tickType) {
-
-        if(tickType == TickEvent.TickType.POST) return;
-        if(!canClick()) return;
-
-        ItemStack usedItem = mc.thePlayer.getHeldItem();
-
-        for(Entity e : mc.theWorld.loadedEntityList) {
-
-            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
-                continue;
-            }
-
-            if(e instanceof EntityLivingBase) {
-                float distance = mc.thePlayer.getDistanceToEntity(e);
-
-                if(distance <= reach.cValue * 1.1) {
-
-                    manageAutoblock(e);
-                    mc.thePlayer.swingItem();
-                    mc.playerController.attackEntity(mc.thePlayer, e);
-
-                }
-            }
-        }
-    }
-
-    public void vulcanKillaura(TickEvent.TickType tickType) {
-
-        if(tickType == TickEvent.TickType.POST) {
-            return;
-        }
-
-        if(!canClick()) return;
-
-        Entity selectedtarget = null;
-        ItemStack usedItem = mc.thePlayer.getHeldItem();
-
-        for(Entity e : mc.theWorld.loadedEntityList) {
-
-            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
-                continue;
-            }
-
-            if(e instanceof EntityLivingBase) {
-                float distance = mc.thePlayer.getDistanceToEntity(e);
-                if(distance <= reach.cValue * 1.1) {
-
-                    if(selectedtarget == null) {
-                        selectedtarget = e;
-                    }
-                }
-            }
-
-        }
-
-        if(selectedtarget == null){
-            fakeblocking = false;
-            return;
-        }
-
-        manageAutoblock(selectedtarget);
-
-        mc.thePlayer.swingItem();
-        mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
-
     }
 
     public void manageAutoblock(Entity e) {
@@ -164,6 +152,14 @@ public class Killaura extends Module {
             }
         }
 
+    }
+
+    public void manageRotations(Entity e, boolean packetSend) {
+        if(!rotationMode.current_value.equals("Off") && !rotationMode.current_value.equals("Fake") && selectedtarget != null) {
+            serveryaw = RotationManager.getRotationsToEntity(e)[0];
+            serverpitch = RotationManager.getRotationsToEntity(e)[1];
+            RotationManager.lookSilent(new float[]{serveryaw, serverpitch}, 250, 250, packetSend);
+        }
     }
 
 }

@@ -22,6 +22,9 @@ import peak.modules.render.ESP;
 import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -29,9 +32,11 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.73";
+    public static String version = "0.74";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
+    //Used to detect and show other Users of the Client
+    public static Set<UUID> peakUsers = new HashSet<>();
 
     public static void startup() {
 

@@ -56,10 +56,9 @@ public class Disabler extends Module {
                 packetEvent.cancelPacket();
             }
 
-            if (timer.hasReached((long) (5000 + (Math.random() * 1000)))) {
+            if (timer.hasReached((long) (2000 + (Math.random() * 1000)))) {
                 packetList.forEach(PacketManager::sendPacketWithoutEvent);
                 packetList.clear();
-                NotificationManager.addChat("Packets busted faaaahhh");
                 timer.reset();
             }
 

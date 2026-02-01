@@ -25,6 +25,10 @@ import net.minecraft.util.MathHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+import peak.Client;
+import peak.managers.RotationManager;
+import peak.modules.Module;
+import peak.modules.combat.Killaura;
 
 public abstract class RendererLivingEntity<T extends EntityLivingBase> extends Render<T>
 {
@@ -100,6 +104,22 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
             float f2 = f1 - f;
 
+            if(Client.getModulebyName("Killaura").toggled &&  Killaura.selectedtarget != null){
+                if(!Killaura.rotationMode.current_value.equals("Off")) {
+                    if(entity == Minecraft.getMinecraft().thePlayer) {
+                        if(Killaura.rotationMode.current_value.equals("Fake")) {
+                            f = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
+                            f1 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
+                            f2 = 0.0F;
+                        }else {
+                            f = Killaura.serveryaw;
+                            f1 = Killaura.serveryaw;
+                            f2 = 0.0F;
+                        }
+                    }
+                }
+            }
+
             if (entity.isRiding() && entity.ridingEntity instanceof EntityLivingBase)
             {
                 EntityLivingBase entitylivingbase = (EntityLivingBase)entity.ridingEntity;
@@ -126,6 +146,19 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             }
 
             float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+
+            if(Client.getModulebyName("Killaura").toggled && Killaura.selectedtarget != null){
+                if(!Killaura.rotationMode.current_value.equals("Off")) {
+                    if(entity == Minecraft.getMinecraft().thePlayer) {
+                        if(Killaura.rotationMode.current_value.equals("Fake")) {
+                            f7 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[1];
+                        }else {
+                            f7 = Killaura.serverpitch;
+                        }
+                    }
+                }
+            }
+
             this.renderLivingAt(entity, x, y, z);
             float f8 = this.handleRotationFloat(entity, partialTicks);
             this.rotateCorpse(entity, f8, f, partialTicks);
