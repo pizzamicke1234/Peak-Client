@@ -565,6 +565,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         {
             entityotherplayermp.getDataWatcher().updateWatchedObjectsFromList(list);
         }
+        this.sendPeakHandshake();
     }
 
     /**
