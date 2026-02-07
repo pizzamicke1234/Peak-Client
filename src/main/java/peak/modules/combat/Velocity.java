@@ -4,7 +4,6 @@ import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 import peak.events.PacketEvent;
-import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
@@ -23,7 +22,7 @@ public class Velocity extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        switch(velocityMode.current_value) {
+        switch(velocityMode.currentValue) {
 
             case "Vanilla":
                 if(packetEvent.getPacket() instanceof S12PacketEntityVelocity) {

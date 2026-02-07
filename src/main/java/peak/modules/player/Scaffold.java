@@ -1,6 +1,5 @@
 package peak.modules.player;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
@@ -15,7 +14,6 @@ import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
-import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.managers.font.FontUtil;
 import peak.modules.Module;
@@ -49,7 +47,7 @@ public class Scaffold extends Module {
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
 
-        switch (scaffoldMode.current_value) {
+        switch (scaffoldMode.currentValue) {
             case "Normal":
                 normalScaffold();
                 break;
@@ -63,7 +61,7 @@ public class Scaffold extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(scaffoldMode.current_value.equals("Vulcan")) {
+        if(scaffoldMode.currentValue.equals("Vulcan")) {
 
             if(packetEvent.getPacket() instanceof C03PacketPlayer) {
                 serverYaw = mc.thePlayer.rotationYaw - 180;

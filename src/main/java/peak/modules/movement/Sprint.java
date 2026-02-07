@@ -30,7 +30,7 @@ public class Sprint extends Module {
 
         if(tickType == TickEvent.TickType.POST) return;
 
-        switch (sprintmode.current_value) {
+        switch (sprintmode.currentValue) {
             case "Legit":
                 if(mc.gameSettings.keyBindForward.isKeyDown() && (!Client.getModulebyName("Scaffold").toggled && !Scaffold.scaffoldMode.equals("Vulcan"))) {
                     mc.thePlayer.setSprinting(true);

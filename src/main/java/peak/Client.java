@@ -18,6 +18,7 @@ import peak.modules.player.InvManager;
 import peak.modules.player.NoSlow;
 import peak.modules.player.Scaffold;
 import peak.modules.render.Animations;
+import peak.modules.render.Capes;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
 import peak.events.TickEvent;
@@ -64,6 +65,7 @@ public class Client {
         modules.add(new ClickGuimod());
         modules.add(new ESP());
         modules.add(new Animations());
+        modules.add(new Capes());
 
         //PLAYER
         modules.add(new NoSlow());

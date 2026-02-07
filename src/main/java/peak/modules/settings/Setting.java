@@ -4,10 +4,10 @@ public abstract class Setting {
 
     public String name;
     public boolean onArraylist;
-    public String current_value;
+    public String currentValue;
 
     public String getValue() {
-        return current_value;
+        return currentValue;
     }
 
 }

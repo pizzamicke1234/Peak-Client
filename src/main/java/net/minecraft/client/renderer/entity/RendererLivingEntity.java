@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import peak.Client;
 import peak.managers.RotationManager;
-import peak.modules.Module;
 import peak.modules.combat.Killaura;
 import peak.modules.player.Scaffold;
 
@@ -105,7 +104,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
             float f2 = f1 - f;
 
-            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.current_value.equals("Vulcan")) {
+            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.currentValue.equals("Vulcan")) {
                 if(entity == Minecraft.getMinecraft().thePlayer) {
                     f = RotationManager.getScaffoldRotation()[0];
                     f1 = RotationManager.getScaffoldRotation()[0];
@@ -113,7 +112,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
             }
             if(Client.getModulebyName("Killaura").toggled &&  Killaura.selectedtarget != null){
-                if(!Killaura.rotationMode.current_value.equals("Off")) {
+                if(!Killaura.rotationMode.currentValue.equals("Off")) {
                     if(entity == Minecraft.getMinecraft().thePlayer) {
                         f = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
                         f1 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
@@ -149,13 +148,13 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
             float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
 
-            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.current_value.equals("Vulcan")) {
+            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.currentValue.equals("Vulcan")) {
                 if(entity == Minecraft.getMinecraft().thePlayer) {
                     f7 = RotationManager.getScaffoldRotation()[1];
                 }
             }
             if(Client.getModulebyName("Killaura").toggled &&  Killaura.selectedtarget != null){
-                if(!Killaura.rotationMode.current_value.equals("Off")) {
+                if(!Killaura.rotationMode.currentValue.equals("Off")) {
                     if(entity == Minecraft.getMinecraft().thePlayer) {
                         f7 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[1];
                     }

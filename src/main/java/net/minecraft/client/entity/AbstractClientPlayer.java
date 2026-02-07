@@ -17,6 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import peak.Client;
+import peak.modules.render.Capes;
 
 public abstract class AbstractClientPlayer extends EntityPlayer
 {
@@ -74,7 +76,25 @@ public abstract class AbstractClientPlayer extends EntityPlayer
 
     public ResourceLocation getLocationCape()
     {
+
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
+        Capes capes = (Capes) Client.getModulebyName("Capes");
+
+        if(capes.toggled) {
+
+            if(!capes.everyPlayer.isTrue() && !this.getName().equals(Minecraft.getMinecraft().getSession().getUsername())){
+                return networkplayerinfo == null ? null : networkplayerinfo.getLocationCape();
+            }
+
+            switch (capes.capeMode.currentValue) {
+
+                case "Hoppo":
+                    return new ResourceLocation("capes/hoppo.png");
+
+            }
+
+        }
+
         return networkplayerinfo == null ? null : networkplayerinfo.getLocationCape();
     }
 

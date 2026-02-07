@@ -28,7 +28,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.MapData;
 import org.lwjgl.opengl.GL11;
 import peak.Client;
-import peak.modules.Module;
 import peak.modules.combat.Killaura;
 import peak.modules.render.Animations;
 
@@ -433,7 +432,7 @@ public class ItemRenderer
 
                         if(animations.toggled) {
 
-                            switch (animations.animationmode.current_value) {
+                            switch (animations.animationmode.currentValue) {
 
                                 case "1.7":
                                     this.transformFirstPersonItem(f, f1);

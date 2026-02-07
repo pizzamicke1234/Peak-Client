@@ -5,13 +5,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
-import peak.managers.PacketManager;
 import peak.managers.RotationManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
@@ -74,7 +72,7 @@ public class Killaura extends Module {
 
                 if(distance <= reach.cValue) {
 
-                    if(targetMode.current_value.equals("Single")) {
+                    if(targetMode.currentValue.equals("Single")) {
                         if(selectedtarget == null) {
                             selectedtarget = e;
                         }
@@ -87,7 +85,7 @@ public class Killaura extends Module {
 
                     mc.thePlayer.swingItem();
                     mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
-                    if(targetMode.current_value.equals("Single")) {
+                    if(targetMode.currentValue.equals("Single")) {
                         return;
                     }
 
@@ -101,7 +99,7 @@ public class Killaura extends Module {
     public void onPacket(PacketEvent packetEvent) {
         Packet packet = packetEvent.getPacket();
 
-        if(!rotationMode.current_value.equals("Off") && !rotationMode.current_value.equals("Fake")) {
+        if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake")) {
             if(selectedtarget != null) {
                 if(packet instanceof C03PacketPlayer) {
                     manageRotations(selectedtarget, false);
@@ -134,18 +132,18 @@ public class Killaura extends Module {
 
         Item helditem = mc.thePlayer.getHeldItem().getItem();
 
-        if(autoblock.current_value == "Off" || helditem == null){
+        if(autoblock.currentValue == "Off" || helditem == null){
             return;
         }
 
         if(helditem instanceof  ItemSword) {
-            if(autoblock.current_value == "Fake") {
+            if(autoblock.currentValue == "Fake") {
                 fakeblocking = true;
             }else {
                 KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
             }
         }else {
-            if(autoblock.current_value == "Fake") {
+            if(autoblock.currentValue == "Fake") {
                 fakeblocking = false;
             }else {
                 KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
@@ -155,7 +153,7 @@ public class Killaura extends Module {
     }
 
     public void manageRotations(Entity e, boolean packetSend) {
-        if(!rotationMode.current_value.equals("Off") && !rotationMode.current_value.equals("Fake") && selectedtarget != null) {
+        if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake") && selectedtarget != null) {
             serveryaw = RotationManager.getRotationsToEntity(e)[0];
             serverpitch = RotationManager.getRotationsToEntity(e)[1];
             RotationManager.lookSilent(new float[]{serveryaw, serverpitch}, 250, 250, packetSend);

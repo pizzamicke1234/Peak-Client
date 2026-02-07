@@ -4,10 +4,10 @@ public class BoolSetting extends Setting{
 
     public boolean status;
 
-    public BoolSetting(String name, boolean status, boolean showonArraylist) {
+    public BoolSetting(String name, boolean onArrayList, boolean status) {
         this.name = name;
         this.status = status;
-        this.onArraylist = showonArraylist; //Will probably never be displayed
+        this.onArraylist = onArrayList; //Will probably never be displayed
     }
 
     public boolean isTrue() {

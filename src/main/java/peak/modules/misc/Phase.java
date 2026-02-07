@@ -16,7 +16,7 @@ public class Phase extends Module {
     @Override
     public void onEnable() {
 
-        if(phaseMode.current_value == "Clip") {
+        if(phaseMode.currentValue == "Clip") {
             mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 3, mc.thePlayer.posZ);
             this.toggle();
         }

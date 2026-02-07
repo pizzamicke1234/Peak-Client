@@ -49,7 +49,7 @@ public class Arraylist extends GuiScreen {
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
                 if(s.onArraylist){
-                    Width += (5 + FontUtil.normal.getStringWidth(s.current_value));
+                    Width += (5 + FontUtil.normal.getStringWidth(s.currentValue));
                 }
             }
         }
@@ -81,10 +81,10 @@ public class Arraylist extends GuiScreen {
 
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                    FontUtil.normal.drawString(s.current_value, width - FontUtil.normal.getStringWidth(s.current_value) - 4 + settingsoffsetX,
+                    FontUtil.normal.drawString(s.currentValue, width - FontUtil.normal.getStringWidth(s.currentValue) - 4 + settingsoffsetX,
                             4 + (6 + FontUtil.normal.getHeight()) * count, 0xFFcecece);
 
-                    settingsoffsetX -= (5 + FontUtil.normal.getStringWidth(s.current_value));
+                    settingsoffsetX -= (5 + FontUtil.normal.getStringWidth(s.currentValue));
                 }
             }
         }
@@ -95,7 +95,7 @@ public class Arraylist extends GuiScreen {
 
         if(m.getSettings() != null) {
             for(Setting s : m.getSettings()) {
-                if(s.onArraylist) settingsOffset -= (5 + FontUtil.normal.getStringWidth(s.current_value));
+                if(s.onArraylist) settingsOffset -= (5 + FontUtil.normal.getStringWidth(s.currentValue));
             }
         }
         return settingsOffset;

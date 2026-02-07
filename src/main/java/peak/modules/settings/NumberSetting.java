@@ -15,28 +15,28 @@ public class NumberSetting extends Setting {
         this.maxValue = maxValue;
         this.defaultValue = defaultValue;
         this.increment = increment;
-        this.current_value = String.valueOf(defaultValue);
+        this.currentValue = String.valueOf(defaultValue);
         this.cValue = defaultValue;
     }
 
     public void forward() {
         if(cValue + increment <= maxValue) {
             cValue += increment;
-            current_value = String.valueOf(cValue);
+            currentValue = String.valueOf(cValue);
         }
     }
 
     public void backward() {
-        if(minValue <= Double.parseDouble(current_value) - increment) {
+        if(minValue <= Double.parseDouble(currentValue) - increment) {
             cValue -= increment;
-            current_value = String.valueOf(cValue);
+            currentValue = String.valueOf(cValue);
         }
     }
 
     public void setcValue(double value) {
         double precision = 1.0 / increment;
         this.cValue = Math.round(Math.max(minValue, Math.min(maxValue, value)) * precision) / precision;
-        this.current_value = String.valueOf(cValue);
+        this.currentValue = String.valueOf(cValue);
     }
 
 }

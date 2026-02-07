@@ -1,6 +1,5 @@
 package peak.ui.clickguis.elements;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import peak.managers.font.FontUtil;
@@ -59,7 +58,7 @@ public class SettingsRect {
 
     private void drawModeLine(Setting s, int x, int y, int left, int top, int right, int bottom) {
         FontUtil.smaller.drawString(s.name + ":", x, y + (lineHeight * lines) + 7, -1);
-        String val = s.current_value;
+        String val = s.currentValue;
         int valX = right - (int) FontUtil.smaller.getStringWidth(val) - 5;
         FontUtil.smaller.drawString(val, valX, y + (lineHeight * lines) + 7, 0xff0069ff);
     }
@@ -82,7 +81,7 @@ public class SettingsRect {
 
             double precision = 1.0 / num.increment;
             num.cValue = Math.round(newValue * precision) / precision;
-            num.current_value = String.valueOf(num.cValue);
+            num.currentValue = String.valueOf(num.cValue);
         }
 
         FontUtil.smaller.drawString(s.name + ": " + num.cValue, x, y + (lineHeight * lines) + 7, -1);

@@ -33,7 +33,7 @@ public class Speed extends Module {
 
         if(tickType == TickEvent.TickType.POST) return;
 
-        switch (speedMode.current_value) {
+        switch (speedMode.currentValue) {
 
             case "Motion":
                 motionSpeed();
@@ -49,7 +49,7 @@ public class Speed extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        switch (speedMode.current_value) {
+        switch (speedMode.currentValue) {
             case "VulcanYPort":
                 if(mc.thePlayer.posY >= jumpPos + 1 && jumptoggle) {
                     if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {

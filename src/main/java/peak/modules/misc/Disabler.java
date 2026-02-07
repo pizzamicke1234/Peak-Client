@@ -1,12 +1,8 @@
 package peak.modules.misc;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.*;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
-import peak.managers.NotificationManager;
-import peak.managers.PacketManager;
 import peak.managers.TimeManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
@@ -14,7 +10,6 @@ import peak.modules.settings.ModeSetting;
 import peak.events.TickEvent;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Disabler extends Module {
 
@@ -49,7 +44,7 @@ public class Disabler extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(disablermode.current_value.equals("Deathzone Airlines")) {
+        if(disablermode.currentValue.equals("Deathzone Airlines")) {
 
 
         }

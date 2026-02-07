@@ -1,6 +1,5 @@
 package peak.modules.movement;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
@@ -52,7 +51,7 @@ public class Fly extends Module {
 
         ticktimer = 0;
 
-        switch (flyMode.current_value) {
+        switch (flyMode.currentValue) {
             case "Vulcan":
 
                 mc.timer.timerSpeed = 0.3f;
@@ -85,7 +84,7 @@ public class Fly extends Module {
     public void onDisable() {
 
         mc.timer.timerSpeed = 1.0f;
-        switch (flyMode.current_value) {
+        switch (flyMode.currentValue) {
             case "Vulcan":
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionY = 0;
@@ -126,7 +125,7 @@ public class Fly extends Module {
 
         //ticktimer++;
 
-        switch (flyMode.current_value) {
+        switch (flyMode.currentValue) {
             case "Motion":
                 motionFly();
                 break;
@@ -153,7 +152,7 @@ public class Fly extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        switch (flyMode.current_value) {
+        switch (flyMode.currentValue) {
             case "Deathzone":
                 deathzonePacket(packetEvent);
                 break;
