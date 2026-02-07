@@ -69,6 +69,10 @@ public class RotationManager {
         return new float[]{yaw, pitch};
     }
 
+    public static float[] getScaffoldRotation() {
+        return new float[] {mc.thePlayer.rotationYaw - 180, 87};
+    }
+
     public static float updateRotation(float current, float target, float speed) {
         float f = MathHelper.wrapAngleTo180_float(target - current);
         if (f > speed) f = speed;

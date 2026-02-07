@@ -49,18 +49,8 @@ public class Disabler extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(disablermode.current_value == "Vulcan Combat") {
+        if(disablermode.current_value.equals("Deathzone Airlines")) {
 
-            if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
-                packetList.add(packetEvent.getPacket());
-                packetEvent.cancelPacket();
-            }
-
-            if (timer.hasReached((long) (2000 + (Math.random() * 1000)))) {
-                packetList.forEach(PacketManager::sendPacketWithoutEvent);
-                packetList.clear();
-                timer.reset();
-            }
 
         }
 

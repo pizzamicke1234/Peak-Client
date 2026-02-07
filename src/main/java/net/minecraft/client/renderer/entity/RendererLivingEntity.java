@@ -29,6 +29,7 @@ import peak.Client;
 import peak.managers.RotationManager;
 import peak.modules.Module;
 import peak.modules.combat.Killaura;
+import peak.modules.player.Scaffold;
 
 public abstract class RendererLivingEntity<T extends EntityLivingBase> extends Render<T>
 {
@@ -104,18 +105,19 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
             float f2 = f1 - f;
 
+            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.current_value.equals("Vulcan")) {
+                if(entity == Minecraft.getMinecraft().thePlayer) {
+                    f = RotationManager.getScaffoldRotation()[0];
+                    f1 = RotationManager.getScaffoldRotation()[0];
+                    f2 = 0.0F;
+                }
+            }
             if(Client.getModulebyName("Killaura").toggled &&  Killaura.selectedtarget != null){
                 if(!Killaura.rotationMode.current_value.equals("Off")) {
                     if(entity == Minecraft.getMinecraft().thePlayer) {
-                        if(Killaura.rotationMode.current_value.equals("Fake")) {
-                            f = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
-                            f1 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
-                            f2 = 0.0F;
-                        }else {
-                            f = Killaura.serveryaw;
-                            f1 = Killaura.serveryaw;
-                            f2 = 0.0F;
-                        }
+                        f = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
+                        f1 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[0];
+                        f2 = 0.0F;
                     }
                 }
             }
@@ -147,14 +149,15 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
             float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
 
-            if(Client.getModulebyName("Killaura").toggled && Killaura.selectedtarget != null){
+            if(Client.getModulebyName("Scaffold").toggled && Scaffold.scaffoldMode.current_value.equals("Vulcan")) {
+                if(entity == Minecraft.getMinecraft().thePlayer) {
+                    f7 = RotationManager.getScaffoldRotation()[1];
+                }
+            }
+            if(Client.getModulebyName("Killaura").toggled &&  Killaura.selectedtarget != null){
                 if(!Killaura.rotationMode.current_value.equals("Off")) {
                     if(entity == Minecraft.getMinecraft().thePlayer) {
-                        if(Killaura.rotationMode.current_value.equals("Fake")) {
-                            f7 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[1];
-                        }else {
-                            f7 = Killaura.serverpitch;
-                        }
+                        f7 = RotationManager.getRotationsToEntity(Killaura.selectedtarget)[1];
                     }
                 }
             }

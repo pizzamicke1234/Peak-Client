@@ -1365,7 +1365,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                         {
                             targetEntity.addVelocity((double)(-MathHelper.sin(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(this.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
                             if(killaura.keepSprint.isTrue()) {
-                                if(killaura.killauramode.current_value != "Vanilla" && !speed.toggled) {
+                                if(killaura.moveFixMode.current_value.equals("Vulcan") && !speed.toggled) {
                                     this.motionX *= 0.6D;
                                     this.motionZ *= 0.6D;
                                 }

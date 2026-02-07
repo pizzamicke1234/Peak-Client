@@ -16,26 +16,26 @@ import peak.modules.movement.Sprint;
 import peak.modules.player.ChestStealer;
 import peak.modules.player.InvManager;
 import peak.modules.player.NoSlow;
+import peak.modules.player.Scaffold;
 import peak.modules.render.Animations;
 import peak.modules.render.ClickGuimod;
 import peak.modules.render.ESP;
 import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 
 public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.74";
+    public static String version = "0.76";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
-    //Used to detect and show other Users of the Client
+    //Used to detect and show other Users of the Client (doesn't work atm)
     public static Set<UUID> peakUsers = new HashSet<>();
 
     public static void startup() {
@@ -69,6 +69,10 @@ public class Client {
         modules.add(new NoSlow());
         modules.add(new ChestStealer());
         modules.add(new InvManager());
+        modules.add(new Scaffold());
+
+        //Sort the modules by name
+        modules.sort(Comparator.comparing(Module::getName));
     }
 
     public static void setupViaVersion() {
@@ -114,4 +118,5 @@ public class Client {
         }
         return null;
     }
+
 }

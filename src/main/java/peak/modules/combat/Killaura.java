@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class Killaura extends Module {
 
-    public ModeSetting killauramode = new ModeSetting("Mode", true, "Vanilla", "Vanilla", "Vulcan");
+    public ModeSetting moveFixMode = new ModeSetting("MoveFix", false, "Off", "Off", "Vulcan");
 
     public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Multi");
     public static ModeSetting rotationMode = new ModeSetting("Rotations", false, "Off", "Off", "Normal", "Fake");
@@ -38,7 +38,7 @@ public class Killaura extends Module {
 
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
-        addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint);
+        addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint, moveFixMode);
     }
 
     public static float serveryaw, serverpitch;

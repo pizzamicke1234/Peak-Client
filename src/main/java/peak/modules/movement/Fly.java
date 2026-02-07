@@ -69,14 +69,14 @@ public class Fly extends Module {
                 waitFlag = false;
                 hasStarted = false;
                 dmgJumpCount = 11451;
-                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, true);
+                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, false);
                 waitFlag = true;
                 break;
 
             case "Deathzone Exp":
                 hasStarted = true;
                 firstPosY = mc.thePlayer.posY;
-                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, true);
+                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, false);
                 break;
         }
 

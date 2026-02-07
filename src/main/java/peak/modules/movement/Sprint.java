@@ -1,7 +1,9 @@
 package peak.modules.movement;
 
 import org.lwjgl.input.Keyboard;
+import peak.Client;
 import peak.modules.Module;
+import peak.modules.player.Scaffold;
 import peak.modules.settings.ModeSetting;
 import peak.events.TickEvent;
 
@@ -30,7 +32,7 @@ public class Sprint extends Module {
 
         switch (sprintmode.current_value) {
             case "Legit":
-                if(mc.gameSettings.keyBindForward.isKeyDown()) {
+                if(mc.gameSettings.keyBindForward.isKeyDown() && (!Client.getModulebyName("Scaffold").toggled && !Scaffold.scaffoldMode.equals("Vulcan"))) {
                     mc.thePlayer.setSprinting(true);
                 }
                 break;
