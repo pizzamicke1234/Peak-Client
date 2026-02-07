@@ -88,6 +88,9 @@ public abstract class AbstractClientPlayer extends EntityPlayer
 
             switch (capes.capeMode.currentValue) {
 
+                case "Epstein":
+                    return new ResourceLocation("capes/epstein.png");
+
                 case "Hoppo":
                     return new ResourceLocation("capes/hoppo.png");
 
