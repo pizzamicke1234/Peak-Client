@@ -165,7 +165,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         {
 
             if(!PacketManager.packetsWithoutEvent.contains(p_channelRead0_2_)) {
-                Client.onPacket(new PacketEvent(p_channelRead0_2_));
+                Client.onPacket(new PacketEvent(p_channelRead0_2_, PacketEvent.Type.RECEIVE));
             }else {
                 PacketManager.packetsWithoutEvent.remove(p_channelRead0_2_);
             }
@@ -201,7 +201,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
     {
 
         if(!PacketManager.packetsWithoutEvent.contains(packetIn)) {
-            Client.onPacket(new PacketEvent(packetIn));
+            Client.onPacket(new PacketEvent(packetIn, PacketEvent.Type.SEND));
         }else {
             PacketManager.packetsWithoutEvent.remove(packetIn);
         }

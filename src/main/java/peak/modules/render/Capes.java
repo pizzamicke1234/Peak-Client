@@ -7,7 +7,7 @@ import peak.modules.settings.ModeSetting;
 public class Capes extends Module {
 
     public ModeSetting capeMode = new ModeSetting("Cape", false, "Peak", "Peak", "Epstein", "Hoppo");
-    public BoolSetting everyPlayer = new BoolSetting("Every Player", false, false);
+    public BoolSetting everyPlayer = new BoolSetting("Every player", false, false);
 
     public Capes() {
         super("Capes", 0, Category.RENDER, true);

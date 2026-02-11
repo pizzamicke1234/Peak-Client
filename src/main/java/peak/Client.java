@@ -3,7 +3,10 @@ package peak;
 import net.minecraft.network.Packet;
 import org.lwjgl.opengl.Display;
 import peak.events.PacketEvent;
+import peak.managers.PacketManager;
 import peak.managers.font.FontUtil;
+import peak.managers.misc.BlinkManager;
+import peak.managers.misc.PingSpoofManager;
 import peak.modules.Module;
 import peak.modules.combat.Killaura;
 import peak.modules.combat.Velocity;
@@ -11,16 +14,14 @@ import peak.modules.misc.Disabler;
 import peak.modules.misc.Phase;
 import peak.modules.misc.TestModule;
 import peak.modules.movement.Fly;
+import peak.modules.movement.Longjump;
 import peak.modules.movement.Speed;
 import peak.modules.movement.Sprint;
 import peak.modules.player.ChestStealer;
 import peak.modules.player.InvManager;
 import peak.modules.player.NoSlow;
 import peak.modules.player.Scaffold;
-import peak.modules.render.Animations;
-import peak.modules.render.Capes;
-import peak.modules.render.ClickGuimod;
-import peak.modules.render.ESP;
+import peak.modules.render.*;
 import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
 
@@ -33,8 +34,11 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.76";
+    public static String version = "0.77";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
+
+    public static final BlinkManager blinkManager = new BlinkManager();
+    public static final PingSpoofManager pingSpoofManager = new PingSpoofManager();
 
     //Used to detect and show other Users of the Client (doesn't work atm)
     public static Set<UUID> peakUsers = new HashSet<>();
@@ -56,6 +60,7 @@ public class Client {
         modules.add(new Fly());
         modules.add(new Sprint());
         modules.add(new Speed());
+        modules.add(new Longjump());
 
         //COMBAT
         modules.add(new Killaura());
@@ -66,6 +71,7 @@ public class Client {
         modules.add(new ESP());
         modules.add(new Animations());
         modules.add(new Capes());
+        modules.add(new HUDMod());
 
         //PLAYER
         modules.add(new NoSlow());
@@ -87,6 +93,11 @@ public class Client {
     }
 
     public static void onTick(TickEvent.TickType tickType) {
+
+        if(tickType == TickEvent.TickType.PRE) {
+            pingSpoofManager.onTick();
+        }
+
         for (Module m : modules) {
             if (!m.toggled) {
                 continue;
@@ -96,6 +107,22 @@ public class Client {
     }
 
     public static void onPacket(PacketEvent packetEvent) {
+
+        if (PacketManager.packetsWithoutEvent.contains(packetEvent.getPacket())) {
+            PacketManager.packetsWithoutEvent.remove(packetEvent.getPacket());
+            return;
+        }
+
+        if (packetEvent.getType() == PacketEvent.Type.SEND) {
+            blinkManager.onPacketSend(packetEvent);
+        }
+
+        if (packetEvent.isCanceled()) return;
+
+        pingSpoofManager.handlePacket(packetEvent);
+
+        if (packetEvent.isCanceled()) return;
+
         for(Module m : modules) {
             if (!m.toggled) {
                 continue;

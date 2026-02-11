@@ -19,28 +19,18 @@ public class TestModule extends Module {
 
     @Override
     public void onEnable() {
-        NotificationManager.addChat("Enabled Test Module!");
-        DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, true);
+
     }
 
     @Override
     public void onDisable() {
-        NotificationManager.addChat("Disabled Test Module!");
     }
 
     @Override
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
 
-        if(mc.gameSettings.keyBindJump.isPressed()) {
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
-        }
+       NotificationManager.addChat("Ticks Existed | " + mc.thePlayer.ticksExisted);
 
     }
-
-    @Override
-    public void onPacket(PacketEvent packetEvent) {
-
-    }
-
 }

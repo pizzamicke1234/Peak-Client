@@ -10,7 +10,7 @@ import peak.events.TickEvent;
 
 public class Speed extends Module {
 
-    ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort");
+    ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius");
 
     public Speed() {
         super("Speed", Keyboard.KEY_X, Category.MOVEMENT, true);
@@ -26,7 +26,7 @@ public class Speed extends Module {
     }
 
     public void onDisable() {
-
+        mc.timer.timerSpeed = 1f;
     }
 
     public void onTick(TickEvent.TickType tickType) {
@@ -42,6 +42,10 @@ public class Speed extends Module {
             case "VulcanYPort":
                 vulcanYPort();
                 break;
+
+            case "Advancius":
+                advanicus();
+                break;
         }
 
     }
@@ -52,6 +56,14 @@ public class Speed extends Module {
         switch (speedMode.currentValue) {
             case "VulcanYPort":
                 if(mc.thePlayer.posY >= jumpPos + 1 && jumptoggle) {
+                    if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
+                        packetEvent.cancelPacket();
+                    }
+                }
+                break;
+
+            case "Advanicus":
+                if(mc.thePlayer.posY >= jumpPos && jumptoggle) {
                     if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
                         packetEvent.cancelPacket();
                     }
@@ -100,6 +112,25 @@ public class Speed extends Module {
             mc.thePlayer.motionX = -Math.sin(rad) * speed;
             mc.thePlayer.motionZ = Math.cos(rad) * speed;
         }*/
+
+    }
+
+    public void advanicus() {
+
+        if(mc.thePlayer.onGround) {
+            mc.timer.timerSpeed = 1f;
+            jumpPos = mc.thePlayer.posY;
+            mc.thePlayer.jump();
+            jumptoggle = !jumptoggle;
+        }
+
+        if(mc.thePlayer.posY >= jumpPos + 1 && jumptoggle) {
+            mc.thePlayer.motionY *= -0.41;
+            mc.timer.timerSpeed = 3f;
+            jumpPos = mc.thePlayer.posY;
+        }
+
+
 
     }
 

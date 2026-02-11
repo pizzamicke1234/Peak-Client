@@ -23,7 +23,7 @@ import peak.modules.settings.NumberSetting;
 
 public class Fly extends Module {
 
-    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Deathzone Exp", "Ground");
+    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Ground");
     public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
             10, 1, 0.25);
 
@@ -63,20 +63,11 @@ public class Fly extends Module {
                 }
                 break;
 
-            case "Deathzone":
-                deathzoneFlyTicks = 0;
-                waitFlag = false;
-                hasStarted = false;
-                dmgJumpCount = 11451;
-                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, false);
-                waitFlag = true;
-                break;
-
             case "Deathzone Exp":
                 hasStarted = true;
                 firstPosY = mc.thePlayer.posY;
-                DamageManager.damagePlayer(DamageManager.DamageType.OLDVULCAN, 1, 1, true, false);
                 break;
+
         }
 
     }
@@ -103,16 +94,6 @@ public class Fly extends Module {
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionZ = 0;
                 break;
-
-            case "Deathzone Exp":
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
-                hasStarted = false;
-                mc.thePlayer.motionX = 0;
-                mc.thePlayer.motionY = 0;
-                mc.thePlayer.motionZ = 0;
-                break;
         }
 
         mc.thePlayer.capabilities.isFlying = false;
@@ -123,7 +104,7 @@ public class Fly extends Module {
 
         if(tickType == TickEvent.TickType.POST) return;
 
-        //ticktimer++;
+        ticktimer++;
 
         switch (flyMode.currentValue) {
             case "Motion":
@@ -141,10 +122,6 @@ public class Fly extends Module {
             case "Deathzone":
                 deathzoneFly();
                 break;
-
-            case "Deathzone Exp":
-                deathzoneExpFly();
-                break;
         }
 
     }
@@ -155,10 +132,6 @@ public class Fly extends Module {
         switch (flyMode.currentValue) {
             case "Deathzone":
                 deathzonePacket(packetEvent);
-                break;
-
-            case "Deathzone Exp":
-                deathzoneExpPacket(packetEvent);
                 break;
         }
 
@@ -253,136 +226,32 @@ public class Fly extends Module {
 
     public void deathzoneFly() {
 
-        if(hasStarted){
-            ticktimer++;
-            NotificationManager.addChat(("[" + ticktimer + "]"));
-        }
-
-        if(ticktimer > 29) {
-            this.toggle();
-            return;
-        }
-
-        if(dmgJumpCount == 11451) {
-            if(!hasStarted){
-                return;
-            }
-            else {
-                hasStarted = true;
-                waitFlag = false;
-                //bomba
-                PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                dmgJumpCount = 999;
-            }
-        }
-        mc.thePlayer.jumpMovementFactor = 0.00f;
-        if (!hasStarted && !waitFlag) {
-            PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.0784, mc.thePlayer.posZ, false));
-            waitFlag = true;
-        }
-
         if(hasStarted) {
-            mc.timer.timerSpeed = 0.4f;
-            mc.thePlayer.motionX = 0;
-            mc.thePlayer.motionY = 0;
-            mc.thePlayer.motionZ = 0;
-            if (!mc.gameSettings.keyBindSneak.isKeyDown()) {
-                mc.thePlayer.motionX = 0;
-                mc.thePlayer.motionY = 0;
-                mc.thePlayer.motionZ = 0;
-            }
-            if (mc.gameSettings.keyBindJump.isKeyDown()) {
-                mc.thePlayer.motionY = 0.1;
+            mc.thePlayer.motionY = 0.000D;
+
+            if(mc.thePlayer.ticksExisted % 5 == 0 && ticktimer > 20) {
+                MovementManager.strafe(0.4);
+            }else {
+                MovementManager.strafe(0.25);
             }
 
-            MovementManager.strafe(motionsetting.cValue / 2);
+            if(mc.gameSettings.keyBindJump.isKeyDown()) {
+                mc.thePlayer.motionY += 0.1;
+            }
+            if(mc.gameSettings.keyBindSneak.isKeyDown()) {
+                mc.thePlayer.motionY -= 0.1;
+            }
+
+            //Bypass kicks (Does not fucking work atm)
+            if(mc.thePlayer.ticksExisted % 40 == 0) {
+                mc.thePlayer.motionY = -0.01D;
+            }
+
         }
 
     }
 
     public void deathzonePacket(PacketEvent packetEvent) {
-        Packet packet = packetEvent.getPacket();
-
-        if (packet instanceof C03PacketPlayer && waitFlag) {
-            packetEvent.cancelPacket();
-        }
-        if (packet instanceof C03PacketPlayer) {
-            //packet.set
-        }
-        if(hasStarted) {
-            if(packet instanceof C03PacketPlayer && (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)) {
-                double deltaX = ((C03PacketPlayer) packet).getPositionX() - lastSentX;
-                double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
-                double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
-
-                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 10) {
-                    deathzoneFlyTicks++;
-                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, false));
-                    lastSentX = lastTickX;
-                    lastSentY = lastTickY;
-                    lastSentZ = lastTickZ;
-                }
-                lastTickX = ((C03PacketPlayer) packet).getPositionX();
-                lastTickY = ((C03PacketPlayer) packet).getPositionY();
-                lastTickZ = ((C03PacketPlayer) packet).getPositionZ();
-                packetEvent.cancelPacket();
-            }else if(packet instanceof C03PacketPlayer) {
-                packetEvent.cancelPacket();
-            }
-        }
-
-        if(packet instanceof S08PacketPlayerPosLook) {
-            hasStarted = true;
-            waitFlag = false;
-        }
-
-        if (packet instanceof S08PacketPlayerPosLook) {
-            lastSentX = ((S08PacketPlayerPosLook) packet).getX();
-            lastSentY = ((S08PacketPlayerPosLook) packet).getY();
-            lastSentZ = ((S08PacketPlayerPosLook) packet).getZ();
-
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(((S08PacketPlayerPosLook) packet).getX(),
-                    ((S08PacketPlayerPosLook) packet).getY(), ((S08PacketPlayerPosLook) packet).getZ(),
-                    ((S08PacketPlayerPosLook) packet).getYaw(), ((S08PacketPlayerPosLook) packet).getPitch(),
-                    false));
-        }
-
-        if (packet instanceof C0FPacketConfirmTransaction) { //Make sure it works with Vulcan Velocity
-            int transUID = (((C0FPacketConfirmTransaction) packet).getUid());
-            if (transUID >= -31767 && transUID <= -30769) {
-                packetEvent.cancelPacket();
-                PacketManager.sendPacketWithoutEvent(packet);
-            }
-        }
-    }
-
-    public void deathzoneExpFly() {
-
-        if(hasStarted) {
-            mc.thePlayer.motionY = 0;
-            MovementManager.strafe(0.2);
-        }
-
-        if(mc.thePlayer.posY < firstPosY) {
-            mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.05, mc.thePlayer.posZ);
-        }
-
-        if(mc.thePlayer.ticksExisted % 5 == 0) {
-            if(packetCancel) {
-                //PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.15, mc.thePlayer.posZ);
-                packetCancel = !packetCancel;
-            }else {
-                //PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.15, mc.thePlayer.posZ);
-
-                packetCancel = !packetCancel;
-            }
-        }
-
-    }
-
-    public void deathzoneExpPacket(PacketEvent packetEvent) {
 
         Packet packet = packetEvent.getPacket();
 
@@ -398,10 +267,10 @@ public class Fly extends Module {
                 double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
                 double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
 
-                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 10) {
+                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 6) {
                     deathzoneFlyTicks++;
                     PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, true));
-                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, true));
+                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, false));
                     lastSentX = lastTickX;
                     lastSentY = lastTickY;
                     lastSentZ = lastTickZ;

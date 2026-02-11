@@ -6,7 +6,7 @@ import peak.modules.settings.ModeSetting;
 
 public class Animations extends Module {
 
-    public ModeSetting animationmode = new ModeSetting("Mode", true, "1.7","1.7", "Sigma", "Avatar",
+    public ModeSetting animationmode = new ModeSetting("Mode", false, "1.7","1.7", "Sigma", "Avatar",
             "Slide", "Tap", "Tap2", "Liquid");
 
     public Animations() {
