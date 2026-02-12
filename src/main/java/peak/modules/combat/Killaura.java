@@ -91,6 +91,7 @@ public class Killaura extends Module {
 
                 }
             }
+            fakeblocking = false;
         }
 
     }
@@ -102,7 +103,7 @@ public class Killaura extends Module {
         if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake")) {
             if(selectedtarget != null) {
                 if(packet instanceof C03PacketPlayer) {
-                    manageRotations(selectedtarget, false);
+                    manageRotations(selectedtarget, true);
                 }
                 if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
                     manageRotations(selectedtarget, true);

@@ -5,15 +5,11 @@ import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C00PacketKeepAlive;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
-import peak.managers.DamageManager;
 import peak.managers.MovementManager;
 import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
@@ -63,8 +59,9 @@ public class Fly extends Module {
                 }
                 break;
 
-            case "Deathzone Exp":
+            case "Deathzone":
                 hasStarted = true;
+                mc.thePlayer.capabilities.allowFlying = true;
                 firstPosY = mc.thePlayer.posY;
                 break;
 
@@ -90,6 +87,7 @@ public class Fly extends Module {
                 PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
                 PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
                 hasStarted = false;
+                mc.thePlayer.capabilities.allowFlying = false;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionZ = 0;
@@ -138,13 +136,19 @@ public class Fly extends Module {
     }
 
     public void motionFly() {
-        mc.thePlayer.capabilities.isFlying = true;
+        //mc.thePlayer.capabilities.isFlying = true;
+
+        mc.thePlayer.motionY = 0;
 
         double speed = motionsetting.cValue;
         float yaw = mc.thePlayer.rotationYaw;
 
         if(mc.gameSettings.keyBindJump.isKeyDown()) {
-            mc.thePlayer.motionY = 0.5;
+            mc.thePlayer.motionY += speed / 3;
+        }
+
+        if(mc.gameSettings.keyBindSneak.isKeyDown()) {
+            mc.thePlayer.motionY -= speed / 3;
         }
 
         if (mc.thePlayer.moveForward != 0 || mc.thePlayer.moveStrafing != 0) {
@@ -166,6 +170,11 @@ public class Fly extends Module {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionZ = 0;
         }
+
+        if(mc.thePlayer.ticksExisted % 20 == 0) {
+            mc.thePlayer.motionY = -0.01;
+        }
+
     }
 
     public void vulcanFly() {
@@ -227,6 +236,7 @@ public class Fly extends Module {
     public void deathzoneFly() {
 
         if(hasStarted) {
+
             mc.thePlayer.motionY = 0.000D;
 
             if(mc.thePlayer.ticksExisted % 5 == 0 && ticktimer > 20) {

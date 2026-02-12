@@ -7,14 +7,16 @@ import peak.managers.MovementManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
 import peak.events.TickEvent;
+import peak.modules.settings.NumberSetting;
 
 public class Speed extends Module {
 
     ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius");
+    NumberSetting speedValue = new NumberSetting("Speed", false, 0.1, 1, 0.5, 0.1);
 
     public Speed() {
         super("Speed", Keyboard.KEY_X, Category.MOVEMENT, true);
-        addSetting(speedMode);
+        addSetting(speedMode, speedValue);
     }
 
     boolean autojump = true;
@@ -78,7 +80,7 @@ public class Speed extends Module {
             mc.thePlayer.jump();
         }
 
-        MovementManager.strafe(0.5);
+        MovementManager.strafe(speedValue.cValue);
     }
 
     public void vulcanYPort() {
