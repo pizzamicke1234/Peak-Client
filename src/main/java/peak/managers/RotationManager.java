@@ -8,6 +8,7 @@ import net.minecraft.util.MathHelper;
 public class RotationManager {
 
     static Minecraft mc = Minecraft.getMinecraft();
+    public static float oldYaw, oldPitch;
 
     public static void lookAtEntity(Entity e, float yawSpeed, float pitchSpeed) {
         float[] targetRotations = getRotationsToEntity(e);
@@ -49,9 +50,12 @@ public class RotationManager {
 
         mc.thePlayer.renderYawOffset = newYaw;
         mc.thePlayer.setRotationYawHead(newYaw);
-        if(packetSend) {
+        if(packetSend && (newYaw != oldYaw || newPitch != oldPitch)) {
+            NotificationManager.addChat("New Rot");
             PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, newYaw, newPitch, mc.thePlayer.onGround));
         }
+        oldYaw = newYaw;
+        oldPitch = newPitch;
     }
 
     public static float[] getRotationsToEntity(Entity e) {

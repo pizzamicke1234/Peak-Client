@@ -8,8 +8,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
+import peak.managers.NotificationManager;
+import peak.managers.PacketManager;
 import peak.managers.RotationManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
@@ -102,10 +105,11 @@ public class Killaura extends Module {
 
         if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake")) {
             if(selectedtarget != null) {
+
                 if(packet instanceof C03PacketPlayer) {
-                    manageRotations(selectedtarget, true);
+
                 }
-                if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
+                if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook || packet instanceof S08PacketPlayerPosLook) {
                     manageRotations(selectedtarget, true);
                     packetEvent.cancelPacket();
                 }

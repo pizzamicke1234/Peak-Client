@@ -11,7 +11,7 @@ import peak.modules.settings.NumberSetting;
 
 public class Speed extends Module {
 
-    ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius");
+    public static ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius");
     NumberSetting speedValue = new NumberSetting("Speed", false, 0.1, 1, 0.5, 0.1);
 
     public Speed() {

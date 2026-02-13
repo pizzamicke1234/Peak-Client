@@ -2,8 +2,6 @@ package peak.altmanager;
 
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
-import fr.litarvan.openauth.model.AuthAgent;
-import fr.litarvan.openauth.model.response.AuthResponse;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,7 +10,6 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
-import org.lwjgl.Sys;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.ui.mainmenus.elements.PeakButton;
 
@@ -21,30 +18,19 @@ import java.io.IOException;
 public class GuiAltManager extends GuiScreen {
     public final ResourceLocation background = new ResourceLocation("backgrounds/background1.png");
     private GuiTextField nameField, pwField;
-    public PeakButton btnExit, btnmicrosoft;
+    public PeakButton btnExit, btnMicrosoft, btnCracked;
 
     @Override
     public void initGui() {
-        // ID, x, y, breite, höhe
         this.nameField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
         this.pwField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 100, 90, 200, 20);
 
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, 120, "Cracked Login"));
-
-        btnmicrosoft = new PeakButton(3, this.width / 2 - 100, 150, this.width / 2 + 100, 170, "Microsoft Login");
+        btnCracked = new PeakButton(1, this.width / 2 - 100, 120, this.width / 2 + 100, 140, "Cracked Login");
+        btnMicrosoft = new PeakButton(3, this.width / 2 - 100, 150, this.width / 2 + 100, 170, "Microsoft Login");
         btnExit = new PeakButton(2, this.width / 2 - 80, this.height - 40, this.width / 2 + 80,
                 this.height - 20, "Close");
 
         this.nameField.setFocused(true);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.id == 1) { // Login Button
-            if (!nameField.getText().isEmpty()) {
-                mc.session = new Session(nameField.getText(), "0", "0", "legacy");
-            }
-        }
     }
 
     @Override
@@ -54,9 +40,9 @@ public class GuiAltManager extends GuiScreen {
         Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, (float)this.width, (float)this.height);
         this.nameField.drawTextBox();
         this.pwField.drawTextBox();
-        super.drawScreen(mouseX, mouseY, partialTicks);
         btnExit.drawButton(mouseX, mouseY);
-        btnmicrosoft.drawButton(mouseX, mouseY);
+        btnMicrosoft.drawButton(mouseX, mouseY);
+        btnCracked.drawButton(mouseX, mouseY);
         this.drawCenteredString(this.fontRendererObj, "Current Account: " + mc.session.getUsername(), this.width / 2, 30, -1);
     }
 
@@ -83,8 +69,14 @@ public class GuiAltManager extends GuiScreen {
             e.printStackTrace();
         }
 
-        if(btnmicrosoft.isClicked(mouseX, mouseY)) {
+        if(btnMicrosoft.isClicked(mouseX, mouseY)) {
             LoginWithMicrosoftWeb();
+        }
+
+        if(btnCracked.isClicked(mouseX, mouseY)) {
+            if (!nameField.getText().isEmpty()) {
+                mc.session = new Session(nameField.getText(), "0", "0", "legacy");
+            }
         }
 
     }
