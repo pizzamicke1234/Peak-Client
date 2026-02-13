@@ -1,5 +1,6 @@
 package peak.modules.combat;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -7,7 +8,10 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
@@ -142,17 +146,30 @@ public class Killaura extends Module {
         }
 
         if(helditem instanceof  ItemSword) {
-            if(autoblock.currentValue == "Fake") {
-                fakeblocking = true;
-            }else {
-                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+
+            switch (autoblock.currentValue) {
+
+                case "Fake":
+                    fakeblocking = true;
+                    break;
+
+                case "Vanilla":
+                    PacketManager.sendPacketWithoutEvent(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+                    fakeblocking = true; //Display block animation client side
+                    break;
+
             }
+
         }else {
-            if(autoblock.currentValue == "Fake") {
-                fakeblocking = false;
-            }else {
-                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+
+            switch (autoblock.currentValue) {
+
+                case "Fake":
+                    fakeblocking = false;
+                    break;
+
             }
+
         }
 
     }
