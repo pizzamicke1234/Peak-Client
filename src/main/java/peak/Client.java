@@ -1,6 +1,5 @@
 package peak;
 
-import net.minecraft.network.Packet;
 import org.lwjgl.opengl.Display;
 import peak.events.PacketEvent;
 import peak.managers.PacketManager;
@@ -8,33 +7,23 @@ import peak.managers.font.FontUtil;
 import peak.managers.misc.BlinkManager;
 import peak.managers.misc.PingSpoofManager;
 import peak.modules.Module;
-import peak.modules.combat.Killaura;
-import peak.modules.combat.Velocity;
-import peak.modules.misc.Disabler;
-import peak.modules.misc.Phase;
-import peak.modules.misc.TestModule;
-import peak.modules.movement.Fly;
-import peak.modules.movement.Longjump;
-import peak.modules.movement.Speed;
-import peak.modules.movement.Sprint;
-import peak.modules.player.ChestStealer;
-import peak.modules.player.InvManager;
-import peak.modules.player.NoSlow;
-import peak.modules.player.Scaffold;
+import peak.modules.combat.*;
+import peak.modules.misc.*;
+import peak.modules.movement.*;
+import peak.modules.player.*;
 import peak.modules.render.*;
 import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 
 public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.77";
+    public static String version = "0.78";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -61,6 +50,7 @@ public class Client {
         modules.add(new Sprint());
         modules.add(new Speed());
         modules.add(new Longjump());
+        modules.add(new Step());
 
         //COMBAT
         modules.add(new Killaura());
@@ -76,7 +66,8 @@ public class Client {
         //PLAYER
         modules.add(new NoSlow());
         modules.add(new ChestStealer());
-        modules.add(new InvManager());
+        modules.add(new ChestAura())
+;        modules.add(new InvManager());
         modules.add(new Scaffold());
 
         //Sort the modules by name
