@@ -16,7 +16,7 @@ import peak.ui.mainmenus.elements.PeakButton;
 import java.io.IOException;
 
 public class GuiAltManager extends GuiScreen {
-    public final ResourceLocation background = new ResourceLocation("backgrounds/background1.png");
+    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/background1.png");
     private GuiTextField nameField, pwField;
     public PeakButton btnExit, btnMicrosoft, btnCracked;
 

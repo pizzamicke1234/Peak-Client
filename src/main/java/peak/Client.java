@@ -1,6 +1,7 @@
 package peak;
 
 import org.lwjgl.opengl.Display;
+import peak.commands.listeners.CommandListener;
 import peak.events.PacketEvent;
 import peak.managers.PacketManager;
 import peak.managers.font.FontUtil;
@@ -23,7 +24,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.78";
+    public static String version = "0.8";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -39,11 +40,13 @@ public class Client {
 
         FontUtil.bootstrap();
         setupViaVersion();
+        CommandListener.initCommands();
 
         //MISC
         modules.add(new TestModule());
         modules.add(new Disabler());
         modules.add(new Phase());
+        modules.add(new Spammer());
 
         //MOVEMENT
         modules.add(new Fly());
@@ -103,6 +106,8 @@ public class Client {
             PacketManager.packetsWithoutEvent.remove(packetEvent.getPacket());
             return;
         }
+
+        CommandListener.handle(packetEvent);
 
         if (packetEvent.getType() == PacketEvent.Type.SEND) {
             blinkManager.onPacketSend(packetEvent);

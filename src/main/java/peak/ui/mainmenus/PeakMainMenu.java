@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class PeakMainMenu extends GuiScreen {
 
-    public final ResourceLocation background = new ResourceLocation("backgrounds/background1.png");
-    public final ResourceLocation logo = new ResourceLocation("backgrounds/logo.png");
+    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/background1.png");
+    public final ResourceLocation logo = new ResourceLocation("peak/backgrounds/logo.png");
 
 
     PeakButton btnsingleplayer, btnmultiplayer, btnaltmanager, btnoptions, btnexit;

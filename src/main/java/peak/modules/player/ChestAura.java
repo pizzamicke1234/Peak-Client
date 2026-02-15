@@ -3,6 +3,7 @@ package peak.modules.player;
 import net.minecraft.block.BlockChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
@@ -19,6 +20,7 @@ public class ChestAura extends Module {
     }
 
     ArrayList<BlockPos> openedChests = new ArrayList<>();
+    BlockPos chestToOpen;
 
     @Override
     public void onEnable() {
@@ -36,19 +38,23 @@ public class ChestAura extends Module {
 
         if (mc.currentScreen instanceof GuiContainer) return;
 
+        if(chestToOpen != null) {
+            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem(), chestToOpen, EnumFacing.DOWN, new Vec3(chestToOpen))) {
+                mc.thePlayer.swingItem();
+                openedChests.add(chestToOpen);
+                chestToOpen = null;
+                return;
+            }
+        }
+
         for(TileEntity tileEntity : mc.theWorld.loadedTileEntityList) {
-            if(tileEntity.getBlockType() instanceof BlockChest) {
+            if(tileEntity instanceof TileEntityChest) {
                 if(openedChests.contains(tileEntity.getPos())) return;
                 int distance = getDistanceToTileEntity(tileEntity);
 
-                if(distance <= 4) {
-                    NotificationManager.addChat("BLY^^at");
-                    if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem(), tileEntity.getPos(), EnumFacing.DOWN, new Vec3(tileEntity.getPos()))) {
-                        mc.thePlayer.swingItem();
-                        openedChests.add(tileEntity.getPos());
-                        NotificationManager.addChat("BLYat");
-                        return;
-                    }
+
+                if(distance <= 3) {
+                    chestToOpen = tileEntity.getPos();
                 }
 
             }

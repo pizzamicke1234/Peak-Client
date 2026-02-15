@@ -5,7 +5,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import peak.Client;
+import peak.managers.ColorManager;
 import peak.managers.Rendermanager;
 import peak.managers.font.FontUtil;
 import peak.modules.player.Scaffold;
@@ -16,6 +18,8 @@ public class HUD extends GuiScreen {
 
     public static Minecraft mc = Minecraft.getMinecraft();
     public static FontRenderer fr = mc.fontRendererObj;
+
+    public static final ResourceLocation logoNew = new ResourceLocation("peak/backgrounds/Logonew.png");
 
     public static Scaffold scaffold = (Scaffold) Client.getModulebyName("Scaffold");
     public static HUDMod hudMod = (HUDMod) Client.getModulebyName("HUD");
@@ -36,7 +40,20 @@ public class HUD extends GuiScreen {
     }
 
     private static void drawLogo() {
-        FontUtil.normal.drawString(Client.name + " " + Client.version, 10, 10, -1);
+        if(hudMod.logoMode.currentValue.equals("Classic")) {
+            double scale = 1;
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, scale);
+            FontUtil.bigger.drawString(Client.name + " " + Client.version, 10, 10, -1);
+            FontUtil.bigger.drawString(String.valueOf(Client.name.charAt(0)), 10, 10, ColorManager.getRainbowWave(3, 1));
+            GlStateManager.popMatrix();
+        }else {
+            mc.getTextureManager().bindTexture(logoNew);
+
+            int logoWidth = 300 / 2;
+            int logoHeight = 200 / 2;
+            Gui.drawModalRectWithCustomSizedTexture(-20, -20, 0, 0, logoWidth, logoHeight, (float)logoWidth, (float)logoHeight);
+        }
     }
 
     private static void renderTest() {
