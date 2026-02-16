@@ -72,6 +72,14 @@ public class Module {
         }
     }
 
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
     public void addSetting(Setting... settingstoadd) {
         settings.addAll(Arrays.asList(settingstoadd));
     }

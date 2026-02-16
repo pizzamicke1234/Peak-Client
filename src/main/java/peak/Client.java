@@ -23,17 +23,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Client {
 
     /**TODO:
-     * -AutoPotion module
+     * -AutoPotion module *
      * -Vanilla fly check bypass
-     * -.bind command
      * -module toggle Notifications
      * -TargetHud
+     * -toggle sound
      */
 
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.8";
+    public static String version = "0.81";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -67,6 +67,7 @@ public class Client {
         //COMBAT
         modules.add(new Killaura());
         modules.add(new Velocity());
+        modules.add(new Criticals());
 
         //RENDER
         modules.add(new ClickGuimod());

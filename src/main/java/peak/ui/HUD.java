@@ -3,6 +3,7 @@ package peak.ui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiKeyBindingList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -48,11 +49,14 @@ public class HUD extends GuiScreen {
             FontUtil.bigger.drawString(String.valueOf(Client.name.charAt(0)), 10, 10, ColorManager.getRainbowWave(3, 1));
             GlStateManager.popMatrix();
         }else {
+            GlStateManager.pushMatrix();
+            GlStateManager.color(255, 255, 255);
             mc.getTextureManager().bindTexture(logoNew);
 
             int logoWidth = 300 / 2;
             int logoHeight = 200 / 2;
             Gui.drawModalRectWithCustomSizedTexture(-20, -20, 0, 0, logoWidth, logoHeight, (float)logoWidth, (float)logoHeight);
+            GlStateManager.popMatrix();
         }
     }
 

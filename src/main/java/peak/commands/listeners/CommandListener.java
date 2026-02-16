@@ -3,6 +3,7 @@ package peak.commands.listeners;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import peak.commands.Command;
+import peak.commands.impl.Bind;
 import peak.commands.impl.Test;
 import peak.commands.impl.VClip;
 import peak.events.PacketEvent;
@@ -46,6 +47,7 @@ public class CommandListener {
     public static void initCommands() {
         commands.add(new Test());
         commands.add(new VClip());
+        commands.add(new Bind());
     }
 
 }
