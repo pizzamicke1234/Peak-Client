@@ -19,7 +19,7 @@ public class TestModule extends Module {
 
     @Override
     public void onEnable() {
-
+        mc.thePlayer.inventory.currentItem = 2;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class TestModule extends Module {
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
 
-       NotificationManager.addChat("Ticks Existed | " + mc.thePlayer.ticksExisted);
+       System.out.println(mc.thePlayer.getActivePotionEffects());
 
     }
 }

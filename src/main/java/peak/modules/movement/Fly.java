@@ -144,11 +144,11 @@ public class Fly extends Module {
         float yaw = mc.thePlayer.rotationYaw;
 
         if(mc.gameSettings.keyBindJump.isKeyDown()) {
-            mc.thePlayer.motionY += speed / 3;
+            mc.thePlayer.motionY += speed / 2;
         }
 
         if(mc.gameSettings.keyBindSneak.isKeyDown()) {
-            mc.thePlayer.motionY -= speed / 3;
+            mc.thePlayer.motionY -= speed / 2;
         }
 
         if (mc.thePlayer.moveForward != 0 || mc.thePlayer.moveStrafing != 0) {

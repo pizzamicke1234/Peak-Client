@@ -22,6 +22,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client {
 
+    /**TODO:
+     * -AutoPotion module
+     * -Vanilla fly check bypass
+     * -.bind command
+     * -module toggle Notifications
+     * -TargetHud
+     */
+
+
     // General settings of the client
     public static String name = "Peak";
     public static String version = "0.8";
@@ -69,9 +78,10 @@ public class Client {
         //PLAYER
         modules.add(new NoSlow());
         modules.add(new ChestStealer());
-        modules.add(new ChestAura())
-;        modules.add(new InvManager());
+        modules.add(new ChestAura());
+        modules.add(new InvManager());
         modules.add(new Scaffold());
+        modules.add(new AutoPotion());
 
         //Sort the modules by name
         modules.sort(Comparator.comparing(Module::getName));

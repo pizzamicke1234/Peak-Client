@@ -4,13 +4,17 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.item.*;
+import net.minecraft.potion.PotionEffect;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import peak.managers.NotificationManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.events.TickEvent;
 import peak.modules.settings.NumberSetting;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class InvManager extends Module {
@@ -40,6 +44,9 @@ public class InvManager extends Module {
         if(silent.isTrue() || mc.currentScreen instanceof GuiInventory) {
             sortWeapons();
             sortArmor();
+            sortFood();
+            sortGaps();
+            sortPotions();
         }
 
     }
@@ -82,6 +89,131 @@ public class InvManager extends Module {
                 break;
             }
         }
+    }
+
+    public void sortFood() {
+
+        int worseSlot;
+        int targetHotbarSlot;
+
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
+
+            if (itemStack != null && itemStack.getItem() instanceof ItemFood && !(itemStack.getItem() instanceof ItemAppleGold) && i != 8) {
+                worseSlot = (i < 9) ? (i + 36) : i;
+                targetHotbarSlot = 8;
+                ItemStack targetSlotItem =mc.thePlayer.inventory.mainInventory[targetHotbarSlot];
+                if(targetSlotItem != null && targetSlotItem.getItem() instanceof ItemFood) break;
+
+                if(doDelay()) {
+                    mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, targetHotbarSlot, 2, mc.thePlayer);
+                    return;
+                }
+            }
+        }
+
+        //Throw away extra food
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
+
+            if (itemStack != null && itemStack.getItem() instanceof ItemFood && !(itemStack.getItem() instanceof ItemAppleGold) && i != 8) {
+                worseSlot = (i < 9) ? (i + 36) : i;
+
+                if(doDelay()) {
+                    mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, 1, 4, mc.thePlayer);
+                    return;
+                }
+            }
+        }
+
+    }
+
+    public void sortGaps() {
+
+        int worseSlot;
+        int targetHotbarSlot;
+
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
+
+            if (itemStack != null && itemStack.getItem() instanceof ItemAppleGold && i != 7) {
+                worseSlot = (i < 9) ? (i + 36) : i;
+                targetHotbarSlot = 7;
+                ItemStack targetSlotItem = mc.thePlayer.inventory.mainInventory[targetHotbarSlot];
+                if(targetSlotItem != null && targetSlotItem.getItem() instanceof ItemAppleGold) break;
+
+                if(doDelay()) {
+                    mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, targetHotbarSlot, 2, mc.thePlayer);
+                    return;
+                }
+            }
+        }
+
+        //Throw away extra Gaps
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
+
+            if (itemStack != null && itemStack.getItem() instanceof ItemAppleGold && i != 7) {
+                worseSlot = (i < 9) ? (i + 36) : i;
+
+                if(doDelay()) {
+                    mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, 1, 4, mc.thePlayer);
+                    return;
+                }
+            }
+        }
+
+    }
+
+    public void sortPotions() {
+
+        int worseSlot;
+        int targetHotbarSlot;
+
+        for(int i = 0; i < 36; i++) {
+            ItemStack itemStack = mc.thePlayer.inventory.mainInventory[i];
+
+            if(itemStack != null && itemStack.getItem() instanceof ItemPotion) {
+                List<PotionEffect> potionEffect = ((ItemPotion) itemStack.getItem()).getEffects(itemStack);
+                String effectName = potionEffect.get(0).getEffectName();
+
+                if(effectName.equalsIgnoreCase("potion.moveSpeed")) {
+                    if(i != 6) {
+                        worseSlot = (i < 9) ? (i + 36) : i;
+                        targetHotbarSlot = 6;
+                        ItemStack targetSlotItem = mc.thePlayer.inventory.mainInventory[targetHotbarSlot];
+
+                        if(targetSlotItem != null && targetSlotItem.getItem() instanceof ItemPotion &&
+                                ((ItemPotion) targetSlotItem.getItem()).getEffects(targetSlotItem).get(0).getEffectName().equalsIgnoreCase("potion.moveSpeed")) break;
+
+                        if(doDelay()) {
+                            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, targetHotbarSlot, 2, mc.thePlayer);
+                            return;
+                        }
+
+                    }
+                }
+
+                if(effectName.equalsIgnoreCase("potion.damageBoost")) {
+                    if(i != 5) {
+                        worseSlot = (i < 9) ? (i + 36) : i;
+                        targetHotbarSlot = 5;
+                        ItemStack targetSlotItem = mc.thePlayer.inventory.mainInventory[targetHotbarSlot];
+
+                        if(targetSlotItem != null && targetSlotItem.getItem() instanceof ItemPotion &&
+                                ((ItemPotion) targetSlotItem.getItem()).getEffects(targetSlotItem).get(0).getEffectName().equalsIgnoreCase("potion.damageBoost")) break;
+
+                        if(doDelay()) {
+                            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, worseSlot, targetHotbarSlot, 2, mc.thePlayer);
+                            return;
+                        }
+
+                    }
+                }
+
+            }
+        }
+
     }
 
     public boolean doDelay() {

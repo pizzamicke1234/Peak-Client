@@ -19,7 +19,7 @@ public class PotionEffect
     private int amplifier;
 
     /** Whether the potion is a splash potion */
-    private boolean isSplashPotion;
+    public boolean isSplashPotion;
 
     /** Whether the potion effect came from a beacon */
     private boolean isAmbient;
