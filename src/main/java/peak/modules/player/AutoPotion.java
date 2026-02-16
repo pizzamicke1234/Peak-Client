@@ -1,5 +1,6 @@
 package peak.modules.player;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -66,6 +67,7 @@ public class AutoPotion extends Module {
     public boolean shouldThrow(PotionEffect potionEffect) {
         if(!potionEffect.isSplashPotion) return false;
         if(!mc.thePlayer.onGround) return false;
+        if (mc.currentScreen instanceof GuiContainer) return false;
 
         Collection<PotionEffect> playerEffects = mc.thePlayer.getActivePotionEffects();
         System.out.println("Player Effects: " + playerEffects);
