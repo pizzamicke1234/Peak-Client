@@ -1,8 +1,6 @@
 package peak.ui.notifications;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import peak.managers.ColorManager;
 import peak.managers.font.FontUtil;
 import peak.managers.render.RenderManager;
 

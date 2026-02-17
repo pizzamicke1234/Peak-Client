@@ -1,6 +1,8 @@
 package peak.modules.misc;
 
 import org.lwjgl.input.Keyboard;
+import peak.managers.render.HitBox;
+import peak.managers.render.RenderManager;
 import peak.modules.Module;
 import peak.events.TickEvent;
 import peak.ui.notifications.Notification;
@@ -12,17 +14,16 @@ public class TestModule extends Module {
         super("TestModule", Keyboard.KEY_J, Category.MISC, true);
     }
 
-    Notification notification;
+    HitBox hitBox = new HitBox(3, 5, 3);
 
     @Override
     public void onEnable() {
-        notification = new Notification("Titeeeeeeeeeeele", "Test Message", Notification.NotificationType.INFO, 3000);
-        NotificationManager.addNotification(notification);
+        RenderManager.hitboxes.add(hitBox);
     }
 
     @Override
     public void onDisable() {
-        NotificationManager.removeNotification(notification);
+        RenderManager.hitboxes.remove(hitBox);
     }
 
     @Override

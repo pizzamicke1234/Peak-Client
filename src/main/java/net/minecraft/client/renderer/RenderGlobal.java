@@ -741,6 +741,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             this.postRenderDamagedBlocks();
             this.mc.entityRenderer.disableLightmap();
+
+            peak.managers.render.RenderManager.drawHitboxes();
+
             this.mc.mcProfiler.endSection();
         }
     }
@@ -1872,7 +1875,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     /**
      * Draws the selection box for the player. Args: entityPlayer, rayTraceHit, i, itemStack, partialTickTime
-     *  
+     *
      * @param execute If equals to 0 the method is executed
      */
     public void drawSelectionBox(EntityPlayer player, MovingObjectPosition movingObjectPositionIn, int execute, float partialTicks)

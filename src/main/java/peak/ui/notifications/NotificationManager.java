@@ -34,7 +34,7 @@ public class NotificationManager {
                 continue;
             }
             n.draw(yOffset);
-            yOffset += 40; // Abstand zur nächsten Box
+            yOffset += 40;
         }
     }
 

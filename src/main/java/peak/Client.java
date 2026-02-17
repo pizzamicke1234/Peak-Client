@@ -24,12 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Client {
 
     /**TODO:
-     * -AutoPotion module *
      * -Vanilla fly check bypass
      * -TargetHud
      * -toggle sound
+     * -teleport command
      */
-
 
     // General settings of the client
     public static String name = "Peak";

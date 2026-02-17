@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import peak.Client;
 import peak.managers.ColorManager;
 import peak.managers.font.FontUtil;
+import peak.managers.render.RenderManager;
 import peak.modules.player.Scaffold;
 import peak.modules.render.HUDMod;
 import peak.ui.arraylists.Arraylist;

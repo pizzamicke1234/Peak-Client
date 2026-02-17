@@ -3,12 +3,17 @@ package peak.managers.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RenderManager {
 
+    Minecraft mc = Minecraft.getMinecraft();
+    public static CopyOnWriteArrayList<HitBox> hitboxes = new CopyOnWriteArrayList<>();
     private static final ShaderManager ROUNDED_SHADER = new ShaderManager("assets/minecraft/peak/render/shaders/rounded.frag");
 
     public static void drawRoundedRect(float x, float y, float width, float height, float radius, Color color) {
@@ -40,4 +45,46 @@ public class RenderManager {
         GlStateManager.enableAlpha();
         GlStateManager.disableBlend();
     }
+
+    public static void drawHitboxes(){
+        if(hitboxes.size() > 0) {
+            for(HitBox hitBox : hitboxes) {
+                drawHitboxAt(hitBox.x, hitBox.y, hitBox.z);
+            }
+        }
+    }
+
+    public static void drawHitboxAt(double x, double y, double z) {
+        net.minecraft.client.renderer.entity.RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+
+        double renderX = x - rm.viewerPosX;
+        double renderY = y - rm.viewerPosY;
+        double renderZ = z - rm.viewerPosZ;
+
+        float w = 0.3F;
+        float h = 1.8F;
+
+        AxisAlignedBB bb = new AxisAlignedBB(
+                renderX - w, renderY, renderZ - w,
+                renderX + w, renderY + h, renderZ + w
+        );
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+
+        GL11.glLineWidth(2.0F);
+
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        RenderGlobal.drawSelectionBoundingBox(bb);
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
 }
