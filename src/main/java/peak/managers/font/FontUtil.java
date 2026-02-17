@@ -11,8 +11,8 @@ import java.util.Map;
 @SuppressWarnings("NonAtomicOperationOnVolatileField")
 public class FontUtil {
     public static volatile int completed;
-    public static MinecraftFontRenderer normal, smaller, bigger;
-    private static Font normal_, smaller_, bigger_;
+    public static MinecraftFontRenderer normal, smaller, smallest, bigger;
+    private static Font normal_, smaller_, smallest_, bigger_;
 
     private static Font getFont(Map<String, Font> locationMap, String location, int size) {
         Font font = null;
@@ -47,6 +47,7 @@ public class FontUtil {
             normal_ = getFont(locationMap, "arial.ttf", 23);
             bigger_ = getFont(locationMap, "arial.ttf", 30);
             smaller_ = getFont(locationMap, "arial.ttf", 20);
+            smallest_ = getFont(locationMap, "arial.ttf", 17);
             completed++;
         }).start();
         new Thread(() ->
@@ -72,6 +73,7 @@ public class FontUtil {
         normal = new MinecraftFontRenderer(normal_, true, true);
         smaller = new MinecraftFontRenderer(smaller_, true, true);
         bigger = new MinecraftFontRenderer(bigger_, true, true);
+        smallest = new MinecraftFontRenderer(smallest_, true, true);
 
     }
 }

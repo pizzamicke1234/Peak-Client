@@ -1,18 +1,15 @@
 package peak.modules.misc;
 
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
-import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
 import peak.managers.TimeManager;
 import peak.managers.misc.BlinkManager;
 import peak.modules.Module;
-import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.events.TickEvent;
 

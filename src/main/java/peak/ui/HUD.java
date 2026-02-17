@@ -3,17 +3,16 @@ package peak.ui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiKeyBindingList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import peak.Client;
 import peak.managers.ColorManager;
-import peak.managers.Rendermanager;
 import peak.managers.font.FontUtil;
 import peak.modules.player.Scaffold;
 import peak.modules.render.HUDMod;
 import peak.ui.arraylists.Arraylist;
+import peak.ui.notifications.NotificationManager;
 
 public class HUD extends GuiScreen {
 
@@ -29,6 +28,7 @@ public class HUD extends GuiScreen {
 
         drawLogo();
         Arraylist.draw();
+        NotificationManager.render();
 
         if(scaffold.toggled) {
             Scaffold.renderBlockCount();
@@ -63,11 +63,6 @@ public class HUD extends GuiScreen {
     private static void renderTest() {
         //Draw regular GuiRect
         Gui.drawRect(100, 100, 150, 125, 0xAA000000);
-
-        //Draw GuiRect with round corners
-        //Rendermanager.drawRoundedRect(300, 100, 350, 125, 0xAA000000);
-
-        Rendermanager.drawCorner(250, 150, 30, 0);
     }
 
 }

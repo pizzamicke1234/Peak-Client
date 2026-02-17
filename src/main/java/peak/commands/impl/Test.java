@@ -1,7 +1,7 @@
 package peak.commands.impl;
 
 import peak.commands.Command;
-import peak.managers.NotificationManager;
+import peak.ui.notifications.NotificationManager;
 
 public class Test extends Command {
 

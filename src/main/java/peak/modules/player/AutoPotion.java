@@ -70,8 +70,6 @@ public class AutoPotion extends Module {
         if (mc.currentScreen instanceof GuiContainer) return false;
 
         Collection<PotionEffect> playerEffects = mc.thePlayer.getActivePotionEffects();
-        System.out.println("Player Effects: " + playerEffects);
-        System.out.println(mc.thePlayer.getHealth());
 
         if(killaura.toggled && !(Killaura.rotationMode.currentValue.equals("Off") || Killaura.rotationMode.currentValue.equals("Fake"))) {
             return false;

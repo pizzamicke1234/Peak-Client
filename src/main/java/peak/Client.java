@@ -14,6 +14,7 @@ import peak.modules.movement.*;
 import peak.modules.player.*;
 import peak.modules.render.*;
 import peak.events.TickEvent;
+import peak.ui.notifications.NotificationManager;
 import peak.viaversion.viamcp.ViaMCP;
 
 import java.util.*;
@@ -25,7 +26,6 @@ public class Client {
     /**TODO:
      * -AutoPotion module *
      * -Vanilla fly check bypass
-     * -module toggle Notifications
      * -TargetHud
      * -toggle sound
      */
@@ -33,7 +33,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.81";
+    public static String version = "0.82";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();

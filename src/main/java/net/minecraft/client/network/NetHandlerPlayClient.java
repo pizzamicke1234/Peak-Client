@@ -23,7 +23,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
@@ -213,7 +212,7 @@ import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import peak.Client;
-import peak.managers.NotificationManager;
+import peak.ui.notifications.NotificationManager;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.viaversion.vialoadingbase.ViaLoadingBase;
 

@@ -1,6 +1,5 @@
 package peak.modules.player;
 
-import net.minecraft.block.BlockChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
@@ -8,7 +7,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import peak.events.TickEvent;
-import peak.managers.NotificationManager;
 import peak.modules.Module;
 
 import java.util.ArrayList;

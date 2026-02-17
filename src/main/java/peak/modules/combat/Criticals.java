@@ -29,7 +29,7 @@ public class Criticals extends Module {
                     switch (critMode.currentValue) {
 
                         case "Packet":
-                            double[] offsets = {0.0625, 0.001};
+                            double[] offsets = {0.0725, 0.001 - (Math.random() / 10000)};
                             for(double offset : offsets) {
                                 PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                                         mc.thePlayer.posY + offset, mc.thePlayer.posZ, false));

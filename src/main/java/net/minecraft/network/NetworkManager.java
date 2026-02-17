@@ -2,7 +2,6 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.connection.UserConnectionImpl;
 import com.viaversion.viaversion.protocol.ProtocolPipelineImpl;
@@ -54,9 +53,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import peak.Client;
 import peak.events.PacketEvent;
-import peak.managers.NotificationManager;
 import peak.managers.PacketManager;
-import peak.modules.misc.Disabler;
 import peak.viaversion.vialoadingbase.ViaLoadingBase;
 import peak.viaversion.vialoadingbase.netty.event.CompressionReorderEvent;
 import peak.viaversion.viamcp.MCPVLBPipeline;

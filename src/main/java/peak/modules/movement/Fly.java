@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
 import peak.managers.MovementManager;
-import peak.managers.NotificationManager;
+import peak.ui.notifications.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;

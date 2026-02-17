@@ -5,6 +5,8 @@ import net.minecraft.network.Packet;
 import peak.events.PacketEvent;
 import peak.modules.settings.Setting;
 import peak.events.TickEvent;
+import peak.ui.notifications.Notification;
+import peak.ui.notifications.NotificationManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,12 +50,16 @@ public class Module {
     }
 
     public void toggle() {
+        Notification notification;
         toggled = !toggled;
         if(toggled) {
             onEnable();
+            notification = new Notification("Module Enabled", "Enabled " + name, Notification.NotificationType.MODULE, 1500);
         }else{
             onDisable();
+            notification = new Notification("Module Disabled", "Disabled " + name, Notification.NotificationType.MODULE, 1500);
         }
+        NotificationManager.addNotification(notification);
     }
 
     public String getName() {

@@ -7,7 +7,7 @@ import peak.commands.impl.Bind;
 import peak.commands.impl.Test;
 import peak.commands.impl.VClip;
 import peak.events.PacketEvent;
-import peak.managers.NotificationManager;
+import peak.ui.notifications.NotificationManager;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

@@ -1,8 +1,6 @@
 package peak.modules.movement;
 
-import org.lwjgl.input.Keyboard;
 import peak.events.TickEvent;
-import peak.managers.NotificationManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
