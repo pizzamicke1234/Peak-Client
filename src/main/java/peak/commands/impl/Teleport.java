@@ -17,9 +17,9 @@ public class Teleport extends Command {
         super("tp");
     }
 
-    int packetX;
+    double packetX;
     int packetY;
-    int packetZ;
+    double packetZ;
 
     String serverIp;
 
@@ -30,7 +30,8 @@ public class Teleport extends Command {
     @Override
     public void onToggle(String[] args) {
 
-        serverIp = mc.getCurrentServerData().serverIP;
+        //serverIp = mc.getCurrentServerData().serverIP;
+        serverIp = "play.deathzone.net";
         allowC03Packets = false;
 
         if(args.length == 2) {
@@ -50,6 +51,10 @@ public class Teleport extends Command {
             int targetY = targetPos.getY();
             int targetZ = targetPos.getZ();
             int distance = getDistanceToTarget(playerPos, targetPos);
+
+            if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
+                distance *= 2;
+            }
 
             packetX = playerPos.getX();
             packetY = playerPos.getY();
@@ -77,6 +82,10 @@ public class Teleport extends Command {
             BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
             int distance = getDistanceToTarget(playerPos, targetPos);
 
+            if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
+                distance *= 2;
+            }
+
             //Set the first packet Position
             packetX = playerPos.getX();
             packetY = playerPos.getY();
@@ -98,7 +107,7 @@ public class Teleport extends Command {
 
     }
 
-    public ArrayList<BlockPos> getTpPackets(int packetX, int packetY, int packetZ, int targetX, int targetY, int targetZ, int distance) {
+    public ArrayList<BlockPos> getTpPackets(double packetX, int packetY, double packetZ, int targetX, int targetY, int targetZ, int distance) {
         ArrayList<BlockPos> tpPackets = new ArrayList<>();
 
         for(int i = 0; i < distance; i++) {
@@ -119,7 +128,7 @@ public class Teleport extends Command {
     public void teleport(ArrayList<BlockPos> tpPackets) {
         for(BlockPos tpPacket : tpPackets) {
 
-            C03PacketPlayer.C04PacketPlayerPosition packet = new C03PacketPlayer.C04PacketPlayerPosition(tpPacket.getX() + 0.5D, tpPacket.getY(), tpPacket.getZ() + 0.5D, true);
+            C03PacketPlayer.C04PacketPlayerPosition packet = new C03PacketPlayer.C04PacketPlayerPosition(tpPacket.getX() + 0.5D, tpPacket.getY(), tpPacket.getZ() + 0.5D, false);
             PacketManager.sendPacketWithoutEvent(packet);
 
             //Draw Hitboxes
@@ -146,17 +155,17 @@ public class Teleport extends Command {
         return Math.max(dX, Math.max(dY, dZ));
     }
 
-    public int correctX(int playerX, int targetX) {
-        int difference = Math.abs(targetX - playerX);
-        int step = (difference % 2 == 0) ? 2 : 1;
+    public double correctX(double playerX, int targetX) {
+        double difference = Math.abs(targetX - playerX);
+        double step = (difference % 2 == 0) ? 2 : 1;
 
         if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
-            step = 1;
+            step = 0.5f;
         }
 
         if(difference == 0) return playerX;
 
-        int newX = (targetX > playerX) ? playerX + step : playerX - step;
+        double newX = (targetX > playerX) ? playerX + step : playerX - step;
         return newX;
     }
 
@@ -164,9 +173,9 @@ public class Teleport extends Command {
         int difference = Math.abs(targetY - playerY);
         int step = (difference % 3 == 0) ? 3 : 1;
 
-        if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
+        /*if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
             step = 1;
-        }
+        }*/
 
         if(difference == 0) return playerY;
 
@@ -174,17 +183,17 @@ public class Teleport extends Command {
         return newY;
     }
 
-    public int correctZ(int playerZ, int targetZ) {
-        int difference = Math.abs(targetZ - playerZ);
-        int step = (difference % 2 == 0) ? 2 : 1;
+    public double correctZ(double playerZ, int targetZ) {
+        double difference = Math.abs(targetZ - playerZ);
+        double step = (difference % 2 == 0) ? 2 : 1;
 
         if(serverIp.equalsIgnoreCase("play.deathzone.net")) {
-            step = 1;
+            step = 0.5;
         }
 
         if(difference == 0) return playerZ;
 
-        int newZ = (targetZ > playerZ) ? playerZ + step : playerZ - step;
+        double newZ = (targetZ > playerZ) ? playerZ + step : playerZ - step;
         return newZ;
     }
 
