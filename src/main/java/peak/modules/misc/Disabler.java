@@ -34,7 +34,7 @@ public class Disabler extends Module {
 
     @Override
     public void onDisable() {
-
+        BlinkManager.blinking = false;
     }
 
     @Override
@@ -45,6 +45,7 @@ public class Disabler extends Module {
 
             PacketManager.sendPacketWithoutEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
             PacketManager.sendPacketWithoutEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SNEAKING));
+
 
             if (timer.hasReached((long) (5000 + (Math.random() * 1000)))) {
                 packetList.forEach(PacketManager::sendPacketWithoutEvent);

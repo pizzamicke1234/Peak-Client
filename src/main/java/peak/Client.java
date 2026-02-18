@@ -69,6 +69,7 @@ public class Client {
         modules.add(new Killaura());
         modules.add(new Velocity());
         modules.add(new Criticals());
+        modules.add(new InfiniteAura());
 
         //RENDER
         modules.add(new ClickGuimod());

@@ -171,10 +171,6 @@ public class Fly extends Module {
             mc.thePlayer.motionZ = 0;
         }
 
-        if(mc.thePlayer.ticksExisted % 20 == 0) {
-            mc.thePlayer.motionY = -0.01;
-        }
-
     }
 
     public void vulcanFly() {

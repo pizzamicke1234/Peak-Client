@@ -65,7 +65,7 @@ public class Teleport extends Command {
             //Teleport
             teleport(tpPackets);
 
-            //RenderManager.hitboxes.clear();
+            RenderManager.hitboxes.clear();
             tpPackets.clear();
 
             Notification notification = new Notification("Teleport", "Teleported to " + targetPlayer.getName(), Notification.NotificationType.INFO, 3000);
@@ -96,13 +96,14 @@ public class Teleport extends Command {
             //Teleport
             teleport(tpPackets);
 
-            //RenderManager.hitboxes.clear();
+            RenderManager.hitboxes.clear();
             tpPackets.clear();
 
             Notification notification = new Notification("Teleport", "Teleported to " + targetX + " " + targetY + " " + targetZ, Notification.NotificationType.INFO, 3000);
             NotificationManager.addNotification(notification);
         }
 
+        tpPackets.clear();
         allowC03Packets = true;
 
     }
