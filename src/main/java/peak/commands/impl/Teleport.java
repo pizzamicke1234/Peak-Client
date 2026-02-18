@@ -7,6 +7,7 @@ import peak.commands.Command;
 import peak.managers.PacketManager;
 import peak.managers.render.HitBox;
 import peak.managers.render.RenderManager;
+import peak.ui.notifications.Notification;
 import peak.ui.notifications.NotificationManager;
 
 import java.util.ArrayList;
@@ -30,13 +31,10 @@ public class Teleport extends Command {
     @Override
     public void onToggle(String[] args) {
 
-        //serverIp = mc.getCurrentServerData().serverIP;
-        serverIp = "play.deathzone.net";
+        serverIp = mc.getCurrentServerData().serverIP;
         allowC03Packets = false;
 
         if(args.length == 2) {
-            float oT = mc.timer.timerSpeed;
-            mc.timer.timerSpeed = 0.1f;
             String playerName = args[1];
             EntityPlayer targetPlayer = getPlayerbyName(playerName);
 
@@ -69,9 +67,9 @@ public class Teleport extends Command {
 
             //RenderManager.hitboxes.clear();
             tpPackets.clear();
-            NotificationManager.addChat("Distance: " + distance);
 
-            mc.timer.timerSpeed = oT;
+            Notification notification = new Notification("Teleport", "Teleported to " + targetPlayer.getName(), Notification.NotificationType.INFO, 3000);
+            NotificationManager.addNotification(notification);
         }
 
         if(args.length == 4) {
@@ -100,7 +98,9 @@ public class Teleport extends Command {
 
             //RenderManager.hitboxes.clear();
             tpPackets.clear();
-            NotificationManager.addChat("Distance: " + distance);
+
+            Notification notification = new Notification("Teleport", "Teleported to " + targetX + " " + targetY + " " + targetZ, Notification.NotificationType.INFO, 3000);
+            NotificationManager.addNotification(notification);
         }
 
         allowC03Packets = true;
