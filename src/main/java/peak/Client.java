@@ -34,7 +34,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.83";
+    public static String version = "0.84";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -64,6 +64,7 @@ public class Client {
         modules.add(new Speed());
         modules.add(new Longjump());
         modules.add(new Step());
+        modules.add(new InvMove());
 
         //COMBAT
         modules.add(new Killaura());

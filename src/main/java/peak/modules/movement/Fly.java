@@ -7,10 +7,12 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
 import peak.managers.MovementManager;
+import peak.modules.settings.BoolSetting;
 import peak.ui.notifications.NotificationManager;
 import peak.managers.PacketManager;
 import peak.modules.Module;
@@ -22,26 +24,17 @@ public class Fly extends Module {
     public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Ground");
     public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
             10, 1, 0.25);
+    public BoolSetting viewBobbing = new BoolSetting("View Bobbing", false, false);
 
     public Fly() {
         super("Fly", Keyboard.KEY_Y, Category.MOVEMENT, true);
-        addSetting(flyMode, motionsetting);
+        addSetting(flyMode, motionsetting, viewBobbing);
     }
 
-    public int ticktimer = 0;
-    //Deathzone
-    int deathzoneFlyTicks = 0;
-    int dmgJumpCount = 0;
-    boolean hasStarted = false;
-    boolean waitFlag = false;
-    boolean packetCancel = true;
-    double lastSentX;
-    double lastSentY;
-    double lastSentZ;
-    double lastTickX = 0;
-    double lastTickY = 0;
-    double lastTickZ = 0;
-    double firstPosY;
+    private int ticktimer = 0;
+    private long groundTimer;
+    private boolean hasStarted = false;
+    private double firstPosY;
 
     public void onEnable() {
 
@@ -102,6 +95,10 @@ public class Fly extends Module {
 
         if(tickType == TickEvent.TickType.POST) return;
 
+        if(viewBobbing.isTrue()) {
+            mc.thePlayer.cameraYaw = 0.1F;
+        }
+
         ticktimer++;
 
         switch (flyMode.currentValue) {
@@ -139,6 +136,10 @@ public class Fly extends Module {
         //mc.thePlayer.capabilities.isFlying = true;
 
         mc.thePlayer.motionY = 0;
+
+        if(ticktimer % 10 == 0) {
+            handleVanillaKickBypass();
+        }
 
         double speed = motionsetting.cValue;
         float yaw = mc.thePlayer.rotationYaw;
@@ -233,25 +234,11 @@ public class Fly extends Module {
 
         if(hasStarted) {
 
+            mc.timer.timerSpeed = 0.3f;
             mc.thePlayer.motionY = 0.000D;
-
-            if(mc.thePlayer.ticksExisted % 5 == 0 && ticktimer > 20) {
-                MovementManager.strafe(0.4);
-            }else {
-                MovementManager.strafe(0.25);
-            }
-
-            if(mc.gameSettings.keyBindJump.isKeyDown()) {
-                mc.thePlayer.motionY += 0.1;
-            }
-            if(mc.gameSettings.keyBindSneak.isKeyDown()) {
-                mc.thePlayer.motionY -= 0.1;
-            }
-
-            //Bypass kicks (Does not fucking work atm)
-            if(mc.thePlayer.ticksExisted % 40 == 0) {
-                mc.thePlayer.motionY = -0.01D;
-            }
+            C03PacketPlayer.C04PacketPlayerPosition packet = new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + 1, mc.thePlayer.posY, mc.thePlayer.posZ, false);
+            PacketManager.sendPacketWithoutEvent(packet);
+            mc.thePlayer.setPosition(mc.thePlayer.posX + 1, mc.thePlayer.posY, mc.thePlayer.posZ);
 
         }
 
@@ -259,60 +246,6 @@ public class Fly extends Module {
 
     public void deathzonePacket(PacketEvent packetEvent) {
 
-        Packet packet = packetEvent.getPacket();
-
-        if (packet instanceof C03PacketPlayer || packet instanceof C0FPacketConfirmTransaction || packet instanceof C00PacketKeepAlive) {
-            packetEvent.cancelPacket();
-        }
-        if (packet instanceof C03PacketPlayer) {
-            //packet.set
-        }
-        if(hasStarted) {
-            if(packet instanceof C03PacketPlayer && (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook)) {
-                double deltaX = ((C03PacketPlayer) packet).getPositionX() - lastSentX;
-                double deltaY = ((C03PacketPlayer) packet).getPositionY() - lastSentY;
-                double deltaZ = ((C03PacketPlayer) packet).getPositionZ() - lastSentZ;
-
-                if (Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) > 6) {
-                    deathzoneFlyTicks++;
-                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, true));
-                    PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(lastTickX, lastTickY, lastTickZ, false));
-                    lastSentX = lastTickX;
-                    lastSentY = lastTickY;
-                    lastSentZ = lastTickZ;
-                }
-                lastTickX = ((C03PacketPlayer) packet).getPositionX();
-                lastTickY = ((C03PacketPlayer) packet).getPositionY();
-                lastTickZ = ((C03PacketPlayer) packet).getPositionZ();
-                packetEvent.cancelPacket();
-            }else if(packet instanceof C03PacketPlayer) {
-                packetEvent.cancelPacket();
-            }
-        }
-
-        if(packet instanceof S08PacketPlayerPosLook) {
-            hasStarted = true;
-            waitFlag = false;
-        }
-
-        if (packet instanceof S08PacketPlayerPosLook) {
-            lastSentX = ((S08PacketPlayerPosLook) packet).getX();
-            lastSentY = ((S08PacketPlayerPosLook) packet).getY();
-            lastSentZ = ((S08PacketPlayerPosLook) packet).getZ();
-
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C06PacketPlayerPosLook(((S08PacketPlayerPosLook) packet).getX(),
-                    ((S08PacketPlayerPosLook) packet).getY(), ((S08PacketPlayerPosLook) packet).getZ(),
-                    ((S08PacketPlayerPosLook) packet).getYaw(), ((S08PacketPlayerPosLook) packet).getPitch(),
-                    false));
-        }
-
-        if (packet instanceof C0FPacketConfirmTransaction) { //Make sure it works with Vulcan Velocity
-            int transUID = (((C0FPacketConfirmTransaction) packet).getUid());
-            if (transUID >= -31767 && transUID <= -30769) {
-                packetEvent.cancelPacket();
-                PacketManager.sendPacketWithoutEvent(packet);
-            }
-        }
 
     }
 
@@ -328,6 +261,56 @@ public class Fly extends Module {
         }
         NotificationManager.addChat("No rideable Entity found!");
         return false;
+    }
+
+    private void handleVanillaKickBypass() {
+        if (System.currentTimeMillis() - groundTimer < 1000) return;
+
+        final double x = mc.thePlayer.posX;
+        final double y = mc.thePlayer.posY;
+        final double z = mc.thePlayer.posZ;
+
+        final double ground = calculateGround();
+
+        for (double posY = y; posY > ground; posY -= 8D) {
+            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, posY, z, true));
+
+            if (posY - 8D < ground) break; // Prevent next step
+        }
+
+        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, ground, z, true));
+
+
+        for (double posY = ground; posY < y; posY += 8D) {
+            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, posY, z, true));
+
+            if (posY + 8D > y) break; // Prevent next step
+        }
+
+        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
+
+        groundTimer = System.currentTimeMillis();
+    }
+
+    public double calculateGround() {
+        final double y = mc.thePlayer.posY;
+
+        final AxisAlignedBB playerBoundingBox = mc.thePlayer.getEntityBoundingBox();
+        double blockHeight = 1D;
+
+        for (double ground = y; ground > 0D; ground -= blockHeight) {
+            final AxisAlignedBB customBox = new AxisAlignedBB(playerBoundingBox.maxX, ground + blockHeight, playerBoundingBox.maxZ, playerBoundingBox.minX, ground, playerBoundingBox.minZ);
+
+            if (mc.theWorld.checkBlockCollision(customBox)) {
+                if (blockHeight <= 0.05D)
+                    return ground + blockHeight;
+
+                ground += blockHeight;
+                blockHeight = 0.05D;
+            }
+        }
+
+        return 0F;
     }
 
 }

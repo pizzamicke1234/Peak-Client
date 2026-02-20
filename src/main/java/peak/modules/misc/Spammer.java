@@ -20,6 +20,7 @@ public class Spammer extends Module {
     @Override
     public void onEnable() {
         lastTime = System.currentTimeMillis();
+        //message = "Peak >>> Rise";
     }
 
     @Override

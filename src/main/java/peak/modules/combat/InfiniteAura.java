@@ -17,6 +17,7 @@ import peak.managers.render.RenderManager;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
+import peak.ui.notifications.Notification;
 import peak.ui.notifications.NotificationManager;
 
 import java.util.ArrayList;
@@ -34,12 +35,26 @@ public class InfiniteAura extends Module {
     }
 
     Entity selecetedEntity;
-
+    boolean allowTarget = true;
+    boolean hitDone = false;
     ArrayList<C03PacketPlayer.C04PacketPlayerPosition> tpPackets = new ArrayList<>();
+    ArrayList<C03PacketPlayer.C04PacketPlayerPosition> tpPacketsDeathzone = new ArrayList<>();
+
+    ArrayList<C03PacketPlayer.C04PacketPlayerPosition> exemptPackets = new ArrayList<>();
 
     @Override
     public void onEnable() {
         selecetedEntity = getClosestEntity();
+
+        if(mode.currentValue.equals("Deathzone Boat")) {
+            if(mc.thePlayer.ridingEntity == null) {
+                Notification notification = new Notification("Warning", "Only enable when in a boat",
+                        Notification.NotificationType.WARNING, 3000);
+                NotificationManager.addNotification(notification);
+                this.toggle();
+            }
+        }
+
     }
 
     @Override
@@ -47,6 +62,8 @@ public class InfiniteAura extends Module {
         selecetedEntity = null;
         tpPackets.clear();
         RenderManager.hitboxes.clear();
+        allowTarget = true;
+        hitDone = false;
     }
 
     @Override
@@ -61,7 +78,39 @@ public class InfiniteAura extends Module {
 
         //Packet hit
 
+        if(mode.currentValue.equals("Deathzone Boat")) {
 
+            if(mc.thePlayer.ridingEntity == null) {
+
+                if(tpPackets.isEmpty()) {
+                    tpPackets = getPacketsToEntity(selecetedEntity);
+                }
+
+                RenderManager.hitboxes.clear();
+                hitEntity(selecetedEntity, tpPackets, true);
+                tpPackets.clear();
+
+                getInNearestEntity();
+            }
+            return;
+        }
+
+        if(mode.currentValue.equals("Deathzone Exp")) {
+            if(canClick()) {
+
+                if(tpPackets.isEmpty() && allowTarget) {
+                    tpPackets = getPacketsToEntity(selecetedEntity);
+                    tpPacketsDeathzone = getPacketsToEntity(selecetedEntity);
+                    exemptPackets = getPacketsToEntity(selecetedEntity);
+                    allowTarget = false;
+                }
+
+                //RenderManager.hitboxes.clear();
+                hitEntityDeathzone(selecetedEntity, true);
+                //tpPackets.clear();
+            }
+            return;
+        }
 
         if(canClick()) {
 
@@ -79,22 +128,30 @@ public class InfiniteAura extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
+        /*if(mode.currentValue.equals("Deathzone Exp")) {
+            if(packetEvent.getPacket() instanceof C03PacketPlayer.C04PacketPlayerPosition) {
+                C03PacketPlayer.C04PacketPlayerPosition packet = (C03PacketPlayer.C04PacketPlayerPosition) packetEvent.getPacket();
 
+                if(tpPackets.contains(packet)) {
+                    packetEvent.cancelPacket();
+                }
+
+            }
+        }*/
 
     }
 
-    public boolean getInNearestEntity() {
+    public void getInNearestEntity() {
         for(Entity e : mc.theWorld.loadedEntityList) {
             if(e instanceof EntityBoat || e instanceof EntityMinecart || e instanceof EntityHorse) {
 
                 if(mc.thePlayer.getDistanceToEntity(e) < 5) {
                     mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(e, C02PacketUseEntity.Action.INTERACT));
-                    return true;
+                    return;
                 }
             }
         }
         NotificationManager.addChat("No rideable Entity found!");
-        return false;
     }
 
     public void hitEntity(Entity entity, ArrayList<C03PacketPlayer.C04PacketPlayerPosition> tpPackets, boolean showHitboxes) {
@@ -113,6 +170,46 @@ public class InfiniteAura extends Module {
 
         for(C03PacketPlayer.C04PacketPlayerPosition packet : tpPackets) {
             PacketManager.sendPacketWithoutEvent(packet);
+        }
+
+    }
+
+    public void hitEntityDeathzone(Entity entity, boolean showHitboxes) {
+
+        System.out.println(tpPacketsDeathzone);
+
+        if(!tpPackets.isEmpty()) {
+            for(C03PacketPlayer.C04PacketPlayerPosition packet : tpPackets) {
+                PacketManager.sendPacket(packet);
+                if(showHitboxes) {
+                    HitBox hitBox = new HitBox(packet.getPositionX(), packet.getPositionY(), packet.getPositionZ());
+                    RenderManager.hitboxes.add(hitBox);
+                }
+                tpPackets.remove(packet);
+                return;
+            }
+        }
+
+        if(!hitDone){
+            RenderManager.hitboxes.clear();
+            mc.playerController.attackEntity(mc.thePlayer, entity);
+            mc.thePlayer.swingItem();
+            Collections.reverse(tpPacketsDeathzone);
+            hitDone = true;
+        }
+
+        if(!tpPacketsDeathzone.isEmpty()) {
+            for(C03PacketPlayer.C04PacketPlayerPosition packet : tpPacketsDeathzone) {
+                PacketManager.sendPacket(packet);
+                tpPacketsDeathzone.remove(packet);
+
+                if(showHitboxes) {
+                    HitBox hitBox = new HitBox(packet.getPositionX(), packet.getPositionY(), packet.getPositionZ());
+                    RenderManager.hitboxes.add(hitBox);
+                }
+
+                return;
+            }
         }
 
     }
@@ -177,6 +274,10 @@ public class InfiniteAura extends Module {
         int difference = (int) Math.abs(targetX - playerX);
         int step = (difference % 3 == 0) ? 3 : 1;
 
+        if(mode.currentValue.equals("Deathzone Exp")) {
+            step = 1;
+        }
+
         if(difference == 0) return (int)playerX;
 
         int newX = (int) ((targetX > playerX) ? playerX + step : playerX - step);
@@ -196,6 +297,10 @@ public class InfiniteAura extends Module {
     public int correctZ(double playerZ, double targetZ) {
         int difference = (int) Math.abs(targetZ - playerZ);
         int step = (difference % 3 == 0) ? 3 : 1;
+
+        if(mode.currentValue.equals("Deathzone Exp")) {
+            step = 1;
+        }
 
         if(difference == 0) return (int) playerZ;
 
