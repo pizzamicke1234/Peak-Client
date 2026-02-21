@@ -16,7 +16,6 @@ import peak.modules.movement.*;
 import peak.modules.player.*;
 import peak.modules.render.*;
 import peak.events.TickEvent;
-import peak.ui.notifications.NotificationManager;
 import peak.viaversion.viamcp.ViaMCP;
 
 import java.util.*;
@@ -63,7 +62,7 @@ public class Client {
         modules.add(new Sprint());
         modules.add(new Speed());
         modules.add(new Longjump());
-        modules.add(new Step());
+        modules.add(new Spider());
         modules.add(new InvMove());
         modules.add(new TargetStrafe());
 

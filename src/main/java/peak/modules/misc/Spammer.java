@@ -20,7 +20,11 @@ public class Spammer extends Module {
     @Override
     public void onEnable() {
         lastTime = System.currentTimeMillis();
-        message = "https://i.postimg.cc/tTC1PYjV/received-1636382016789692.gif <@1181342356822294571> <@1238908500474593341>";
+        message = "<@533715717938479119> <@1180303661109358704> <@754709830861586544> <@821398245229461505>";
+        //Deathmatch: <@533715717938479119>
+        //CoAdmin: <@1180303661109358704>
+        //Agus354 <@821398245229461505>
+        //federico <@1324882987052961828>
     }
 
     @Override
