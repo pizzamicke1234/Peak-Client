@@ -133,6 +133,8 @@ public abstract class EntityPlayer extends EntityLivingBase
      */
     private boolean spawnForced;
 
+    public static Float movementYaw;
+
     /** Holds the coordinate of the player when enter a minecraft to ride. */
     private BlockPos startMinecartRidingCoordinate;
 

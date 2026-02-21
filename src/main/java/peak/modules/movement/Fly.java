@@ -138,7 +138,7 @@ public class Fly extends Module {
         mc.thePlayer.motionY = 0;
 
         if(ticktimer % 10 == 0) {
-            handleVanillaKickBypass();
+            //handleVanillaKickBypass();
         }
 
         double speed = motionsetting.cValue;
@@ -261,56 +261,6 @@ public class Fly extends Module {
         }
         NotificationManager.addChat("No rideable Entity found!");
         return false;
-    }
-
-    private void handleVanillaKickBypass() {
-        if (System.currentTimeMillis() - groundTimer < 1000) return;
-
-        final double x = mc.thePlayer.posX;
-        final double y = mc.thePlayer.posY;
-        final double z = mc.thePlayer.posZ;
-
-        final double ground = calculateGround();
-
-        for (double posY = y; posY > ground; posY -= 8D) {
-            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, posY, z, true));
-
-            if (posY - 8D < ground) break; // Prevent next step
-        }
-
-        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, ground, z, true));
-
-
-        for (double posY = ground; posY < y; posY += 8D) {
-            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, posY, z, true));
-
-            if (posY + 8D > y) break; // Prevent next step
-        }
-
-        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
-
-        groundTimer = System.currentTimeMillis();
-    }
-
-    public double calculateGround() {
-        final double y = mc.thePlayer.posY;
-
-        final AxisAlignedBB playerBoundingBox = mc.thePlayer.getEntityBoundingBox();
-        double blockHeight = 1D;
-
-        for (double ground = y; ground > 0D; ground -= blockHeight) {
-            final AxisAlignedBB customBox = new AxisAlignedBB(playerBoundingBox.maxX, ground + blockHeight, playerBoundingBox.maxZ, playerBoundingBox.minX, ground, playerBoundingBox.minZ);
-
-            if (mc.theWorld.checkBlockCollision(customBox)) {
-                if (blockHeight <= 0.05D)
-                    return ground + blockHeight;
-
-                ground += blockHeight;
-                blockHeight = 0.05D;
-            }
-        }
-
-        return 0F;
     }
 
 }

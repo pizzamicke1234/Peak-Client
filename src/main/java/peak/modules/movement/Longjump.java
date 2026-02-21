@@ -26,10 +26,10 @@ public class Longjump extends Module {
 
     @Override
     public void onEnable() {
-        jumpCount = 0;
+        ticks = 0;
         if(mc.thePlayer.onGround) {
-            startY = mc.thePlayer.posY;
-            mc.thePlayer.jump();
+            mc.thePlayer.motionY = 1f;
+            MovementManager.strafe(1.5f);
         }
         else {
             this.toggle();
@@ -44,21 +44,11 @@ public class Longjump extends Module {
     @Override
     public void onTick(TickEvent.TickType tickType) {
 
-        if(mc.thePlayer.posY < startY && ticks > 15) {
-            MovementManager.strafe(0.3f);
-            mc.thePlayer.onGround = true;
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                    mc.thePlayer.posY, mc.thePlayer.posZ, true));
-            PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                    mc.thePlayer.posY - 0.3D, mc.thePlayer.posZ, false));
-
-            mc.thePlayer.jump();
-            ticks = 0;
-            jumpCount++;
-            if(jumpCount >= 3) {
-                this.toggle();
-            }
+        if(mc.thePlayer.onGround && ticks > 3) {
+            this.toggle();
         }
+
+        MovementManager.strafe(0.8f);
 
         ticks++;
 

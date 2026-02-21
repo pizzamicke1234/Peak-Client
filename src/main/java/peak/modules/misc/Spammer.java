@@ -20,7 +20,7 @@ public class Spammer extends Module {
     @Override
     public void onEnable() {
         lastTime = System.currentTimeMillis();
-        //message = "Peak >>> Rise";
+        message = "https://i.postimg.cc/tTC1PYjV/received-1636382016789692.gif <@1181342356822294571> <@1238908500474593341>";
     }
 
     @Override

@@ -65,6 +65,7 @@ public class Client {
         modules.add(new Longjump());
         modules.add(new Step());
         modules.add(new InvMove());
+        modules.add(new TargetStrafe());
 
         //COMBAT
         modules.add(new Killaura());
