@@ -20,7 +20,7 @@ public class Spammer extends Module {
     @Override
     public void onEnable() {
         lastTime = System.currentTimeMillis();
-        message = "<@533715717938479119> <@1180303661109358704> <@754709830861586544> <@821398245229461505>";
+        message = "https://www.youtube.com/watch?v=kODLSRlacLM Peak client on Top";
         //Deathmatch: <@533715717938479119>
         //CoAdmin: <@1180303661109358704>
         //Agus354 <@821398245229461505>

@@ -14,6 +14,7 @@ import peak.modules.combat.*;
 import peak.modules.misc.*;
 import peak.modules.movement.*;
 import peak.modules.player.*;
+import peak.modules.player.Timer;
 import peak.modules.render.*;
 import peak.events.TickEvent;
 import peak.viaversion.viamcp.ViaMCP;
@@ -33,7 +34,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.84";
+    public static String version = "0.85";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -56,6 +57,7 @@ public class Client {
         modules.add(new Disabler());
         modules.add(new Phase());
         modules.add(new Spammer());
+        modules.add(new DeathzoneFunny());
 
         //MOVEMENT
         modules.add(new Fly());
@@ -86,6 +88,7 @@ public class Client {
         modules.add(new InvManager());
         modules.add(new Scaffold());
         modules.add(new AutoPotion());
+        modules.add(new Timer());
 
         //Sort the modules by name
         modules.sort(Comparator.comparing(Module::getName));

@@ -11,6 +11,7 @@ import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
+import peak.managers.DamageManager;
 import peak.managers.MovementManager;
 import peak.modules.settings.BoolSetting;
 import peak.ui.notifications.NotificationManager;
@@ -32,7 +33,7 @@ public class Fly extends Module {
     }
 
     private int ticktimer = 0;
-    private long groundTimer;
+    private double multiplier;
     private boolean hasStarted = false;
     private double firstPosY;
 
@@ -53,9 +54,9 @@ public class Fly extends Module {
                 break;
 
             case "Deathzone":
+                //DamageManager.damagePlayer(DamageManager.DamageType.POSITION, 2, 3, true, true);
+                multiplier = 1.3D;
                 hasStarted = true;
-                mc.thePlayer.capabilities.allowFlying = true;
-                firstPosY = mc.thePlayer.posY;
                 break;
 
         }
@@ -76,11 +77,7 @@ public class Fly extends Module {
                 break;
 
             case "Deathzone":
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
-                PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
                 hasStarted = false;
-                mc.thePlayer.capabilities.allowFlying = false;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionZ = 0;
@@ -232,13 +229,36 @@ public class Fly extends Module {
 
     public void deathzoneFly() {
 
+        mc.thePlayer.motionY = 0;
+
+        if(!hasStarted && mc.thePlayer.hurtTime != 0) {
+            hasStarted = true;
+        }
+
+        if(mc.gameSettings.keyBindJump.isKeyDown()) {
+            mc.thePlayer.motionY += 0.5;
+        }
+
+        if(mc.gameSettings.keyBindSneak.isKeyDown()) {
+            mc.thePlayer.motionY -= 0.5;
+        }
+
         if(hasStarted) {
 
-            mc.timer.timerSpeed = 0.3f;
-            mc.thePlayer.motionY = 0.000D;
-            C03PacketPlayer.C04PacketPlayerPosition packet = new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + 1, mc.thePlayer.posY, mc.thePlayer.posZ, false);
-            PacketManager.sendPacketWithoutEvent(packet);
-            mc.thePlayer.setPosition(mc.thePlayer.posX + 1, mc.thePlayer.posY, mc.thePlayer.posZ);
+            double speed = 0.8;
+
+            if (mc.thePlayer.moveForward != 0 || mc.thePlayer.moveStrafing != 0) {
+
+                MovementManager.strafe(speed + 0.15);
+
+                if(mc.thePlayer.ticksExisted % 10 == 0) {
+                    MovementManager.strafe(1);
+                }
+
+            }else {
+                mc.thePlayer.motionX = 0;
+                mc.thePlayer.motionZ = 0;
+            }
 
         }
 

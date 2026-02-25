@@ -14,6 +14,7 @@ import peak.modules.player.Scaffold;
 import peak.modules.render.HUDMod;
 import peak.ui.arraylists.Arraylist;
 import peak.ui.notifications.NotificationManager;
+import peak.ui.tagethuds.TargetHud;
 
 public class HUD extends GuiScreen {
 
@@ -62,8 +63,7 @@ public class HUD extends GuiScreen {
     }
 
     private static void renderTest() {
-        //Draw regular GuiRect
-        Gui.drawRect(100, 100, 150, 125, 0xAA000000);
+        TargetHud.draw();
     }
 
 }
