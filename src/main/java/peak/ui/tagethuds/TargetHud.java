@@ -40,7 +40,7 @@ public class TargetHud extends GuiScreen {
             //Display the health of the target
             Color healthColor = new Color(255, 0, 0, 255);
             Color backColor = new Color(30, 30, 30, 150);
-            float progress = targetHealth / targetEntity.getMaxHealth();
+            float progress = (targetHealth > 20) ? 1 : targetHealth / 20;
             RenderManager.drawRoundedRect(x + 5, y + height - 8, (width - 10),  5, 2, backColor);
             RenderManager.drawRoundedRect(x + 5, y + height - 8, (width - 10) * progress,  5, 2, healthColor);
 
