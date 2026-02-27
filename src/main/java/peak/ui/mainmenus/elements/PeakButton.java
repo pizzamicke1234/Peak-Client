@@ -6,50 +6,44 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import peak.managers.font.FontUtil;
+import peak.managers.render.RenderManager;
+
+import java.awt.*;
 
 public class PeakButton extends Gui {
 
-    public int buttonid, left, top, right, bottom;
+    public int buttonID, x, y, width, height;
     public String buttonText;
     public boolean hovered;
 
-    public PeakButton(int buttonid, int left, int top, int right, int bottom, String buttonText) {
-        this.buttonid = buttonid;
-        this.left = left;
-        this.top = top;
-        this.right = right;
-        this.bottom = bottom;
+    public PeakButton(int buttonID, int x, int y, int width, int height, String buttonText) {
+        this.buttonID = buttonID;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
         this.buttonText = buttonText;
     }
 
     public boolean isClicked(int mouseX, int mouseY) {
-        return mouseX >= left && mouseY >= top && mouseX <= right && mouseY <= bottom;
+        return mouseX >= x && mouseY >= y && mouseX <= (x + width) && mouseY <= (y + height);
     }
 
     public void drawButton(int mouseX, int mouseY) {
 
-        hovered = mouseX >= left && mouseY >= top && mouseX <= right && mouseY <= bottom;
+        hovered = mouseX >= x && mouseY >= y && mouseX <= (x + width) && mouseY <= (y + height);
 
-        int startcolor;
-        int endcolor;
+        Color normalColor = new Color(25, 25, 25, 220);
+        Color hoverColor = new Color(80, 80, 80, 180);
 
-        int outlinecolor;
+        Color buttonColor = hovered ? hoverColor : normalColor;
 
-        if (hovered) {
-            startcolor = 0xFF6A0DAD;
-            endcolor = 0xFF9932CC;
-            outlinecolor = 0xCC000000;
-        }else{
-            startcolor = 0xFF2D004B;
-            endcolor = 0xFF4B0082;
-            outlinecolor = 0xFF00ADFF;
-        }
+        //drawHorizontalGradientRect(this.left, this.top, this.right, this.bottom, startcolor, endcolor);
+        RenderManager.drawRoundedRect(this.x, this.y, this.width, this.height, 5, buttonColor);
 
-        drawHorizontalGradientRect(this.left, this.top, this.right, this.bottom, startcolor, endcolor);
+        FontUtil.normal.drawCenteredString(this.buttonText, this.x + this.width / 2, this.y + this.height / 2 - 4, -1);
 
-        FontUtil.normal.drawCenteredString(this.buttonText, this.left + (this.right - this.left) / 2, this.top + (this.bottom - this.top) / 2 - 4, -1);
-
-        drawOutline(left, top, right, bottom, 2, 0xFF0040FF);
+        //drawOutline(x, y, width, height, 2, 0xFF0040FF);
 
 
     }

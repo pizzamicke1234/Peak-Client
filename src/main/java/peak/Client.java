@@ -26,15 +26,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Client {
 
     /**TODO:
-     * -Vanilla fly check bypass
-     * -TargetHud
+     * -Vanilla fly check bypass *lowkey unmöglich*
      * -toggle sound
      * -teleport command *
      */
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.85";
+    public static String version = "0.86";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();

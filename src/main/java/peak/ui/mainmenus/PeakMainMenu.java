@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class PeakMainMenu extends GuiScreen {
 
-    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/background1.png");
-    public final ResourceLocation logo = new ResourceLocation("peak/backgrounds/logo.png");
+    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/menu1.png");
+    public final ResourceLocation logo = new ResourceLocation("peak/hud/logonew.png");
 
 
-    PeakButton btnsingleplayer, btnmultiplayer, btnaltmanager, btnoptions, btnexit;
+    PeakButton btnsingleplayer, btnmultiplayer, btnaltmanager, btnoptions, btnexit, btnToggleBackground;
     ArrayList<PeakButton> buttons;
 
     @Override
@@ -22,17 +22,20 @@ public class PeakMainMenu extends GuiScreen {
 
         buttons = new ArrayList<>();
 
-        btnsingleplayer = new PeakButton(0, this.width / 2 - 80, this.height / 2 - 10, width / 2 + 80, this.height / 2 + 10, "Singeplayer");
-        btnmultiplayer = new PeakButton(1, this.width / 2 - 80, this.height / 2 - 10 + 30, width / 2 + 80, this.height / 2 + 10 + 30, "Multiplayer");
-        btnaltmanager = new PeakButton(2, this.width / 2 - 80, this.height / 2 - 10 + 60, width / 2 + 80, this.height / 2 + 10 + 60, "AltManager");
-        btnoptions = new PeakButton(3, this.width / 2 - 80, this.height / 2 - 10 + 90, width / 2 + 80, this.height / 2 + 10 + 90, "Options");
-        btnexit = new PeakButton(4, this.width / 2 - 80, this.height / 2 - 10 + 120, width / 2 + 80, this.height / 2 + 10 + 120, "Exit");
+        btnsingleplayer = new PeakButton(0, this.width / 2 - 60, this.height / 2 - 10, 120, 22, "Singeplayer");
+        btnmultiplayer = new PeakButton(1, this.width / 2 - 60, this.height / 2 - 10 + 30, 120, 22, "Multiplayer");
+        btnaltmanager = new PeakButton(2, this.width / 2 - 60, this.height / 2 - 10 + 60, 120, 22, "AltManager");
+        btnoptions = new PeakButton(3, this.width / 2 - 60, this.height / 2 - 10 + 90, 120, 22, "Options");
+        btnexit = new PeakButton(4, this.width / 2 - 60, this.height / 2 - 10 + 120, 120, 22, "Exit");
+
+        btnToggleBackground = new PeakButton(5, width - 75, height - 25, 70, 20, "Background");
 
         buttons.add(btnsingleplayer);
         buttons.add(btnmultiplayer);
         buttons.add(btnaltmanager);
         buttons.add(btnoptions);
         buttons.add(btnexit);
+        //buttons.add(btnToggleBackground);
 
     }
 
@@ -48,7 +51,7 @@ public class PeakMainMenu extends GuiScreen {
             for(PeakButton button : buttons) {
 
                 if(button.isClicked(mouseX, mouseY)) {
-                    switch (button.buttonid) {
+                    switch (button.buttonID) {
                         case 0:
                             this.mc.displayGuiScreen(new GuiSelectWorld(this));
                             break;

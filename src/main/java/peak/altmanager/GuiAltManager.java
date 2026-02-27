@@ -3,7 +3,6 @@ package peak.altmanager;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
@@ -16,7 +15,7 @@ import peak.ui.mainmenus.elements.PeakButton;
 import java.io.IOException;
 
 public class GuiAltManager extends GuiScreen {
-    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/background1.png");
+    public final ResourceLocation background = new ResourceLocation("peak/backgrounds/menu1.png");
     private GuiTextField nameField, pwField;
     public PeakButton btnExit, btnMicrosoft, btnCracked;
 
@@ -25,10 +24,10 @@ public class GuiAltManager extends GuiScreen {
         this.nameField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
         this.pwField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 100, 90, 200, 20);
 
-        btnCracked = new PeakButton(1, this.width / 2 - 100, 120, this.width / 2 + 100, 140, "Cracked Login");
-        btnMicrosoft = new PeakButton(3, this.width / 2 - 100, 150, this.width / 2 + 100, 170, "Microsoft Login");
-        btnExit = new PeakButton(2, this.width / 2 - 80, this.height - 40, this.width / 2 + 80,
-                this.height - 20, "Close");
+        btnCracked = new PeakButton(0, this.width / 2 - 100, 120, 200, 20, "Cracked Login");
+        btnMicrosoft = new PeakButton(1, this.width / 2 - 100, 145, 200, 20, "Microsoft Login");
+        btnExit = new PeakButton(2, this.width / 2 - 80, this.height - 40, 160,
+                20, "Close");
 
         this.nameField.setFocused(true);
     }
