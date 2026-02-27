@@ -19,6 +19,20 @@ public class NumberSetting extends Setting {
         this.cValue = defaultValue;
     }
 
+    public NumberSetting(String name, Setting boundSetting, String neededValue, boolean onArraylist, double minValue, double maxValue, double defaultValue, double increment) {
+        this.name = name;
+        this.onArraylist = onArraylist;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.defaultValue = defaultValue;
+        this.increment = increment;
+        this.currentValue = String.valueOf(defaultValue);
+        this.cValue = defaultValue;
+        this.boundSetting = boundSetting;
+        this.neededValue = neededValue;
+        this.display = shouldDisplay(boundSetting, neededValue);
+    }
+
     public void forward() {
         if(cValue + increment <= maxValue) {
             cValue += increment;

@@ -26,15 +26,24 @@ public class SettingsRect {
     public void draw(int mouseX, int mouseY) {
         if (!moduleRect.showSettings) return;
 
+        int settingSize = getSettingsSize();
+
         int left = this.moduleRect.categoryrect.right;
         int top = this.moduleRect.categoryrect.top + this.moduleRect.offsetY;
         int right = left + 30 + getRectWidth();
-        int bottom = top + (lineHeight * settings.size());
+        int bottom = top + (lineHeight * settingSize);
 
         Gui.drawRect(left, top, right, bottom, 0x99111111);
 
         lines = 0;
         for (Setting s : this.settings) {
+
+            s.updateStatus();
+
+            if(!s.display){
+                continue;
+            }
+
             if (s instanceof ModeSetting) {
                 drawModeLine(s, left + 5, top, left, top, right, bottom);
             } else if (s instanceof NumberSetting) {
@@ -91,6 +100,16 @@ public class SettingsRect {
         double renderPercent = (num.cValue - num.minValue) / (num.maxValue - num.minValue);
         int barRight = sliderLeft + (int)(renderPercent * sliderWidth);
         Gui.drawRect(sliderLeft, sliderTop, barRight, sliderBottom, 0xff0069ff);
+    }
+
+    private int getSettingsSize() {
+        int size = 0;
+        for(Setting s : settings) {
+            if(s.display) {
+                size++;
+            }
+        }
+        return size;
     }
 
     /*private void drawNumberLine(Setting s, int x, int y, int left, int top, int right, int bottom, int mouseX, int mouseY) {
