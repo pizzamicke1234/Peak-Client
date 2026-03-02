@@ -99,7 +99,8 @@ public class Module {
         MOVEMENT,
         PLAYER,
         RENDER,
-        MISC;
+        MISC,
+        FUN;
     }
 
 }

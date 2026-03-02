@@ -1,10 +1,13 @@
 package peak.managers.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
@@ -84,6 +87,19 @@ public class RenderManager {
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
+    public static void drawPlayerHead(AbstractClientPlayer player, int x, int y, int size) {
+        GlStateManager.pushMatrix();
+        GlStateManager.color(255, 255, 255);
+
+        ResourceLocation skin = player.getLocationSkin();
+        Minecraft.getMinecraft().getTextureManager().bindTexture(skin);
+
+        Gui.drawScaledCustomSizeModalRect(x, y, 8.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
+        Gui.drawScaledCustomSizeModalRect(x, y, 40.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
+
         GlStateManager.popMatrix();
     }
 

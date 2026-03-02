@@ -11,6 +11,7 @@ import peak.managers.misc.BlinkManager;
 import peak.managers.misc.PingSpoofManager;
 import peak.modules.Module;
 import peak.modules.combat.*;
+import peak.modules.fun.DeathzoneFunny;
 import peak.modules.misc.*;
 import peak.modules.movement.*;
 import peak.modules.player.*;
@@ -33,7 +34,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.86";
+    public static String version = "0.87";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -56,7 +57,7 @@ public class Client {
         modules.add(new Disabler());
         modules.add(new Phase());
         modules.add(new Spammer());
-        modules.add(new DeathzoneFunny());
+        modules.add(new Ambience());
 
         //MOVEMENT
         modules.add(new Fly());
@@ -88,6 +89,10 @@ public class Client {
         modules.add(new Scaffold());
         modules.add(new AutoPotion());
         modules.add(new Timer());
+        modules.add(new Blink());
+
+        //FUN
+        modules.add(new DeathzoneFunny());
 
         //Sort the modules by name
         modules.sort(Comparator.comparing(Module::getName));

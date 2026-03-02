@@ -481,6 +481,12 @@ public class ItemRenderer
 
                                     break;
 
+                                case"Liquid":
+                                    transformFirstPersonItem(f, swingProgress);
+                                    doBlockTransformations();
+                                    GlStateManager.translate(-0.5f, 0.2f, 0f);
+                                    break;
+
                             }
                             break;
 

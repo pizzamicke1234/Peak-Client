@@ -21,7 +21,7 @@ public class HUD extends GuiScreen {
     public static Minecraft mc = Minecraft.getMinecraft();
     public static FontRenderer fr = mc.fontRendererObj;
 
-    public static final ResourceLocation logoNew = new ResourceLocation("peak/backgrounds/Logonew.png");
+    public static final ResourceLocation logoNew = new ResourceLocation("peak/hud/Logonew.png");
 
     public static Scaffold scaffold = (Scaffold) Client.getModulebyName("Scaffold");
     public static HUDMod hudMod = (HUDMod) Client.getModulebyName("HUD");

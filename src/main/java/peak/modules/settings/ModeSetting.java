@@ -15,14 +15,14 @@ public class ModeSetting extends Setting{
 
     }
 
-    public ModeSetting(String name, Setting boundSetting, String neededValue, boolean onArraylist, String defaultmode, String... modes) {
+    public ModeSetting(String name, Setting boundSetting, String[] neededValues, boolean onArraylist, String defaultmode, String... modes) {
         this.name = name;
         this.modes = Arrays.asList(modes);
         this.currentValue = defaultmode;
         this.onArraylist = onArraylist;
         this.boundSetting = boundSetting;
-        this.neededValue = neededValue;
-        this.display = shouldDisplay(boundSetting, neededValue);
+        this.neededValues = neededValues;
+        this.display = shouldDisplay(boundSetting, neededValues);
     }
 
     public void nextMode() {

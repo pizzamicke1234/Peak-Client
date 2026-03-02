@@ -1,5 +1,6 @@
 package peak.ui.tagethuds;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
@@ -36,6 +37,7 @@ public class TargetHud extends GuiScreen {
             //Display head of the target
             int offset = 28;
             Gui.drawRect(x + 5, y + 12, x + 5 + offset, y + 12 + offset, 0xAA000000);
+            RenderManager.drawPlayerHead((AbstractClientPlayer) targetEntity, x + 5, y + 12, 28);
 
             //Display the health of the target
             Color healthColor = new Color(255, 0, 0, 255);

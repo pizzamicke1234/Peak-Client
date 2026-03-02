@@ -1,5 +1,7 @@
 package peak.modules.settings;
 
+import java.util.Arrays;
+
 public abstract class Setting {
 
     public String name;
@@ -8,22 +10,22 @@ public abstract class Setting {
     public boolean display = true;
 
     public Setting boundSetting;
-    public String neededValue;
+    public String[] neededValues;
 
     public String getValue() {
         return currentValue;
     }
 
-    protected boolean shouldDisplay(Setting boundSetting, String neededValue) {
-        return boundSetting.currentValue.equals(neededValue);
+    protected boolean shouldDisplay(Setting boundSetting, String[] neededValues) {
+        return Arrays.asList(neededValues).contains(boundSetting.currentValue);
     }
 
     public void updateStatus() {
-        if(boundSetting == null || neededValue == null) {
+        if(boundSetting == null || neededValues == null) {
             return;
         }
 
-        this.display = shouldDisplay(boundSetting, neededValue);
+        this.display = shouldDisplay(boundSetting, neededValues);
     }
 
 }

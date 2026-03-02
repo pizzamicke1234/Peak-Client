@@ -10,12 +10,12 @@ public class BoolSetting extends Setting{
         this.onArraylist = onArrayList; //Will probably never be displayed
     }
 
-    public BoolSetting(String name, Setting boundSetting, String neededValue, boolean onArrayList, boolean status) {
+    public BoolSetting(String name, Setting boundSetting, String[] neededValue, boolean onArrayList, boolean status) {
         this.name = name;
         this.status = status;
         this.onArraylist = onArrayList; //Will probably never be displayed
         this.boundSetting = boundSetting;
-        this.neededValue = neededValue;
+        this.neededValues = neededValue;
         this.display = shouldDisplay(boundSetting, neededValue);
     }
 

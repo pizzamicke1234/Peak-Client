@@ -66,7 +66,7 @@ public class Killaura extends Module {
 
         for(Entity e : mc.theWorld.loadedEntityList) {
 
-            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand) {
+            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand || e.isDead) {
                 continue;
             }
 
@@ -76,7 +76,7 @@ public class Killaura extends Module {
                 if(distance <= reach.cValue) {
 
                     if(targetMode.currentValue.equals("Single")) {
-                        if(selectedtarget == null) {
+                        if(selectedtarget == null || selectedtarget.isDead) {
                             selectedtarget = e;
                         }
                     } else {

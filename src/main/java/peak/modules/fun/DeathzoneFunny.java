@@ -1,4 +1,4 @@
-package peak.modules.misc;
+package peak.modules.fun;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
@@ -10,7 +10,7 @@ import peak.ui.notifications.NotificationManager;
 public class DeathzoneFunny extends Module {
 
     public DeathzoneFunny() {
-        super("DeathzoneFunny", 0, Category.MISC, true);
+        super("DeathzoneFunny", 0, Category.FUN, true);
     }
 
     private int ticks = 0;
