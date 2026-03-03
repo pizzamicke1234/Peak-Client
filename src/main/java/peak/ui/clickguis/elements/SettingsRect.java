@@ -152,6 +152,11 @@ public class SettingsRect {
 
         int currentLine = 0;
         for (Setting s : this.settings) {
+
+            if(!s.display) {
+                continue;
+            }
+
             int lineTop = top + (lineHeight * currentLine);
             int lineBottom = lineTop + lineHeight;
 
