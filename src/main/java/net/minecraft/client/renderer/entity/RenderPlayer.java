@@ -17,6 +17,7 @@ import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ResourceLocation;
+import peak.modules.combat.Killaura;
 
 public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
 {
@@ -95,6 +96,10 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
             else
             {
                 modelplayer.heldItemRight = 1;
+
+                /*if(Killaura.fakeblocking) {
+                    modelplayer.heldItemRight = 3;
+                }*/
 
                 if (clientPlayer.getItemInUseCount() > 0)
                 {

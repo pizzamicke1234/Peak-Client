@@ -3,6 +3,7 @@ package peak.modules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
 import peak.events.PacketEvent;
+import peak.events.RenderEvent;
 import peak.modules.settings.Setting;
 import peak.events.TickEvent;
 import peak.ui.notifications.Notification;
@@ -46,6 +47,10 @@ public class Module {
     }
 
     public void onPacket(PacketEvent packetEvent) {
+
+    }
+
+    public void onRender(RenderEvent renderEvent) {
 
     }
 

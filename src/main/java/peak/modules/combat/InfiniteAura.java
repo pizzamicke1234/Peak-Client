@@ -128,16 +128,16 @@ public class InfiniteAura extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        /*if(mode.currentValue.equals("Deathzone Exp")) {
+        if(mode.currentValue.equals("Deathzone Exp")) {
             if(packetEvent.getPacket() instanceof C03PacketPlayer.C04PacketPlayerPosition) {
                 C03PacketPlayer.C04PacketPlayerPosition packet = (C03PacketPlayer.C04PacketPlayerPosition) packetEvent.getPacket();
 
-                if(tpPackets.contains(packet)) {
+                if(!tpPackets.contains(packet)) {
                     packetEvent.cancelPacket();
                 }
 
             }
-        }*/
+        }
 
     }
 

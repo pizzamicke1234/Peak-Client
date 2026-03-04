@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -15,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RenderManager {
 
-    Minecraft mc = Minecraft.getMinecraft();
+    private static Minecraft mc = Minecraft.getMinecraft();
     public static CopyOnWriteArrayList<HitBox> hitboxes = new CopyOnWriteArrayList<>();
     private static final ShaderManager ROUNDED_SHADER = new ShaderManager("assets/minecraft/peak/render/shaders/rounded.frag");
 
@@ -101,6 +102,53 @@ public class RenderManager {
         Gui.drawScaledCustomSizeModalRect(x, y, 40.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
 
         GlStateManager.popMatrix();
+    }
+
+    public static void drawEntityESP(Entity entity, float partialTicks, Color color) {
+
+        net.minecraft.client.renderer.entity.RenderManager rm = mc.getRenderManager();
+
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        AxisAlignedBB entityBox = entity.getEntityBoundingBox();
+
+        double rX = x - rm.renderPosX;
+        double rY = y - rm.renderPosY;
+        double rZ = z - rm.renderPosZ;
+
+        AxisAlignedBB renderBox = new AxisAlignedBB(
+                entityBox.minX - entity.posX + rX,
+                entityBox.minY - entity.posY + rY,
+                entityBox.minZ - entity.posZ + rZ,
+                entityBox.maxX - entity.posX + rX,
+                entityBox.maxY - entity.posY + rY,
+                entityBox.maxZ - entity.posZ + rZ
+        );
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
+        GL11.glLineWidth(2.0F);
+
+        RenderGlobal.drawOutlinedBoundingBox(
+                renderBox,
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue(),
+                color.getAlpha()
+        );
+
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+
     }
 
 }

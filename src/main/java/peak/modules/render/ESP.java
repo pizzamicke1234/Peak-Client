@@ -1,9 +1,13 @@
 package peak.modules.render;
 
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.shader.ShaderGroup;
+import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
+import peak.events.RenderEvent;
+import peak.managers.render.RenderManager;
 import peak.modules.Module;
+
+import java.awt.*;
+import java.util.List;
 
 public class ESP extends Module {
 
@@ -11,6 +15,17 @@ public class ESP extends Module {
         super("ESP", Keyboard.KEY_NONE, Category.RENDER, true);
     }
 
-    public ShaderGroup entityOutlineShader = RenderGlobal.entityOutlineShader;
+    Color espColor = new Color(255, 50, 50, 180);
 
+    @Override
+    public void onRender(RenderEvent renderEvent) {
+
+        List<EntityPlayer> loadedPlayers = mc.theWorld.playerEntities;
+
+        for(EntityPlayer player : loadedPlayers) {
+            if(player == mc.thePlayer) continue;
+            RenderManager.drawEntityESP(player, renderEvent.getPartialTicks(), espColor);
+        }
+
+    }
 }

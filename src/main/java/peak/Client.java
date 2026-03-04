@@ -1,10 +1,12 @@
 package peak;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.opengl.Display;
 import peak.commands.impl.Teleport;
 import peak.commands.listeners.CommandListener;
 import peak.events.PacketEvent;
+import peak.events.RenderEvent;
 import peak.managers.PacketManager;
 import peak.managers.font.FontUtil;
 import peak.managers.misc.BlinkManager;
@@ -34,7 +36,7 @@ public class Client {
 
     // General settings of the client
     public static String name = "Peak";
-    public static String version = "0.87";
+    public static String version = "0.88";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -90,6 +92,7 @@ public class Client {
         modules.add(new AutoPotion());
         modules.add(new Timer());
         modules.add(new Blink());
+        modules.add(new FastEat());
 
         //FUN
         modules.add(new DeathzoneFunny());
@@ -149,6 +152,15 @@ public class Client {
                 continue;
             }
             m.onPacket(packetEvent);
+        }
+    }
+
+    public static void onRender(RenderEvent renderEvent) {
+        for(Module m : modules) {
+            if (!m.toggled) {
+                continue;
+            }
+            m.onRender(renderEvent);
         }
     }
 

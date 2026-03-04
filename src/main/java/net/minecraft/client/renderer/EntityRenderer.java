@@ -66,7 +66,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 import peak.Client;
-import peak.modules.render.ESP;
+import peak.events.RenderEvent;
 
 public class EntityRenderer implements IResourceManagerReloadListener
 {
@@ -548,7 +548,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
     /**
      * Changes the field of view of the player depending on if they are underwater or not
-     *  
+     *
      * @param useFOVSetting If true the FOV set in the settings will be use in the calculation
      */
     private float getFOVModifier(float partialTicks, boolean useFOVSetting)
@@ -1321,22 +1321,6 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
 
         this.mc.mcProfiler.endSection();
-
-        //ESP
-        if (this.entityOutlineShader == null) {
-            this.loadEntityOutlineShader();
-        }
-
-        ESP esp = (ESP) Client.getModulebyName("ESP");
-        if(esp.toggled) {
-            this.renderEntityOutlineFramebuffer(partialTicks);
-
-            this.mc.getFramebuffer().bindFramebuffer(false);
-            GlStateManager.enableBlend();
-            GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.enableAlpha();
-            OpenGlHelper.glUseProgram(0);
-        }
     }
 
     private void renderWorldPass(int pass, float partialTicks, long finishTimeNano)
@@ -1361,6 +1345,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
         double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
         double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
         icamera.setPosition(d0, d1, d2);
+
+
 
         if (this.mc.gameSettings.renderDistanceChunks >= 4)
         {
@@ -1423,6 +1409,11 @@ public class EntityRenderer implements IResourceManagerReloadListener
             this.disableLightmap();
             GlStateManager.matrixMode(5888);
             GlStateManager.popMatrix();
+
+            //RenderEvent
+            RenderEvent renderEvent = new RenderEvent(partialTicks);
+            Client.onRender(renderEvent);
+
             GlStateManager.pushMatrix();
 
             if (this.mc.objectMouseOver != null && entity.isInsideOfMaterial(Material.water) && flag)
@@ -1504,6 +1495,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             this.renderHand(partialTicks, pass);
             this.renderWorldDirections(partialTicks);
         }
+
     }
 
     private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass)
@@ -1949,7 +1941,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
     /**
      * Sets up the fog to be rendered. If the arg passed in is -1 the fog starts at 0 and goes to 80% of far plane
      * distance and is used for sky rendering.
-     *  
+     *
      * @param startCoords If is -1 the fog start at 0.0
      */
     private void setupFog(int startCoords, float partialTicks)

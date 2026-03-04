@@ -267,8 +267,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     protected boolean isRenderEntityOutlines()
     {
-        if (Client.getModulebyName("ESP").toggled) return true;
-
         return this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown();
     }
 
