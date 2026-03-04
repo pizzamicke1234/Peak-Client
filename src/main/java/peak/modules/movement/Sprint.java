@@ -1,5 +1,6 @@
 package peak.modules.movement;
 
+import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import peak.Client;
 import peak.modules.Module;
@@ -32,9 +33,9 @@ public class Sprint extends Module {
 
         switch (sprintmode.currentValue) {
             case "Legit":
-                if(mc.gameSettings.keyBindForward.isKeyDown() && (!Client.getModulebyName("Scaffold").toggled && !Scaffold.scaffoldMode.equals("Vulcan"))) {
-                    mc.thePlayer.setSprinting(true);
-                }
+                int keyCode = mc.gameSettings.keyBindSprint.getKeyCode();
+                KeyBinding.setKeyBindState(keyCode, true);
+                //KeyBinding.setKeyBindState(keyCode, false);
                 break;
             case "Omnisprint":
                 mc.thePlayer.setSprinting(true);
