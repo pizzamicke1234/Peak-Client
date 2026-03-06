@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelPlayer;
@@ -97,7 +98,7 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
             {
                 modelplayer.heldItemRight = 1;
 
-                if(Killaura.fakeblocking) {
+                if(clientPlayer == Minecraft.getMinecraft().thePlayer && Killaura.fakeblocking) {
                     modelplayer.heldItemRight = 3;
                 }
 
