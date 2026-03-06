@@ -1,6 +1,5 @@
 package peak;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.opengl.Display;
 import peak.commands.impl.Teleport;
@@ -13,7 +12,7 @@ import peak.managers.misc.BlinkManager;
 import peak.managers.misc.PingSpoofManager;
 import peak.modules.Module;
 import peak.modules.combat.*;
-import peak.modules.fun.DeathzoneFunny;
+import peak.modules.fun.*;
 import peak.modules.misc.*;
 import peak.modules.movement.*;
 import peak.modules.player.*;
@@ -35,8 +34,8 @@ public class Client {
      */
 
     // General settings of the client
-    public static String name = "Peak";
-    public static String version = "0.88";
+    public static final String name = "Peak";
+    public static final String version = "0.88";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();

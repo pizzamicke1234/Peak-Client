@@ -112,7 +112,12 @@ public class Fly extends Module {
                 break;
 
             case "Deathzone":
-                deathzoneFly();
+                motionFly();
+                for(int i = 0; i < 10; i++) {
+                    Packet packet = new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY,
+                            mc.thePlayer.posZ, mc.thePlayer.onGround);
+                    PacketManager.sendPacket(packet);
+                }
                 break;
         }
 

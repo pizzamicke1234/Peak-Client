@@ -97,9 +97,9 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
             {
                 modelplayer.heldItemRight = 1;
 
-                /*if(Killaura.fakeblocking) {
+                if(Killaura.fakeblocking) {
                     modelplayer.heldItemRight = 3;
-                }*/
+                }
 
                 if (clientPlayer.getItemInUseCount() > 0)
                 {
