@@ -25,6 +25,7 @@ public class Spammer extends Module {
         //CoAdmin: <@1180303661109358704>
         //Agus354 <@821398245229461505>
         //federico <@1324882987052961828>
+        //srMod <@499592574839816202>
     }
 
     @Override

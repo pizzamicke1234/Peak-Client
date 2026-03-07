@@ -10,10 +10,12 @@ import net.minecraft.client.gui.GuiTextField;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
+import peak.altmanager.auth.AccountRect;
 import peak.managers.font.FontUtil;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.ui.mainmenus.elements.PeakButton;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,6 +30,8 @@ public class GuiAltManager extends GuiScreen {
     private PeakButton btnExit, btnMicrosoft, btnCracked, btnRandom, btnSession;
     private ArrayList<PeakButton> buttons;
     private Random random = new Random();
+
+    private ArrayList<AccountRect> accountList = new ArrayList<>();
 
     @Override
     public void initGui() {
@@ -51,6 +55,11 @@ public class GuiAltManager extends GuiScreen {
         buttons.add(btnExit);
         buttons.add(btnSession);
 
+        Session testSession = new Session("TestPlayer", "0", "0", "legacy");
+        Color rectColor = new Color(255, 255, 255, 197);
+        AccountRect testAccount = new AccountRect(testSession, width / 2 - 150, 200, 300, 40, rectColor);
+        accountList.add(testAccount);
+
     }
 
     @Override
@@ -66,6 +75,10 @@ public class GuiAltManager extends GuiScreen {
 
         for(PeakButton button : buttons) {
             button.drawButton(mouseX, mouseY);
+        }
+
+        for(AccountRect accountRect : accountList) {
+            accountRect.draw();
         }
 
         FontUtil.normal.drawCenteredString("Current Account", this.width / 2, 15, -1);
@@ -177,8 +190,10 @@ public class GuiAltManager extends GuiScreen {
     private void drawBackground() {
         Gui.drawRect(0, 0, width, height, 0x11404040);
 
-        Gui.drawRect(0, 0, width / 5, height, 0x255f009b);
-        Gui.drawRect(width - width / 5, 0, width, height, 0x255f009b);
+        // 0x255f009b
+
+        Gui.drawRect(0, 0, width / 5, height, 0x30555555);
+        Gui.drawRect(width - width / 5, 0, width, height, 0x30555555);
     }
 
 }

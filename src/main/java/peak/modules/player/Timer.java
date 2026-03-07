@@ -56,7 +56,7 @@ public class Timer extends Module {
                 mc.timer.timerSpeed = (float) timerSpeed.cValue;
                 break;
 
-            case "Balanced":
+            case "Balance":
 
                 final long   SLOW_MS       = (long) balanceSlowTime.cValue;
                 final long   FAST_MS       = (long) balanceFastTime.cValue;
