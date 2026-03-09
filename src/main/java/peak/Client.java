@@ -104,6 +104,7 @@ public class Client {
         try {
             ViaMCP.create();
             ViaMCP.INSTANCE.initAsyncSlider(); // For top left aligned slider
+            ViaMCP.INSTANCE.getAsyncVersionSlider().setVersion(47);
         } catch (Exception e) {
             e.printStackTrace();
         }

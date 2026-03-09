@@ -21,7 +21,6 @@ public class AccountRect extends Gui {
 
     public AccountRect(Session accountSession) {
         this.accountSession = accountSession;
-        this.sessionSkin = RenderManager.getSessionSkin(accountSession);
     }
 
     public Session getAccountSession() {
@@ -42,7 +41,7 @@ public class AccountRect extends Gui {
         FontUtil.smaller.drawCenteredString(sessionType, x + width / 2, y + height - 5 - FontUtil.smaller.getHeight(), -1);
 
         //Skin
-        //Gui.drawRect(x + 10, y + 5, x + height, y + height - 5, 0xFF000000);
+        this.sessionSkin = RenderManager.getSessionSkin(accountSession);
         RenderManager.drawPlayerHead(sessionSkin, x + 10, y + 5, height - 10);
     }
 

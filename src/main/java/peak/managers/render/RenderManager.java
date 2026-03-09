@@ -17,7 +17,9 @@ import net.minecraft.util.Session;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RenderManager {
@@ -25,6 +27,8 @@ public class RenderManager {
     private static Minecraft mc = Minecraft.getMinecraft();
     public static CopyOnWriteArrayList<HitBox> hitboxes = new CopyOnWriteArrayList<>();
     private static final ShaderManager ROUNDED_SHADER = new ShaderManager("assets/minecraft/peak/render/shaders/rounded.frag");
+
+    private static final Map<UUID, ResourceLocation> downloadedSkins = new HashMap<>();
 
     public static void drawRoundedRect(float x, float y, float width, float height, float radius, Color color) {
         ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
@@ -126,15 +130,25 @@ public class RenderManager {
         GlStateManager.popMatrix();
     }
 
-    public static ResourceLocation getSessionSkin(Session session) {
-        GameProfile gameProfile = session.getProfile();
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(gameProfile);
+    public static ResourceLocation getSkinOrDownload(final GameProfile profile) {
+        if (profile == null) return DefaultPlayerSkin.getDefaultSkinLegacy();
 
-        if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
-            return mc.getSkinManager().loadSkin(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
+        if (downloadedSkins.containsKey(profile.getId())) {
+            return downloadedSkins.get(profile.getId());
         }
 
+        Minecraft.getMinecraft().getSkinManager().loadProfileTextures(profile, (type, location, tex) -> {
+            if (type == MinecraftProfileTexture.Type.SKIN) {
+                downloadedSkins.put(profile.getId(), location);
+            }
+        }, true);
+
         return DefaultPlayerSkin.getDefaultSkinLegacy();
+    }
+
+    public static ResourceLocation getSessionSkin(Session session) {
+        GameProfile gameProfile = session.getProfile();
+        return getSkinOrDownload(gameProfile);
     }
 
     public static void drawEntityESP(Entity entity, float partialTicks, Color color) {
