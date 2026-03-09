@@ -53,13 +53,4 @@ public class Longjump extends Module {
         ticks++;
 
     }
-
-    @Override
-    public void onPacket(PacketEvent packetEvent) {
-        if(mc.thePlayer.posY > startY) {
-            if(packetEvent.getPacket() instanceof C0FPacketConfirmTransaction) {
-                packetEvent.cancelPacket();
-            }
-        }
-    }
 }

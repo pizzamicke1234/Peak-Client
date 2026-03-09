@@ -1,17 +1,23 @@
 package peak.managers.render;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Session;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RenderManager {
@@ -102,6 +108,33 @@ public class RenderManager {
         Gui.drawScaledCustomSizeModalRect(x, y, 40.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
 
         GlStateManager.popMatrix();
+    }
+
+    public static void drawPlayerHead(ResourceLocation skin, int x, int y, int size) {
+        GlStateManager.pushMatrix();
+        GlStateManager.color(255, 255, 255);
+
+        if(skin == null) {
+            skin = DefaultPlayerSkin.getDefaultSkinLegacy();
+        }
+
+        Minecraft.getMinecraft().getTextureManager().bindTexture(skin);
+
+        Gui.drawScaledCustomSizeModalRect(x, y, 8.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
+        Gui.drawScaledCustomSizeModalRect(x, y, 40.0F, 8.0F, 8, 8, size, size, 64.0F, 64.0F);
+
+        GlStateManager.popMatrix();
+    }
+
+    public static ResourceLocation getSessionSkin(Session session) {
+        GameProfile gameProfile = session.getProfile();
+        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(gameProfile);
+
+        if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
+            return mc.getSkinManager().loadSkin(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
+        }
+
+        return DefaultPlayerSkin.getDefaultSkinLegacy();
     }
 
     public static void drawEntityESP(Entity entity, float partialTicks, Color color) {
