@@ -28,6 +28,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import peak.Client;
+import peak.events.AttackEvent;
+import peak.managers.PacketManager;
 
 public class PlayerControllerMP
 {
@@ -495,7 +498,9 @@ public class PlayerControllerMP
     public void attackEntity(EntityPlayer playerIn, Entity targetEntity)
     {
         this.syncCurrentPlayItem();
-        this.netClientHandler.addToSendQueue(new C02PacketUseEntity(targetEntity, C02PacketUseEntity.Action.ATTACK));
+        C02PacketUseEntity attackPacket = new C02PacketUseEntity(targetEntity, C02PacketUseEntity.Action.ATTACK);
+        Client.onAttack(new AttackEvent(attackPacket));
+        this.netClientHandler.addToSendQueue(attackPacket);
 
         if (this.currentGameType != WorldSettings.GameType.SPECTATOR)
         {

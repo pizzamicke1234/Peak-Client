@@ -2,6 +2,7 @@ package peak.modules;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
+import peak.events.AttackEvent;
 import peak.events.PacketEvent;
 import peak.events.RenderEvent;
 import peak.modules.settings.Setting;
@@ -51,6 +52,10 @@ public class Module {
     }
 
     public void onRender(RenderEvent renderEvent) {
+
+    }
+
+    public void onAttack(AttackEvent attackEvent) {
 
     }
 

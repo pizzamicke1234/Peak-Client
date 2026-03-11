@@ -4,6 +4,7 @@ import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.opengl.Display;
 import peak.commands.impl.Teleport;
 import peak.commands.listeners.CommandListener;
+import peak.events.AttackEvent;
 import peak.events.PacketEvent;
 import peak.events.RenderEvent;
 import peak.managers.PacketManager;
@@ -35,7 +36,7 @@ public class Client {
 
     // General settings of the client
     public static final String name = "Peak";
-    public static final String version = "0.88";
+    public static final String version = "0.89";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -161,6 +162,15 @@ public class Client {
                 continue;
             }
             m.onRender(renderEvent);
+        }
+    }
+
+    public static void onAttack(AttackEvent attackEvent) {
+        for(Module m : modules) {
+            if (!m.toggled) {
+                continue;
+            }
+            m.onAttack(attackEvent);
         }
     }
 
