@@ -35,7 +35,7 @@ public class RenderManager {
 
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.disableAlpha(); // Wichtig, damit der Shader die Kanten glätten kann
+        GlStateManager.disableAlpha();
 
         ROUNDED_SHADER.use();
 

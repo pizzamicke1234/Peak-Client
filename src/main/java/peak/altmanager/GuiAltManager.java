@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import peak.altmanager.auth.AccountRect;
+import peak.altmanager.auth.Accounts;
 import peak.managers.font.FontUtil;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.ui.mainmenus.elements.PeakButton;
@@ -37,7 +38,7 @@ public class GuiAltManager extends GuiScreen {
 
     private final Color rectColor = new Color(16, 13, 13, 180);
 
-    private ArrayList<AccountRect> accountList = new ArrayList<>();
+    private ArrayList<AccountRect> accountList = Accounts.accountList;
 
     @Override
     public void initGui() {
@@ -157,21 +158,26 @@ public class GuiAltManager extends GuiScreen {
                     case 5:
                         if (!addNameField.getText().isEmpty()) {
                             Session session = new Session(addNameField.getText(), "0", "0", "legacy");
-                            accountList.add(new AccountRect(session));
+                            AccountRect accountRect = new AccountRect(session);
+                            if(!sessionInList(session)) {
+                                accountList.add(accountRect);
+                            }
                         }
                         break;
 
                     case 6:
                         Session microsoftSession = getLoginWithMicrosoftWeb();
-                        if(microsoftSession != null) {
-                            accountList.add(new AccountRect(microsoftSession));
+                        AccountRect accountRect = new AccountRect(microsoftSession);
+                        if(microsoftSession != null && !sessionInList(microsoftSession)) {
+                            accountList.add(accountRect);
                         }
                         break;
 
                     case 7:
                         Session tokenSession = getLoginWithToken(addSessionField.getText());
-                        if(tokenSession != null) {
-                            accountList.add(new AccountRect(tokenSession));
+                        AccountRect tokenAccountRect = new AccountRect(tokenSession);
+                        if(tokenSession != null && !sessionInList(tokenSession)) {
+                            accountList.add(tokenAccountRect);
                         }
                         break;
                 }
@@ -207,6 +213,11 @@ public class GuiAltManager extends GuiScreen {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Accounts.accountList = accountList;
     }
 
     private void LoginWithMicrosoftWeb() {
@@ -324,6 +335,17 @@ public class GuiAltManager extends GuiScreen {
         Gui.drawRect(0, 0, width / 5, height, 0x30555555);
         Gui.drawRect(width - width / 5, 0, width, height, 0x30555555);
         Gui.drawRect(width / 5, 0, width - width / 5, 50, 0x60555555);
+    }
+
+    private boolean sessionInList(Session session) {
+        for(AccountRect accountRect : accountList) {
+            String username = accountRect.getAccountSession().getUsername();
+            String ID = accountRect.getAccountSession().getSessionID();
+            if((username.equals(session.getUsername())) && (ID.equals(session.getSessionID()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
