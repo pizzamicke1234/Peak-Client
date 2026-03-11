@@ -8,6 +8,7 @@ import peak.events.PacketEvent;
 import peak.events.TickEvent;
 import peak.managers.PacketManager;
 import peak.modules.Module;
+import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.ui.notifications.NotificationManager;
 
@@ -17,10 +18,11 @@ import java.util.Collections;
 public class Criticals extends Module {
 
     ModeSetting critMode = new ModeSetting("Mode", true, "Packet", "Packet", "MiniJump", "Deathzone");
+    BoolSetting groundOnly = new BoolSetting("Only Ground", false, true);
 
     public Criticals() {
         super("Criticals", 0, Category.COMBAT, true);
-        this.addSetting(critMode);
+        this.addSetting(critMode, groundOnly);
     }
 
     @Override
@@ -29,11 +31,10 @@ public class Criticals extends Module {
         C02PacketUseEntity attack = attackEvent.getAttackPacket();
         Entity entity = attack.getEntityFromWorld(mc.theWorld);
 
+        if(!mc.thePlayer.onGround && groundOnly.isTrue()) return;
         if(entity.isDead || entity.hurtResistantTime > 11) return;
 
-        if (mc.thePlayer.onGround && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
-
-            NotificationManager.addChat("Crit event fired");
+        if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
             switch (critMode.currentValue) {
 
