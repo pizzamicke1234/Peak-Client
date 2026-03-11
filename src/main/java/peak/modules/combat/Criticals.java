@@ -1,6 +1,7 @@
 package peak.modules.combat;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import peak.events.AttackEvent;
@@ -30,11 +31,14 @@ public class Criticals extends Module {
 
         C02PacketUseEntity attack = attackEvent.getAttackPacket();
         Entity entity = attack.getEntityFromWorld(mc.theWorld);
+        EntityLivingBase entityLivingBase = (EntityLivingBase) attack.getEntityFromWorld(mc.theWorld);
 
         if(!mc.thePlayer.onGround && groundOnly.isTrue()) return;
-        if(entity.isDead || entity.hurtResistantTime > 11) return;
+        if(entity.isDead || entityLivingBase.hurtTime > 1) return;
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
+
+            NotificationManager.addChat("1");
 
             switch (critMode.currentValue) {
 
@@ -52,15 +56,11 @@ public class Criticals extends Module {
                     break;
 
                 case "Deathzone":
-                    double[] deathzoneOffsets = {0.0125, 0.0250, 0.0375, 0.0500};
-                    for(double offset : deathzoneOffsets) {
-                        PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                                mc.thePlayer.posY + offset, mc.thePlayer.posZ, false));
-                    }
-                    for(int i = deathzoneOffsets.length - 1; i >= 0; i--) {
-                        PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                                mc.thePlayer.posY + deathzoneOffsets[i], mc.thePlayer.posZ, false));
-                    }
+                    double[] deathzoneOffsets = {0.0000015, 0.000001};
+                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                            mc.thePlayer.posY + deathzoneOffsets[0], mc.thePlayer.posZ, false));
+                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                            mc.thePlayer.posY + deathzoneOffsets[1], mc.thePlayer.posZ, false));
                     break;
 
             }
