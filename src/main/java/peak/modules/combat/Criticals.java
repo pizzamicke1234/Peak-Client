@@ -34,7 +34,7 @@ public class Criticals extends Module {
         EntityLivingBase entityLivingBase = (EntityLivingBase) attack.getEntityFromWorld(mc.theWorld);
 
         if(!mc.thePlayer.onGround && groundOnly.isTrue()) return;
-        if(entity.isDead || entityLivingBase.hurtTime > 1) return;
+        if(entity.isDead || entityLivingBase.getHealth() < 1 || entityLivingBase.hurtTime > 1) return;
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
@@ -51,16 +51,18 @@ public class Criticals extends Module {
                     break;
 
                 case "MiniJump":
-                    mc.thePlayer.motionY = 0.001;
-                    mc.thePlayer.motionY = 1;
+                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                            mc.thePlayer.posY + 0.03, mc.thePlayer.posZ, false));
+                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                            mc.thePlayer.posY + 0.01, mc.thePlayer.posZ, mc.thePlayer.onGround));
                     break;
 
                 case "Deathzone":
-                    double[] deathzoneOffsets = {0.0000015, 0.000001};
-                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                            mc.thePlayer.posY + deathzoneOffsets[0], mc.thePlayer.posZ, false));
-                    PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                            mc.thePlayer.posY + deathzoneOffsets[1], mc.thePlayer.posZ, false));
+                    double[] deathzoneOffsets = {0.01, 0.02, 0.03, 0.04, 0.05, 0.04, 0.03, 0.02, 0.01};
+                    for(double offset : deathzoneOffsets) {
+                        PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                                mc.thePlayer.posY + (offset * 5), mc.thePlayer.posZ, false));
+                    }
                     break;
 
             }
