@@ -20,10 +20,11 @@ public class Criticals extends Module {
 
     ModeSetting critMode = new ModeSetting("Mode", true, "Packet", "Packet", "MiniJump", "Deathzone");
     BoolSetting groundOnly = new BoolSetting("Only Ground", false, true);
+    BoolSetting debug = new BoolSetting("Debug", false, false);
 
     public Criticals() {
         super("Criticals", 0, Category.COMBAT, true);
-        this.addSetting(critMode, groundOnly);
+        this.addSetting(critMode, groundOnly, debug);
     }
 
     private boolean DZshouldCrit = false;
@@ -52,7 +53,9 @@ public class Criticals extends Module {
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
-            //NotificationManager.addChat("Crit");
+            if(debug.isTrue()) {
+                NotificationManager.addChat("Crit");
+            }
 
             switch (critMode.currentValue) {
 
