@@ -52,7 +52,7 @@ public class Criticals extends Module {
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
-            NotificationManager.addChat("Crit");
+            //NotificationManager.addChat("Crit");
 
             switch (critMode.currentValue) {
 
