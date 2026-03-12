@@ -26,6 +26,20 @@ public class Criticals extends Module {
         this.addSetting(critMode, groundOnly);
     }
 
+    private boolean DZshouldCrit = false;
+
+    @Override
+    public void onTick(TickEvent.TickType tickType) {
+        if(tickType == TickEvent.TickType.POST) return;
+
+        /*if(DZshouldCrit) {
+            mc.thePlayer.motionY = -0.1D;
+            PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                    mc.thePlayer.posY - 0.001D, mc.thePlayer.posZ, false));
+            DZshouldCrit = false;
+        }*/
+    }
+
     @Override
     public void onAttack(AttackEvent attackEvent) {
 
@@ -38,7 +52,7 @@ public class Criticals extends Module {
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
-            NotificationManager.addChat("1");
+            NotificationManager.addChat("Crit");
 
             switch (critMode.currentValue) {
 
@@ -58,11 +72,17 @@ public class Criticals extends Module {
                     break;
 
                 case "Deathzone":
-                    double[] deathzoneOffsets = {0.01, 0.02, 0.03, 0.04, 0.05, 0.04, 0.03, 0.02, 0.01};
-                    for(double offset : deathzoneOffsets) {
+
+                    if(mc.thePlayer.onGround) {
+                        mc.thePlayer.motionY = 0.1D;
                         PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                                mc.thePlayer.posY + (offset * 5), mc.thePlayer.posZ, false));
+                                mc.thePlayer.posY - 0.01D, mc.thePlayer.posZ, false));
+                        //DZshouldCrit = true;
+                    }else {
+                        PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                                mc.thePlayer.posY - 0.01D, mc.thePlayer.posZ, false));
                     }
+
                     break;
 
             }
