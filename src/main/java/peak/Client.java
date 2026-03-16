@@ -36,7 +36,7 @@ public class Client {
 
     // General settings of the client
     public static final String name = "Peak";
-    public static final String version = "0.89";
+    public static final String version = "0.9";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     public static final BlinkManager blinkManager = new BlinkManager();
@@ -60,6 +60,7 @@ public class Client {
         modules.add(new Phase());
         modules.add(new Spammer());
         modules.add(new Ambience());
+        modules.add(new AutoLogin());
 
         //MOVEMENT
         modules.add(new Fly());

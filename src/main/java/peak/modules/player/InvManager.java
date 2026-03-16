@@ -7,6 +7,7 @@ import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import org.lwjgl.input.Keyboard;
 import peak.modules.Module;
+import peak.modules.combat.Killaura;
 import peak.modules.settings.BoolSetting;
 import peak.events.TickEvent;
 import peak.modules.settings.NumberSetting;
@@ -17,16 +18,17 @@ import java.util.Random;
 
 public class InvManager extends Module {
 
-    public NumberSetting minDelay = new NumberSetting("MinDelay", false, 1, 20, 5, 1);
-    public NumberSetting maxDelay = new NumberSetting("MaxDelay", false, 1, 20, 5, 1);
-    BoolSetting silent = new BoolSetting("Silent", false, false);
+    private NumberSetting minDelay = new NumberSetting("MinDelay", false, 1, 20, 5, 1);
+    private NumberSetting maxDelay = new NumberSetting("MaxDelay", false, 1, 20, 5, 1);
+    private BoolSetting silent = new BoolSetting("Silent", false, false);
+    private BoolSetting noKillaura = new BoolSetting("No Killaura", false, false);
 
     Random random = new Random();
     int lastTick = -1;
 
     public InvManager() {
         super("InvManager", Keyboard.KEY_K, Category.PLAYER, true);
-        addSetting(maxDelay, minDelay, silent);
+        addSetting(maxDelay, minDelay, silent, noKillaura);
     }
 
     @Override
@@ -38,6 +40,7 @@ public class InvManager extends Module {
     @Override
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
+        if(noKillaura.isTrue() && Killaura.selectedtarget != null) return;
 
         if(silent.isTrue() || mc.currentScreen instanceof GuiInventory) {
             sortWeapons();
