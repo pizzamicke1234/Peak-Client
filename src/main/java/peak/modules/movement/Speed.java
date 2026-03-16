@@ -76,6 +76,8 @@ public class Speed extends Module {
     }
 
     public void motionSpeed() {
+        if(!MovementManager.isPressingMove()) return;
+
         if(mc.thePlayer.onGround && autojump){
             mc.thePlayer.jump();
         }

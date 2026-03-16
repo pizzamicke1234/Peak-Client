@@ -12,6 +12,11 @@ public class MovementManager {
         return Math.hypot(mc.thePlayer.motionX, mc.thePlayer.motionZ);
     }
 
+    public static boolean isPressingMove() {
+        return mc.gameSettings.keyBindForward.isKeyDown() || mc.gameSettings.keyBindBack.isKeyDown() ||
+                mc.gameSettings.keyBindLeft.isKeyDown() || mc.gameSettings.keyBindRight.isKeyDown();
+    }
+
     public static boolean isMoving() {
         return mc.thePlayer != null && (mc.thePlayer.movementInput.moveForward != 0F || mc.thePlayer.movementInput.moveStrafe != 0F);
     }

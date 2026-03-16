@@ -41,6 +41,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
+import peak.Client;
+import peak.managers.font.FontUtil;
+import peak.modules.Module;
 import peak.ui.HUD;
 
 public class GuiIngame extends Gui
@@ -572,39 +575,58 @@ public class GuiIngame extends Gui
             collection = list;
         }
 
-        int i = this.getFontRenderer().getStringWidth(objective.getDisplayName());
+        int width = this.getFontRenderer().getStringWidth(objective.getDisplayName());
 
         for (Score score : collection)
         {
             ScorePlayerTeam scoreplayerteam = scoreboard.getPlayersTeam(score.getPlayerName());
             String s = ScorePlayerTeam.formatPlayerName(scoreplayerteam, score.getPlayerName()) + ": " + EnumChatFormatting.RED + score.getScorePoints();
-            i = Math.max(i, this.getFontRenderer().getStringWidth(s));
+            width = Math.max(width, this.getFontRenderer().getStringWidth(s));
         }
 
-        int i1 = collection.size() * this.getFontRenderer().FONT_HEIGHT;
-        int j1 = scaledRes.getScaledHeight() / 2 + i1 / 3;
-        int k1 = 3;
-        int l1 = scaledRes.getScaledWidth() - i - k1;
-        int j = 0;
+        int fontHeight = FontUtil.normal.getHeight() + 6;
+        int enabledModules = 0;
+        for(Module m : Client.modules) {
+            if(m.toggled) {
+                enabledModules++;
+            }
+        }
+        int moduleHeight = enabledModules * fontHeight;
+
+        int yOffset = collection.size() * this.getFontRenderer().FONT_HEIGHT;
+        int top0 = scaledRes.getScaledHeight() / 2 + yOffset / 3;
+        int maxTop = top0 - collection.size() * this.getFontRenderer().FONT_HEIGHT - this.getFontRenderer().FONT_HEIGHT - 1;
+        int xOffset = 3;
+        int left = scaledRes.getScaledWidth() - width - xOffset;
+        int row = 0;
+
+        if(moduleHeight >= maxTop) {
+            int d = moduleHeight - maxTop;
+            top0 = scaledRes.getScaledHeight() / 2 + yOffset / 3 + (d + 1);
+        }
 
         for (Score score1 : collection)
         {
-            ++j;
+            ++row;
             ScorePlayerTeam scoreplayerteam1 = scoreboard.getPlayersTeam(score1.getPlayerName());
-            String s1 = ScorePlayerTeam.formatPlayerName(scoreplayerteam1, score1.getPlayerName());
-            String s2 = EnumChatFormatting.RED + "" + score1.getScorePoints();
-            int k = j1 - j * this.getFontRenderer().FONT_HEIGHT;
-            int l = scaledRes.getScaledWidth() - k1 + 2;
-            drawRect(l1 - 2, k, l, k + this.getFontRenderer().FONT_HEIGHT, 1342177280);
-            this.getFontRenderer().drawString(s1, l1, k, 553648127);
-            this.getFontRenderer().drawString(s2, l - this.getFontRenderer().getStringWidth(s2), k, 553648127);
+            String scoreContent = ScorePlayerTeam.formatPlayerName(scoreplayerteam1, score1.getPlayerName());
+            String scorePoints = EnumChatFormatting.RED + "" + score1.getScorePoints();
 
-            if (j == collection.size())
+            int top = top0 - row * this.getFontRenderer().FONT_HEIGHT;
+            int right = scaledRes.getScaledWidth() - xOffset + 2;
+
+            drawRect(left - 2, top, right, top + this.getFontRenderer().FONT_HEIGHT, 1342177280);
+            this.getFontRenderer().drawString(scoreContent, left, top, 553648127);
+
+            //Scoreboard row nums
+            //this.getFontRenderer().drawString(scorePoints, right - this.getFontRenderer().getStringWidth(scorePoints), top, 553648127);
+
+            if (row == collection.size())
             {
-                String s3 = objective.getDisplayName();
-                drawRect(l1 - 2, k - this.getFontRenderer().FONT_HEIGHT - 1, l, k - 1, 1610612736);
-                drawRect(l1 - 2, k - 1, l, k, 1342177280);
-                this.getFontRenderer().drawString(s3, l1 + i / 2 - this.getFontRenderer().getStringWidth(s3) / 2, k - this.getFontRenderer().FONT_HEIGHT, 553648127);
+                String scoreTitle = objective.getDisplayName();
+                drawRect(left - 2, top - this.getFontRenderer().FONT_HEIGHT - 1, right, top - 1, 1610612736);
+                drawRect(left - 2, top - 1, right, top, 1342177280);
+                this.getFontRenderer().drawString(scoreTitle, left + width / 2 - this.getFontRenderer().getStringWidth(scoreTitle) / 2, top - this.getFontRenderer().FONT_HEIGHT, 553648127);
             }
         }
     }
