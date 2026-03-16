@@ -1,5 +1,6 @@
 package peak.modules.combat;
 
+import com.viaversion.viaversion.protocols.v1_20to1_20_2.packet.ServerboundPacket1_20_2;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -7,8 +8,10 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
@@ -29,7 +32,7 @@ public class Killaura extends Module {
     public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Multi");
     public static ModeSetting rotationMode = new ModeSetting("Rotations", false, "Off", "Off", "Normal", "Fake");
 
-    public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Fake");
+    public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Vanilla1", "Fake");
     public NumberSetting mincps = new NumberSetting("MinCPS", false, 1, 20, 10, 1);
     public NumberSetting maxcps = new NumberSetting("MaxCPS", false, 1, 20, 10, 1);
 
@@ -152,6 +155,11 @@ public class Killaura extends Module {
                 case "Vanilla":
                     PacketManager.sendPacketWithoutEvent(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
                     fakeblocking = true; //Display block animation client side
+                    break;
+
+                case "Vanilla1":
+                    mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
+                    fakeblocking = true;
                     break;
 
             }

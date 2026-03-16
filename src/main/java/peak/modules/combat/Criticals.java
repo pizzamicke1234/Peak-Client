@@ -49,7 +49,7 @@ public class Criticals extends Module {
         EntityLivingBase entityLivingBase = (EntityLivingBase) attack.getEntityFromWorld(mc.theWorld);
 
         if(!mc.thePlayer.onGround && groundOnly.isTrue()) return;
-        if(entity.isDead || entityLivingBase.getHealth() < 1 || entityLivingBase.hurtTime > 1) return;
+        if(entity.isDead || entityLivingBase.getHealth() < 1 || entityLivingBase.hurtTime > 2) return;
 
         if (!mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder()) {
 
@@ -77,9 +77,12 @@ public class Criticals extends Module {
                 case "Deathzone":
 
                     if(mc.thePlayer.onGround) {
-                        mc.thePlayer.motionY = 0.1D;
+                        mc.thePlayer.motionY = 0.15D;
                         PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                                mc.thePlayer.posY - 0.01D, mc.thePlayer.posZ, false));
+                                mc.thePlayer.posY - 0.03D, mc.thePlayer.posZ, false));
+                        PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                                mc.thePlayer.posY - 0.03D, mc.thePlayer.posZ, false));
+                        mc.thePlayer.motionY = -0.01D;
                         //DZshouldCrit = true;
                     }else {
                         PacketManager.sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
