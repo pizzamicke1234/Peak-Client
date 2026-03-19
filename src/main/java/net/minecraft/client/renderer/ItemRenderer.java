@@ -310,6 +310,20 @@ public class ItemRenderer
         GlStateManager.scale(0.4F, 0.4F, 0.4F);
     }
 
+    private void transformFirstPersonItemCustom(float equipProgress, float swingProgress, float swingSpeed)
+    {
+
+        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+        GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
+        GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+        float f = MathHelper.sin(swingProgress * swingProgress * (float)Math.PI);
+        float f1 = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float)Math.PI);
+        GlStateManager.rotate(f * -20.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(f1 * -20.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(0.4F, 0.4F, 0.4F);
+    }
+
     /**
      * Translate and rotate the render to look like holding a bow
      *  
@@ -376,6 +390,18 @@ public class ItemRenderer
         GlStateManager.scale(0.37F, 0.37F, 0.37F);
     }
 
+    private void ETB(float equipProgress, float swingProgress) {
+        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+        GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
+        GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+        float f = MathHelper.sin(swingProgress * swingProgress * (float)Math.PI);
+        float f1 = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float)Math.PI);
+        //GlStateManager.rotate(f1 * 5.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(f1 * -40.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(f1 * -85.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(0.3F, 0.3F, 0.3F);
+    }
+
     /**
      * Renders the active item in the player's hand when in first person mode. Args: partialTickTime
      */
@@ -432,10 +458,17 @@ public class ItemRenderer
                         final float convertedProgress = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float) Math.PI);
 
                         if(animations.toggled) {
+                            double blockX = animations.blockX.cValue * 0.01D;
+                            double blockY = animations.blockY.cValue * 0.01D;
+                            double blockZ = animations.blockZ.cValue * 0.01D;
+
+                            GlStateManager.translate(blockX, blockY, blockZ);
+                            //swingProgress = (float) (swingProgress * animations.swingSpeed.cValue);
 
                             switch (animations.animationmode.currentValue) {
 
                                 case "1.7":
+                                    //this.transformFirstPersonItemCustom(f, swingProgress, (float) animations.swingSpeed.cValue);
                                     this.transformFirstPersonItem(f, swingProgress);
                                     this.doBlockTransformations();
                                     break;
@@ -487,7 +520,13 @@ public class ItemRenderer
                                     GlStateManager.translate(-0.5f, 0.2f, 0f);
                                     break;
 
+                                case"ETB":
+                                    ETB(f, swingProgress);
+                                    doBlockTransformations();
+                                    break;
+
                             }
+
                             break;
 
                         }
