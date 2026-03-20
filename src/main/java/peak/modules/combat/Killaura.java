@@ -1,5 +1,6 @@
 package peak.modules.combat;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.viaversion.viaversion.protocols.v1_20to1_20_2.packet.ServerboundPacket1_20_2;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -15,19 +16,20 @@ import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
+import peak.events.RenderEvent;
 import peak.managers.PacketManager;
 import peak.managers.RotationManager;
+import peak.managers.render.RenderManager;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
 import peak.events.TickEvent;
 
+import java.awt.*;
 import java.util.Random;
 
 public class Killaura extends Module {
-
-    public ModeSetting moveFixMode = new ModeSetting("MoveFix", false, "Off", "Off", "Vulcan");
 
     public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Multi");
     public static ModeSetting rotationMode = new ModeSetting("Rotations", false, "Off", "Off", "Normal", "Fake");
@@ -39,11 +41,18 @@ public class Killaura extends Module {
     public NumberSetting reach = new NumberSetting("Reach", true, 1, 8, 3, 0.20);
 
     public BoolSetting keepSprint = new BoolSetting("KeepSprint", false, false);
+    public ModeSetting moveFixMode = new ModeSetting("MoveFix", false, "Off", "Off", "Vulcan");
+
+    public BoolSetting hitMark = new BoolSetting("Mark", false, false);
+    private ModeSetting markStyle = new ModeSetting("Style", hitMark, new String[]{"true"}, false, "Liquid", "Liquid");
 
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
-        addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint, moveFixMode);
+        addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint, moveFixMode, hitMark, markStyle);
     }
+
+    private final Color liquidColor = new Color(44, 112, 255, 95);
+    private final Color liquidHitColor = new Color(255, 72, 72, 95);
 
     public static float serveryaw, serverpitch;
 
@@ -63,7 +72,6 @@ public class Killaura extends Module {
     @Override
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
-        if(!canClick()) return;
 
         selectedtarget = null;
 
@@ -88,6 +96,8 @@ public class Killaura extends Module {
 
                     manageRotations(selectedtarget, false);
                     manageAutoblock(selectedtarget);
+
+                    if(!canClick()) return;
 
                     mc.thePlayer.swingItem();
                     mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
@@ -119,6 +129,13 @@ public class Killaura extends Module {
             }
         }
 
+    }
+
+    @Override
+    public void onRender(RenderEvent renderEvent) {
+        if(selectedtarget != null) {
+            this.renderMark(selectedtarget, renderEvent.getPartialTicks());
+        }
     }
 
     public boolean canClick() {
@@ -183,6 +200,16 @@ public class Killaura extends Module {
             serveryaw = RotationManager.getRotationsToEntity(e)[0];
             serverpitch = RotationManager.getRotationsToEntity(e)[1];
             RotationManager.lookSilent(new float[]{serveryaw, serverpitch}, 250, 250, packetSend);
+        }
+    }
+
+    private void renderMark(Entity e, float partialTicks) {
+        EntityLivingBase entity = (EntityLivingBase) e;
+        if(hitMark.isTrue()) {
+            if(markStyle.currentValue.equals("Liquid")) {
+                Color color = (entity.hurtTime == 0) ? liquidColor : liquidHitColor;
+                RenderManager.drawMark(e, partialTicks, color);
+            }
         }
     }
 

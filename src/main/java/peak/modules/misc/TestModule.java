@@ -1,13 +1,14 @@
 package peak.modules.misc;
 
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.entity.Entity;
 import org.lwjgl.input.Keyboard;
-import peak.events.PacketEvent;
-import peak.events.TickEvent;
-import peak.managers.PacketManager;
+
+import peak.events.RenderEvent;
+import peak.managers.render.RenderManager;
 import peak.modules.Module;
-import peak.ui.notifications.NotificationManager;
+
+import java.awt.*;
+
 
 public class TestModule extends Module {
 
@@ -16,36 +17,16 @@ public class TestModule extends Module {
         super("TestModule", Keyboard.KEY_J, Category.MISC, true);
     }
 
-    private int ticks = 0;
-
     @Override
-    public void onEnable() {
-        ticks = 0;
-    }
+    public void onRender(RenderEvent renderEvent) {
 
-    @Override
-    public void onTick(TickEvent.TickType tickType) {
-        if (tickType == TickEvent.TickType.PRE) {
+        float partialTicks = renderEvent.getPartialTicks();
 
-            ticks++;
+        Color idleColor = new Color(44, 112, 255, 95);
+        Color damageColor = new Color(255, 72, 72, 95);
 
-        }
-    }
-
-    @Override
-    public void onPacket(PacketEvent packetEvent) {
-
-        Packet packet = packetEvent.getPacket();
-
-        if(packet instanceof C03PacketPlayer) {
-
-            NotificationManager.addChat("C");
-            packetEvent.cancelPacket();
-
-            if(ticks > 60) {
-                //PacketManager.sendPacketWithoutEvent(new C03PacketPlayer.C04PacketPlayerPosition(0, 0, 0, true));
-            }
-
+        for(Entity entity : mc.theWorld.loadedEntityList) {
+            RenderManager.drawMark(entity, partialTicks, damageColor);
         }
 
     }

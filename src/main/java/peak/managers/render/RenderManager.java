@@ -8,6 +8,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.Entity;
@@ -196,6 +199,111 @@ public class RenderManager {
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
 
+    }
+
+    public static void drawMark(Entity entity, float partialTicks, Color color) {
+
+        net.minecraft.client.renderer.entity.RenderManager rm = mc.getRenderManager();
+
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        AxisAlignedBB entityBox = entity.getEntityBoundingBox();
+
+        double rX = x - rm.renderPosX;
+        double rY = y - rm.renderPosY;
+        double rZ = z - rm.renderPosZ;
+
+        double x1 = entityBox.minX - entity.posX + rX - 0.1D;
+        double x2 = entityBox.maxX - entity.posX + rX + 0.1D;
+        double y1 = entityBox.maxY - entity.posY + rY + 0.2D;
+        double y2 = y1 + 0.2D;
+        double z1 = entityBox.minZ - entity.posZ + rZ - 0.1D;
+        double z2 = entityBox.maxZ - entity.posZ + rZ + 0.1D;
+
+        AxisAlignedBB renderBox = new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+        GlStateManager.disableCull();
+        GlStateManager.depthMask(false);
+        GL11.glLineWidth(2.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        drawFilledBoundingBox(renderBox, color);
+
+        /*RenderGlobal.drawOutlinedBoundingBox(
+                renderBox,
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue(),
+                color.getAlpha()
+        );*/
+
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+
+    }
+
+    /** Holy vibe coded method
+     * Total wasted tries to make this shit work: 4
+     */
+    public static void drawFilledBoundingBox(AxisAlignedBB mask, Color color) {
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+        // These need to be ints (0-255) for the POSITION_COLOR format in 1.8.9
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+        int a = color.getAlpha();
+
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+
+        // Bottom
+        worldrenderer.pos(mask.minX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+
+        // Top
+        worldrenderer.pos(mask.minX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+
+        // North
+        worldrenderer.pos(mask.minX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+
+        // South
+        worldrenderer.pos(mask.maxX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+
+        // West
+        worldrenderer.pos(mask.minX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.minX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+
+        // East
+        worldrenderer.pos(mask.maxX, mask.minY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.minZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.maxY, mask.maxZ).color(r, g, b, a).endVertex();
+        worldrenderer.pos(mask.maxX, mask.minY, mask.maxZ).color(r, g, b, a).endVertex();
+
+        tessellator.draw();
     }
 
 }

@@ -17,6 +17,12 @@ public abstract class Setting {
     }
 
     protected boolean shouldDisplay(Setting boundSetting, String[] neededValues) {
+
+        if(boundSetting instanceof BoolSetting) {
+            boolean status = ((BoolSetting) boundSetting).status;
+            return Arrays.asList(neededValues).contains(Boolean.toString(status));
+        }
+
         return Arrays.asList(neededValues).contains(boundSetting.currentValue);
     }
 
