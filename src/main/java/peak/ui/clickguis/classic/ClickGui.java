@@ -1,4 +1,4 @@
-package peak.ui.clickguis;
+package peak.ui.clickguis.classic;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -7,8 +7,8 @@ import org.lwjgl.input.Keyboard;
 import peak.Client;
 import peak.modules.Module;
 import peak.modules.render.ClickGuimod;
-import peak.ui.clickguis.elements.CategoryRect;
-import peak.ui.clickguis.elements.ModuleRect;
+import peak.ui.clickguis.classic.elements.CategoryRect;
+import peak.ui.clickguis.classic.elements.ModuleRect;
 
 import java.util.ArrayList;
 
@@ -17,10 +17,10 @@ public class ClickGui extends GuiScreen {
     public Minecraft mc = Minecraft.getMinecraft();
     public FontRenderer fr = mc.fontRendererObj;
 
-    ClickGuimod clickGuimod = (ClickGuimod) Client.getModulebyName("ClickGui");
+    private final ClickGuimod clickGuimod = (ClickGuimod) Client.getModulebyName("ClickGui");
 
-    ArrayList<CategoryRect> categoryRects = clickGuimod.categoryRects;
-    ArrayList<ModuleRect> moduleRects = clickGuimod.moduleRects;
+    public ArrayList<CategoryRect> categoryRects = clickGuimod.categoryRects;
+    public ArrayList<ModuleRect> moduleRects = clickGuimod.moduleRects;
 
     boolean elementdraw = false;
 

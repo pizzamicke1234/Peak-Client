@@ -8,7 +8,7 @@ import peak.modules.settings.NumberSetting;
 public class Animations extends Module {
 
     public ModeSetting animationmode = new ModeSetting("Mode", false, "1.7","1.7", "Sigma", "Avatar",
-            "Slide", "Smooth", "Exhibition", "Liquid", "ETB");
+            "Slide", "Smooth", "Exhibition", "Liquid", "ETB", "Push");
 
     public NumberSetting blockX = new NumberSetting("Block X", false, -50, 100, 0, 5);
     public NumberSetting blockY = new NumberSetting("Block Y", false, -50, 100, 0, 5);

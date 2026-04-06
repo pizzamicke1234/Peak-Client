@@ -1,4 +1,4 @@
-package peak.ui.clickguis.elements;
+package peak.ui.clickguis.classic.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

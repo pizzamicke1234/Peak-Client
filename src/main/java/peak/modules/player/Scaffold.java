@@ -61,7 +61,7 @@ public class Scaffold extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
 
-        if(scaffoldMode.currentValue.equals("Vulcan")) {
+        /*if(scaffoldMode.currentValue.equals("Vulcan")) {
 
             if(packetEvent.getPacket() instanceof C03PacketPlayer) {
                 serverYaw = mc.thePlayer.rotationYaw - 180;
@@ -83,7 +83,7 @@ public class Scaffold extends Module {
                         mc.thePlayer.posY, mc.thePlayer.posZ, serverYaw, serverPitch, mc.thePlayer.onGround));
             }
 
-        }
+        }*/
 
     }
 

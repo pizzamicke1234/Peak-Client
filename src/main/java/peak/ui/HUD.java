@@ -9,7 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import peak.Client;
 import peak.managers.ColorManager;
 import peak.managers.font.FontUtil;
-import peak.managers.render.RenderManager;
 import peak.modules.player.Scaffold;
 import peak.modules.render.HUDMod;
 import peak.ui.arraylists.Arraylist;
@@ -27,6 +26,7 @@ public class HUD extends GuiScreen {
     public static HUDMod hudMod = (HUDMod) Client.getModulebyName("HUD");
 
     public static void init() {
+        if(!hudMod.toggled) return;
 
         drawLogo();
         Arraylist.draw();
@@ -36,7 +36,7 @@ public class HUD extends GuiScreen {
             Scaffold.renderBlockCount();
         }
 
-        if(hudMod.toggled && hudMod.renderTest.isTrue()) {
+        if(hudMod.toggled && hudMod.showTargetHud.isTrue()) {
             renderTest();
         }
 

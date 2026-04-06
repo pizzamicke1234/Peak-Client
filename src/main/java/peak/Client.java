@@ -1,6 +1,8 @@
 package peak;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.server.S14PacketEntity;
 import org.lwjgl.opengl.Display;
 import peak.commands.impl.Teleport;
 import peak.commands.listeners.CommandListener;
@@ -8,6 +10,7 @@ import peak.events.AttackEvent;
 import peak.events.PacketEvent;
 import peak.events.RenderEvent;
 import peak.managers.PacketManager;
+import peak.managers.RotationManager;
 import peak.managers.font.FontUtil;
 import peak.managers.misc.BlinkManager;
 import peak.managers.misc.PingSpoofManager;
@@ -36,8 +39,10 @@ public class Client {
 
     // General settings of the client
     public static final String name = "Peak";
-    public static final String version = "0.91";
+    public static final String version = "0.911";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
+
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static final BlinkManager blinkManager = new BlinkManager();
     public static final PingSpoofManager pingSpoofManager = new PingSpoofManager();
@@ -76,6 +81,7 @@ public class Client {
         modules.add(new Velocity());
         modules.add(new Criticals());
         modules.add(new InfiniteAura());
+        modules.add(new Backtrack());
 
         //RENDER
         modules.add(new ClickGuimod());

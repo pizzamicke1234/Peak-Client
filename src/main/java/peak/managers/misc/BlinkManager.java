@@ -20,23 +20,23 @@ public class BlinkManager {
     public static final ConcurrentLinkedQueue<Packet<?>> packets = new ConcurrentLinkedQueue<>();
     public static boolean blinking, dispatch, accepted;
     public static ArrayList<Class<?>> exemptedPackets = new ArrayList<>();
-    public static StopWatch exemptionWatch = new StopWatch();
+    private static Minecraft mc = Minecraft.getMinecraft();
 
     public final void onPacketSend(PacketEvent packetEvent) {
 
-        if (Minecraft.getMinecraft().thePlayer == null) {
+        if (mc.thePlayer == null) {
             packets.clear();
             exemptedPackets.clear();
             return;
         }
 
-        if(Minecraft.getMinecraft().thePlayer.ticksExisted < 1 && !accepted) {
+        if(mc.thePlayer.ticksExisted < 1 && !accepted) {
             packets.clear();
             blinking = false;
             accepted = true;
         }
 
-        if (Minecraft.getMinecraft().thePlayer.isDead || Minecraft.getMinecraft().isSingleplayer() || !Minecraft.getMinecraft().getNetHandler().doneLoadingTerrain) {
+        if (mc.thePlayer.isDead || mc.isSingleplayer() || !mc.getNetHandler().doneLoadingTerrain) {
             packets.forEach(PacketManager::sendPacketWithoutEvent);
             packets.clear();
             blinking = false;
@@ -44,7 +44,7 @@ public class BlinkManager {
             return;
         }
 
-        final Packet<?> packet = packetEvent.getPacket();
+        final Packet packet = packetEvent.getPacket();
         if (!packet.getClass().getName().contains(".client.")) {
             return;
         }
@@ -56,15 +56,10 @@ public class BlinkManager {
         }
 
         if (blinking && !dispatch) {
-            if (exemptionWatch.finished(100)) {
-                exemptionWatch.reset();
-                exemptedPackets.clear();
-            }
 
             PingSpoofManager.spoofing = false;
 
-            if (!packetEvent.isCanceled() && exemptedPackets.stream().noneMatch(packetClass ->
-                    packetClass == packet.getClass())) {
+            if (!packetEvent.isCanceled()) {
                 packets.add(packet);
                 packetEvent.cancelPacket();
             }

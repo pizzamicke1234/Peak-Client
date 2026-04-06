@@ -302,7 +302,7 @@ public class ItemRenderer
         GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
         GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
         GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
-        float f = MathHelper.sin(swingProgress * swingProgress * (float)Math.PI);
+        float f =  MathHelper.sin(swingProgress * swingProgress * (float)Math.PI);
         float f1 = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float)Math.PI);
         GlStateManager.rotate(f * -20.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(f1 * -20.0F, 0.0F, 0.0F, 1.0F);
@@ -402,12 +402,22 @@ public class ItemRenderer
         GlStateManager.scale(0.3F, 0.3F, 0.3F);
     }
 
+    private void push(float equipProgress, float swingProgress) {
+        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+        GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
+        GlStateManager.rotate(35.0F, 0.0F, 1.0F, 0.0F);
+        float f1 = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float)Math.PI);
+        GlStateManager.rotate(f1 * 45.0F, 0F, 0f, 0);
+        GlStateManager.scale(0.3F, 0.3F, 0.3F);
+        GlStateManager.translate(-0.05f, 0.25f, -0.1f);
+    }
+
     /**
      * Renders the active item in the player's hand when in first person mode. Args: partialTickTime
      */
     public void renderItemInFirstPerson(float partialTicks)
     {
-        float f = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
+        float equipProgress = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
         AbstractClientPlayer abstractclientplayer = this.mc.thePlayer;
         float swingProgress = abstractclientplayer.getSwingProgress(partialTicks);
         float f2 = abstractclientplayer.prevRotationPitch + (abstractclientplayer.rotationPitch - abstractclientplayer.prevRotationPitch) * partialTicks;
@@ -434,7 +444,7 @@ public class ItemRenderer
 
             if (this.itemToRender.getItem() == Items.filled_map)
             {
-                this.renderItemMap(abstractclientplayer, f2, f, swingProgress);
+                this.renderItemMap(abstractclientplayer, f2, equipProgress, swingProgress);
             }
             else if (abstractclientplayer.getItemInUseCount() > 0 || isFakeBlocking)
             {
@@ -443,18 +453,18 @@ public class ItemRenderer
                 switch (enumaction)
                 {
                     case NONE:
-                        this.transformFirstPersonItem(f, 0.0F);
+                        this.transformFirstPersonItem(equipProgress, 0.0F);
                         break;
 
                     case EAT:
                     case DRINK:
                         this.performDrinking(abstractclientplayer, partialTicks);
-                        this.transformFirstPersonItem(f, 0.0F);
+                        this.transformFirstPersonItem(equipProgress, 0.0F);
                         break;
 
                     case BLOCK:
 
-                        float var15 = MathHelper.sin(swingProgress * swingProgress * 3.1415927F);
+                        float var15 = MathHelper.sin(swingProgress * swingProgress * (float) Math.PI);
                         final float convertedProgress = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float) Math.PI);
 
                         if(animations.toggled) {
@@ -469,12 +479,12 @@ public class ItemRenderer
 
                                 case "1.7":
                                     //this.transformFirstPersonItemCustom(f, swingProgress, (float) animations.swingSpeed.cValue);
-                                    this.transformFirstPersonItem(f, swingProgress);
+                                    this.transformFirstPersonItem(equipProgress, swingProgress);
                                     this.doBlockTransformations();
                                     break;
 
                                 case "Sigma":
-                                    this.transformFirstPersonItem(f*0.5f, 0);
+                                    this.transformFirstPersonItem(equipProgress*0.5f, 0);
 
                                     GlStateManager.rotate(-var15 * 55 / 2.0F, -8.0F, -0.0F, 9.0F);
                                     GlStateManager.rotate(-var15 * 45, 1.0F, var15 / 2, -0.0F);
@@ -486,17 +496,17 @@ public class ItemRenderer
                                     break;
 
                                 case "Avatar":
-                                    this.avatar(f, swingProgress);
+                                    this.avatar(equipProgress, swingProgress);
                                     this.doBlockTransformations();
                                     break;
 
                                 case"Slide":
-                                    this.slide(f*0.3f, swingProgress);
+                                    this.slide(equipProgress*0.3f, swingProgress);
                                     this.doBlockTransformations();
                                     break;
 
                                 case"Smooth":
-                                    transformFirstPersonItem(f, 0.0F);
+                                    transformFirstPersonItem(equipProgress, 0.0F);
                                     final float y = -convertedProgress * 2.0F;
                                     GlStateManager.translate(0.0F, y / 10.0F + 0.1F, 0.0F);
                                     GlStateManager.rotate(y * 10.0F, 0.0F, 1.0F, 0.0F);
@@ -506,7 +516,7 @@ public class ItemRenderer
                                     break;
 
                                 case"Exhibition":
-                                   transformFirstPersonItem(f / 2.0F, 0.0F);
+                                   transformFirstPersonItem(equipProgress / 2.0F, 0.0F);
                                     GlStateManager.translate(0.0F, 0.3F, -0.0F);
                                     GlStateManager.rotate(-convertedProgress * 31.0F, 1.0F, 0.0F, 2.0F);
                                     GlStateManager.rotate(-convertedProgress * 33.0F, 1.5F, (convertedProgress / 1.1F), 0.0F);
@@ -515,13 +525,18 @@ public class ItemRenderer
                                     break;
 
                                 case"Liquid":
-                                    transformFirstPersonItem(f, swingProgress);
+                                    transformFirstPersonItem(equipProgress, swingProgress);
                                     doBlockTransformations();
                                     GlStateManager.translate(-0.5f, 0.2f, 0f);
                                     break;
 
-                                case"ETB":
-                                    ETB(f, swingProgress);
+                                case "ETB":
+                                    ETB(equipProgress, swingProgress);
+                                    doBlockTransformations();
+                                    break;
+
+                                case "Push":
+                                    push(equipProgress, swingProgress);
                                     doBlockTransformations();
                                     break;
 
@@ -532,27 +547,27 @@ public class ItemRenderer
                         }
 
                         else {
-                            this.transformFirstPersonItem(f, 1F);
+                            this.transformFirstPersonItem(equipProgress, 1F);
                             this.doBlockTransformations();
                             break;
                         }
 
                     case BOW:
-                        this.transformFirstPersonItem(f, 0.0F);
+                        this.transformFirstPersonItem(equipProgress, 0.0F);
                         this.doBowTransformations(partialTicks, abstractclientplayer);
                 }
             }
             else
             {
                 this.doItemUsedTransformations(swingProgress);
-                this.transformFirstPersonItem(f, swingProgress);
+                this.transformFirstPersonItem(equipProgress, swingProgress);
             }
 
             this.renderItem(abstractclientplayer, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
         }
         else if (!abstractclientplayer.isInvisible())
         {
-            this.renderPlayerArm(abstractclientplayer, f, swingProgress);
+            this.renderPlayerArm(abstractclientplayer, equipProgress, swingProgress);
         }
 
         GlStateManager.popMatrix();

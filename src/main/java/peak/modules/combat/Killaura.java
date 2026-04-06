@@ -94,7 +94,6 @@ public class Killaura extends Module {
                         selectedtarget = e;
                     }
 
-                    manageRotations(selectedtarget, false);
                     manageAutoblock(selectedtarget);
 
                     if(!canClick()) return;
@@ -115,20 +114,6 @@ public class Killaura extends Module {
     @Override
     public void onPacket(PacketEvent packetEvent) {
         Packet packet = packetEvent.getPacket();
-
-        if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake")) {
-            if(selectedtarget != null) {
-
-                if(packet instanceof C03PacketPlayer) {
-
-                }
-                if(packet instanceof C03PacketPlayer.C06PacketPlayerPosLook || packet instanceof S08PacketPlayerPosLook) {
-                    manageRotations(selectedtarget, true);
-                    packetEvent.cancelPacket();
-                }
-            }
-        }
-
     }
 
     @Override
@@ -195,12 +180,8 @@ public class Killaura extends Module {
 
     }
 
-    public void manageRotations(Entity e, boolean packetSend) {
-        if(!rotationMode.currentValue.equals("Off") && !rotationMode.currentValue.equals("Fake") && selectedtarget != null) {
-            serveryaw = RotationManager.getRotationsToEntity(e)[0];
-            serverpitch = RotationManager.getRotationsToEntity(e)[1];
-            RotationManager.lookSilent(new float[]{serveryaw, serverpitch}, 250, 250, packetSend);
-        }
+    public void manageRotations(Entity e) {
+
     }
 
     private void renderMark(Entity e, float partialTicks) {
