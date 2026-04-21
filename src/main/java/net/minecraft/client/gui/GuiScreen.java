@@ -603,9 +603,9 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
      */
     public void handleMouseInput() throws IOException
     {
-        int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-        int k = Mouse.getEventButton();
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        int button = Mouse.getEventButton();
 
         if (Mouse.getEventButtonState())
         {
@@ -614,11 +614,11 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
                 return;
             }
 
-            this.eventButton = k;
+            this.eventButton = button;
             this.lastMouseEvent = Minecraft.getSystemTime();
-            this.mouseClicked(i, j, this.eventButton);
+            this.mouseClicked(x, y, this.eventButton);
         }
-        else if (k != -1)
+        else if (button != -1)
         {
             if (this.mc.gameSettings.touchscreen && --this.touchValue > 0)
             {
@@ -626,13 +626,26 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
             }
 
             this.eventButton = -1;
-            this.mouseReleased(i, j, k);
+            this.mouseReleased(x, y, button);
         }
         else if (this.eventButton != -1 && this.lastMouseEvent > 0L)
         {
             long l = Minecraft.getSystemTime() - this.lastMouseEvent;
-            this.mouseClickMove(i, j, this.eventButton, l);
+            this.mouseClickMove(x, y, this.eventButton, l);
         }
+
+        int scroll = Mouse.getEventDWheel();
+        if(scroll != 0) {
+            if(scroll > 0) {
+                onMouseScroll(x, y, true);
+            }else {
+                onMouseScroll(x, y, false);
+            }
+        }
+    }
+
+    public void onMouseScroll(int mouseX, int mouseY, boolean up) {
+
     }
 
     /**

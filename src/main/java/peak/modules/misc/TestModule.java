@@ -6,7 +6,9 @@ import net.minecraft.network.play.server.S1EPacketRemoveEntityEffect;
 import org.lwjgl.input.Keyboard;
 
 import peak.events.PacketEvent;
+import peak.events.RenderEvent;
 import peak.events.TickEvent;
+import peak.managers.render.RenderManager;
 import peak.modules.Module;
 import peak.ui.notifications.NotificationManager;
 
@@ -21,9 +23,7 @@ public class TestModule extends Module {
     }
 
     @Override
-    public void onEnable() {
-        for(int i = 0; i < 5; i++) {
-            NotificationManager.addChat("Number = " + i);
-        }
+    public void onRender(RenderEvent renderEvent) {
+        RenderManager.drawSelectionBox(0, 2, 0, 1, 2, new Color(0, 255, 57, 255));
     }
 }

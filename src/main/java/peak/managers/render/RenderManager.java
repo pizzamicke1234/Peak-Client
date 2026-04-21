@@ -18,6 +18,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import org.lwjgl.opengl.GL11;
+import peak.managers.font.FontUtil;
+import peak.managers.font.MinecraftFontRenderer;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -61,6 +63,72 @@ public class RenderManager {
 
         GlStateManager.enableAlpha();
         GlStateManager.disableBlend();
+    }
+
+    public static void drawRoundedRect(float x, float y, float width, float height, float visibleHeight, float radius, Color color) {
+
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+        int factor = sr.getScaleFactor();
+
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
+        GL11.glScissor((int) (x * factor), (int) ((sr.getScaledHeight() - (y + visibleHeight)) * factor),
+
+                (int) (width * factor),
+
+                (int) (visibleHeight * factor)
+
+        );
+
+        drawRoundedRect(x, y, width, height, radius, color);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+    }
+
+    public static void drawRoundedRectC(float x, float y, float width, float height, float offsetY, float radius, Color color) {
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int factor = sr.getScaleFactor();
+
+        float clipY = y + offsetY;
+        float clipHeight = height;
+
+        int screenHeight = sr.getScaledHeight() * factor;
+
+        int scissorX = (int) (x * factor);
+        int scissorWidth = (int) (width * factor);
+        int scissorHeight = (int) (clipHeight * factor);
+
+        int scissorY = (int) (screenHeight - (clipY * factor) - scissorHeight);
+
+        if (scissorHeight <= 0 || scissorWidth <= 0) return;
+
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(scissorX, scissorY, scissorWidth, scissorHeight);
+
+        drawRoundedRect(x, y, width, height, radius, color);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
+
+    /**
+     * Big Yahu impressed
+     */
+    public static void drawClippedString(MinecraftFontRenderer fontRenderer, String text, double x, double y, double visibleHeight, int color) {
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int factor = sr.getScaleFactor();
+
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
+        GL11.glScissor((int) (x * factor), (int) ((sr.getScaledHeight() - (y + visibleHeight)) * factor),
+                (int) (fontRenderer.getStringWidth(text) * factor),
+                (int) (visibleHeight * factor)
+        );
+
+        fontRenderer.drawString(text, x, (float) y, color);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     public static void drawHitboxes(){
@@ -199,6 +267,50 @@ public class RenderManager {
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
 
+    }
+
+    public static void drawSelectionBox(double x, double y, double z, float width, float height, Color color) {
+        net.minecraft.client.renderer.entity.RenderManager rm = mc.getRenderManager();
+
+        // These are the 'interpolated' camera positions.
+        // Using these prevents the box from "shaking" when you move.
+        double renderX = x - rm.renderPosX;
+        double renderY = y - rm.renderPosY;
+        double renderZ = z - rm.renderPosZ;
+
+        float halfW = width / 2.0F;
+
+        // Build the box centered on X and Z
+        AxisAlignedBB box = new AxisAlignedBB(
+                renderX - halfW, renderY, renderZ - halfW,
+                renderX + halfW, renderY + height, renderZ + halfW
+        );
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.disableTexture2D();
+
+        // Depth settings: disableDepth(true) means you see it through walls (standard for Backtrack)
+        GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
+
+        GL11.glLineWidth(2.0F);
+
+        // Call the internal Minecraft draw method
+        RenderGlobal.drawOutlinedBoundingBox(
+                box,
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue(),
+                color.getAlpha()
+        );
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
     }
 
     public static void drawMark(Entity entity, float partialTicks, Color color) {

@@ -20,6 +20,8 @@ import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static peak.managers.render.RenderManager.drawSelectionBox;
+
 public class Backtrack extends Module {
 
     public final NumberSetting delaySetting = new NumberSetting("DelayMS", true, 30.0, 500.0, 100.0, 10.0);
@@ -40,13 +42,22 @@ public class Backtrack extends Module {
     private static class EntityQueue {
         final Queue<TimedPacket> packets = new LinkedList<>();
         long lastRelease = 0;
-        double storedX, storedY, storedZ;
-        boolean hasPosition = false;
+        double serverX, serverY, serverZ;
+        boolean hasServerPosition = false;
     }
 
     private static Field s14Field;
     private static Field s18Field;
     private static Field c02Field;
+
+    // === Delta fields for S14 inner classes (this is what was failing before) ===
+    private static Field s15DeltaXField;
+    private static Field s15DeltaYField;
+    private static Field s15DeltaZField;
+    private static Field s17DeltaXField;
+    private static Field s17DeltaYField;
+    private static Field s17DeltaZField;
+
     private static boolean reflectionDone = false;
 
     public Backtrack() {
@@ -75,6 +86,47 @@ public class Backtrack extends Module {
         } catch (Exception e) {
             try { c02Field = C02PacketUseEntity.class.getDeclaredField("field_149562_a"); c02Field.setAccessible(true); } catch (Exception ignored) {}
         }
+
+        // S15PacketEntityRelMove deltas
+        try {
+            s15DeltaXField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("field_149073_e");
+            s15DeltaXField.setAccessible(true);
+        } catch (Exception e) {
+            try { s15DeltaXField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("e"); s15DeltaXField.setAccessible(true); } catch (Exception ignored) {}
+        }
+        try {
+            s15DeltaYField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("field_149072_f");
+            s15DeltaYField.setAccessible(true);
+        } catch (Exception e) {
+            try { s15DeltaYField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("f"); s15DeltaYField.setAccessible(true); } catch (Exception ignored) {}
+        }
+        try {
+            s15DeltaZField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("field_149075_g");
+            s15DeltaZField.setAccessible(true);
+        } catch (Exception e) {
+            try { s15DeltaZField = S14PacketEntity.S15PacketEntityRelMove.class.getDeclaredField("g"); s15DeltaZField.setAccessible(true); } catch (Exception ignored) {}
+        }
+
+        // S17PacketEntityLookMove deltas (same field names)
+        try {
+            s17DeltaXField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("field_149073_e");
+            s17DeltaXField.setAccessible(true);
+        } catch (Exception e) {
+            try { s17DeltaXField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("e"); s17DeltaXField.setAccessible(true); } catch (Exception ignored) {}
+        }
+        try {
+            s17DeltaYField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("field_149072_f");
+            s17DeltaYField.setAccessible(true);
+        } catch (Exception e) {
+            try { s17DeltaYField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("f"); s17DeltaYField.setAccessible(true); } catch (Exception ignored) {}
+        }
+        try {
+            s17DeltaZField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("field_149075_g");
+            s17DeltaZField.setAccessible(true);
+        } catch (Exception e) {
+            try { s17DeltaZField = S14PacketEntity.S17PacketEntityLookMove.class.getDeclaredField("g"); s17DeltaZField.setAccessible(true); } catch (Exception ignored) {}
+        }
+
         reflectionDone = true;
     }
 
@@ -91,11 +143,14 @@ public class Backtrack extends Module {
         if (!toggled || event.getType() != PacketEvent.Type.RECEIVE) return;
         Packet<?> packet = event.getPacket();
         if (packet == null) return;
+
         if (packet instanceof S14PacketEntity || packet instanceof S18PacketEntityTeleport) {
             int entityId = getEntityId(packet);
             if (entityId == -1 || entityId == mc.thePlayer.getEntityId()) return;
+
             Entity entity = mc.theWorld.getEntityByID(entityId);
             if (!shouldBacktrackEntity(entity)) return;
+
             queuePacket(entityId, packet);
             event.cancelPacket();
         }
@@ -124,16 +179,67 @@ public class Backtrack extends Module {
 
     private void queuePacket(int entityId, Packet<?> packet) {
         EntityQueue queue = entityQueues.computeIfAbsent(entityId, k -> new EntityQueue());
-        queue.packets.offer(new TimedPacket(packet, System.currentTimeMillis()));
 
-        // Store the entity's current position for ESP rendering
         Entity entity = mc.theWorld.getEntityByID(entityId);
-        if (entity != null) {
-            queue.storedX = entity.posX;
-            queue.storedY = entity.posY;
-            queue.storedZ = entity.posZ;
-            queue.hasPosition = true;
+        if (entity == null) return;
+
+        // Initial position (so box always appears)
+        if (!queue.hasServerPosition) {
+            queue.serverX = entity.posX;
+            queue.serverY = entity.posY;
+            queue.serverZ = entity.posZ;
+            queue.hasServerPosition = true;
         }
+
+        // === EXTRACT EXACT SERVER POSITION FROM CANCELLED PACKET ===
+        if (packet instanceof S18PacketEntityTeleport) {
+            try {
+                Field xField = null, yField = null, zField = null;
+                try {
+                    xField = S18PacketEntityTeleport.class.getDeclaredField("field_149449_b");
+                    yField = S18PacketEntityTeleport.class.getDeclaredField("field_149450_c");
+                    zField = S18PacketEntityTeleport.class.getDeclaredField("field_149447_d");
+                } catch (Exception e) {
+                    try {
+                        xField = S18PacketEntityTeleport.class.getDeclaredField("b");
+                        yField = S18PacketEntityTeleport.class.getDeclaredField("c");
+                        zField = S18PacketEntityTeleport.class.getDeclaredField("d");
+                    } catch (Exception ignored) {}
+                }
+                if (xField != null) {
+                    xField.setAccessible(true); yField.setAccessible(true); zField.setAccessible(true);
+                    queue.serverX = ((Integer) xField.get(packet)) / 32.0D;
+                    queue.serverY = ((Integer) yField.get(packet)) / 32.0D;
+                    queue.serverZ = ((Integer) zField.get(packet)) / 32.0D;
+                }
+            } catch (Exception ignored) {}
+        }
+        else if (packet instanceof S14PacketEntity.S15PacketEntityRelMove) {
+            try {
+                if (s15DeltaXField != null) {
+                    byte dx = (Byte) s15DeltaXField.get(packet);
+                    byte dy = (Byte) s15DeltaYField.get(packet);
+                    byte dz = (Byte) s15DeltaZField.get(packet);
+                    queue.serverX = entity.posX + (dx / 32.0D);
+                    queue.serverY = entity.posY + (dy / 32.0D);
+                    queue.serverZ = entity.posZ + (dz / 32.0D);
+                }
+            } catch (Exception ignored) {}
+        }
+        else if (packet instanceof S14PacketEntity.S17PacketEntityLookMove) {
+            try {
+                if (s17DeltaXField != null) {
+                    byte dx = (Byte) s17DeltaXField.get(packet);
+                    byte dy = (Byte) s17DeltaYField.get(packet);
+                    byte dz = (Byte) s17DeltaZField.get(packet);
+                    queue.serverX = entity.posX + (dx / 32.0D);
+                    queue.serverY = entity.posY + (dy / 32.0D);
+                    queue.serverZ = entity.posZ + (dz / 32.0D);
+                }
+            } catch (Exception ignored) {}
+        }
+
+        queue.packets.offer(new TimedPacket(packet, System.currentTimeMillis()));
 
         if (queue.packets.size() > MAX_QUEUE_SIZE) {
             TimedPacket oldest = queue.packets.poll();
@@ -145,18 +251,20 @@ public class Backtrack extends Module {
         if (entityQueues.isEmpty()) return;
         long now = System.currentTimeMillis();
         long delayMs = (long) delaySetting.cValue;
+
         Iterator<Map.Entry<Integer, EntityQueue>> it = entityQueues.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, EntityQueue> entry = it.next();
             EntityQueue queue = entry.getValue();
+
             if (now - queue.lastRelease < 16) continue;
+
             TimedPacket tp = queue.packets.peek();
             if (tp != null && now - tp.timestamp >= delayMs) {
                 queue.packets.poll();
                 PacketManager.receivePacketWithoutEvent(tp.packet);
                 queue.lastRelease = now;
             }
-            if (queue.packets.isEmpty()) it.remove();
         }
     }
 
@@ -165,8 +273,7 @@ public class Backtrack extends Module {
     }
 
     private void flushEntityPackets(int entityId) {
-        EntityQueue queue = entityQueues.remove(entityId);
-        if (queue != null) for (TimedPacket tp : queue.packets) PacketManager.receivePacketWithoutEvent(tp.packet);
+        entityQueues.remove(entityId);
     }
 
     private int getEntityId(Packet<?> packet) {
@@ -187,30 +294,31 @@ public class Backtrack extends Module {
     private void renderBacktrackTargets(float partialTicks) {
         for (Map.Entry<Integer, EntityQueue> entry : entityQueues.entrySet()) {
             EntityQueue queue = entry.getValue();
-            if (queue.hasPosition && !queue.packets.isEmpty()) {
-                // Create a dummy entity at the stored position for ESP rendering
-                Entity entity = mc.theWorld.getEntityByID(entry.getKey());
-                if (entity != null && shouldBacktrackEntity(entity)) {
-                    // Temporarily set entity position to stored backtrack position
-                    double originalX = entity.posX;
-                    double originalY = entity.posY;
-                    double originalZ = entity.posZ;
+            Entity entity = mc.theWorld.getEntityByID(entry.getKey());
 
-                    entity.posX = queue.storedX;
-                    entity.posY = queue.storedY;
-                    entity.posZ = queue.storedZ;
+            if (entity == null || !shouldBacktrackEntity(entity)) continue;
 
-                    // Draw ESP at backtrack position
-                    Color espColor = new Color( 56 , 230 , 48 , 150);
-                    RenderManager.drawEntityESP(entity, partialTicks, espColor);
-
-                    // Restore original position
-                    entity.posX = originalX;
-                    entity.posY = originalY;
-                    entity.posZ = originalZ;
-                }
+            // GREEN = server position from cancelled packets (should now move correctly)
+            if (queue.hasServerPosition) {
+                drawSelectionBox(
+                        queue.serverX,
+                        queue.serverY,
+                        queue.serverZ,
+                        entity.width,
+                        entity.height,
+                        new Color(56, 230, 48, 150)
+                );
             }
+
+            // RED = client position (for comparison)
+            drawSelectionBox(
+                    entity.posX,
+                    entity.posY,
+                    entity.posZ,
+                    entity.width,
+                    entity.height,
+                    new Color(230, 48, 48, 150)
+            );
         }
     }
-
 }

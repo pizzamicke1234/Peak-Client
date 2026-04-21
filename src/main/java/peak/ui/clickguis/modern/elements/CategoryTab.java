@@ -10,6 +10,7 @@ public class CategoryTab  {
 
     public Category category;
     public int x, y, width, height;
+    public boolean selected;
 
     public CategoryTab(Category category, int x, int y, int width, int height) {
         this.category = category;
@@ -17,13 +18,16 @@ public class CategoryTab  {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.selected = false;
     }
 
     public void draw(int mouseX, int mouseY) {
         final Color c = new Color(70,70, 70, 230);
         final Color cHover = new Color(80,80, 80, 230);
+        final Color cSelected = new Color(90,90, 90, 230);
 
         Color color = isHovered(mouseX, mouseY) ? cHover : c;
+        color = selected ? cSelected : color;
 
         RenderManager.drawRoundedRect(x, y, width, height, 2, color);
 
