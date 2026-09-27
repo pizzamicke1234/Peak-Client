@@ -1,9 +1,7 @@
 package peak.modules.misc;
 
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.play.client.*;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.managers.PacketManager;
@@ -60,6 +58,11 @@ public class Disabler extends Module {
 
         }
 
+        switch (disablermode.currentValue) {
+            case "Test":
+                break;
+        }
+
     }
 
     @Override
@@ -75,6 +78,14 @@ public class Disabler extends Module {
                 packetList.add(packetEvent.getPacket());
                 packetEvent.cancelPacket();
             }
+        }
+
+        switch (disablermode.currentValue) {
+            case "Test":
+                Packet packet = packetEvent.getPacket();
+                if(packet instanceof C0BPacketEntityAction || packet instanceof C00PacketKeepAlive) {
+                    packetEvent.cancelPacket();
+                }
         }
 
     }

@@ -2,9 +2,11 @@ package peak.modules.render;
 
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
+import peak.Client;
 import peak.events.RenderEvent;
 import peak.managers.render.RenderManager;
 import peak.modules.Module;
+import peak.modules.combat.AntiBot;
 
 import java.awt.*;
 import java.util.List;
@@ -16,6 +18,8 @@ public class ESP extends Module {
     }
 
     Color espColor = new Color(255, 50, 50, 180);
+
+    AntiBot antiBot = (AntiBot) Client.getModulebyName("AntiBot");
 
     @Override
     public void onRender(RenderEvent renderEvent) {

@@ -39,7 +39,7 @@ public class Client {
 
     // General settings of the client
     public static final String name = "Peak";
-    public static final String version = "0.911";
+    public static final String version = "0.92";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -82,6 +82,7 @@ public class Client {
         modules.add(new Criticals());
         modules.add(new InfiniteAura());
         modules.add(new Backtrack());
+        modules.add(new AntiBot());
 
         //RENDER
         modules.add(new ClickGuimod());

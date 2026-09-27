@@ -1,5 +1,6 @@
 package peak.modules.player;
 
+import net.minecraft.item.ItemFood;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
@@ -22,7 +23,7 @@ public class FastEat extends Module {
     @Override
     public void onTick(TickEvent.TickType tickType) {
 
-        if(mc.thePlayer.isEating()) {
+        if(mc.thePlayer.isEating() && mc.thePlayer.getHeldItem().getItem() instanceof ItemFood) {
             switch (mode.currentValue) {
 
                 case "Instant":

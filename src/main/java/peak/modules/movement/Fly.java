@@ -6,8 +6,6 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.input.Keyboard;
 import peak.events.PacketEvent;
 import peak.events.TickEvent;
@@ -22,14 +20,15 @@ import peak.modules.settings.NumberSetting;
 
 public class Fly extends Module {
 
-    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan", "Deathzone", "Ground");
-    public NumberSetting motionsetting = new NumberSetting("Motion", false, 0.25,
+    public ModeSetting flyMode = new ModeSetting("Mode", true, "Motion", "Motion", "Vulcan",
+            "Deathzone", "Ground", "NoRules");
+    public NumberSetting flySpeed = new NumberSetting("Motion", flyMode, new String[]{"Motion", "NoRules"}, false, 0.25,
             10, 1, 0.25);
     public BoolSetting viewBobbing = new BoolSetting("View Bobbing", false, false);
 
     public Fly() {
         super("Fly", Keyboard.KEY_Y, Category.MOVEMENT, true);
-        addSetting(flyMode, motionsetting, viewBobbing);
+        addSetting(flyMode, flySpeed, viewBobbing);
     }
 
     private int ticktimer = 0;
@@ -58,6 +57,11 @@ public class Fly extends Module {
                 multiplier = 1.3D;
                 hasStarted = true;
                 break;
+
+            case "NoRules":
+                //DamageManager.damagePlayer(DamageManager.DamageType.POSITION, 10, 50, true, true);
+                multiplier = 1;
+                mc.thePlayer.motionY = 0.42D;
 
         }
 
@@ -119,6 +123,10 @@ public class Fly extends Module {
                     PacketManager.sendPacket(packet);
                 }
                 break;
+
+            case "NoRules":
+                noRulesDmg();
+                break;
         }
 
     }
@@ -143,7 +151,7 @@ public class Fly extends Module {
             //handleVanillaKickBypass();
         }
 
-        double speed = motionsetting.cValue;
+        double speed = flySpeed.cValue;
         float yaw = mc.thePlayer.rotationYaw;
 
         if(mc.gameSettings.keyBindJump.isKeyDown()) {
@@ -178,7 +186,7 @@ public class Fly extends Module {
 
     public void vulcanFly() {
 
-        double speed = motionsetting.cValue;
+        double speed = flySpeed.cValue;
 
         NotificationManager.addChat("Tick | "+ ticktimer);
 
@@ -189,7 +197,7 @@ public class Fly extends Module {
         if(ticktimer < 3) {
             speed = 1;
         }else{
-            speed = motionsetting.cValue;
+            speed = flySpeed.cValue;
         }
 
         if(ticktimer >= 21){
@@ -230,6 +238,29 @@ public class Fly extends Module {
     public void groundFly() {
         mc.thePlayer.onGround = true;
         mc.thePlayer.motionY = 0;
+    }
+
+    public void noRulesDmg() {
+        mc.thePlayer.motionY = 0;
+        mc.thePlayer.motionX = 0;
+        mc.thePlayer.motionZ = 0;
+
+        multiplier = 1.05D - (ticktimer * 0.006D);
+
+        if (multiplier <= 0.51) {
+            multiplier = 0.51D;
+        }
+
+        float timerOffset = (85 - ticktimer) * 0.01f;
+        mc.timer.timerSpeed = (timerOffset > 0.2f) ? 1.0f + timerOffset : 1.2f;
+
+        if(mc.thePlayer.isCollidedHorizontally) {
+            multiplier = 0.51D;
+        }
+
+        double speed = (flySpeed.cValue / 4D) * multiplier;
+        //NotificationManager.addChat("Multi: "+ multiplier + "; Speed: " + speed + "; Timer: " + mc.timer.timerSpeed);
+        MovementManager.strafe(speed);
     }
 
     public void deathzoneFly() {

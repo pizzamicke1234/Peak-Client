@@ -2,6 +2,7 @@ package peak.modules.combat;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
@@ -71,7 +72,7 @@ public class InfiniteAura extends Module {
         if(tickType == TickEvent.TickType.POST) return;
 
         //Target selection
-        if(selecetedEntity == null || selecetedEntity.isDead) {
+        if(selecetedEntity == null || selecetedEntity.isDead || selecetedEntity instanceof EntityArmorStand) {
             selecetedEntity = getClosestEntity();
         }
         if(selecetedEntity == null) return;
@@ -219,7 +220,7 @@ public class InfiniteAura extends Module {
         double closestDistance = range.cValue;
 
         for(Entity entity : mc.theWorld.loadedEntityList) {
-            if(entity == mc.thePlayer || !(entity instanceof EntityLivingBase) || entity.isDead) continue;
+            if(entity == mc.thePlayer || !(entity instanceof EntityLivingBase) || entity.isDead || entity instanceof EntityArmorStand) continue;
             double distance = getDistanceToTarget(entity);
             if(distance < closestDistance) {
                 closestEntity = entity;

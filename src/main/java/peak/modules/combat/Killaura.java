@@ -15,6 +15,7 @@ import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import org.lwjgl.input.Keyboard;
+import peak.Client;
 import peak.events.PacketEvent;
 import peak.events.RenderEvent;
 import peak.managers.PacketManager;
@@ -27,6 +28,8 @@ import peak.modules.settings.NumberSetting;
 import peak.events.TickEvent;
 
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Killaura extends Module {
@@ -46,6 +49,8 @@ public class Killaura extends Module {
     public BoolSetting hitMark = new BoolSetting("Mark", false, false);
     private ModeSetting markStyle = new ModeSetting("Style", hitMark, new String[]{"true"}, false, "Liquid", "Liquid");
 
+    Module antibot = Client.getModulebyName("AntiBot");
+
     public Killaura() {
         super("Killaura", Keyboard.KEY_B, Category.COMBAT, true);
         addSetting(targetMode, reach, maxcps, mincps, rotationMode, autoblock, keepSprint, moveFixMode, hitMark, markStyle);
@@ -54,7 +59,7 @@ public class Killaura extends Module {
     private final Color liquidColor = new Color(44, 112, 255, 95);
     private final Color liquidHitColor = new Color(255, 72, 72, 95);
 
-    public static float serveryaw, serverpitch;
+    public ArrayList<Entity> flaggedEntities = new ArrayList<>();
 
     public Random random = new Random();
 
@@ -77,7 +82,7 @@ public class Killaura extends Module {
 
         for(Entity e : mc.theWorld.loadedEntityList) {
 
-            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand || e.isDead) {
+            if(e == mc.thePlayer || e == null || e instanceof EntityArmorStand || e.isDead || (flaggedEntities.contains(e)) && Client.getModulebyName("AntiBot").toggled) {
                 continue;
             }
 
