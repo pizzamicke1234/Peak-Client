@@ -39,7 +39,7 @@ public class Client {
 
     // General settings of the client
     public static final String name = "Peak";
-    public static final String version = "0.92";
+    public static final String version = "0.93";
     public static CopyOnWriteArrayList<Module> modules = new CopyOnWriteArrayList<Module>();
 
     private static final Minecraft mc = Minecraft.getMinecraft();

@@ -26,6 +26,7 @@ import peak.modules.settings.BoolSetting;
 import peak.modules.settings.ModeSetting;
 import peak.modules.settings.NumberSetting;
 import peak.events.TickEvent;
+import peak.ui.notifications.NotificationManager;
 
 import java.awt.*;
 import java.lang.reflect.Array;
@@ -34,7 +35,7 @@ import java.util.Random;
 
 public class Killaura extends Module {
 
-    public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Multi");
+    public ModeSetting targetMode = new ModeSetting("TargetMode", true, "Single", "Single", "Switch", "Multi");
     public static ModeSetting rotationMode = new ModeSetting("Rotations", false, "Off", "Off", "Normal", "Fake");
 
     public ModeSetting autoblock = new ModeSetting("Autoblock", false, "Off", "Off", "Vanilla", "Vanilla1", "Fake");
@@ -77,8 +78,10 @@ public class Killaura extends Module {
     @Override
     public void onTick(TickEvent.TickType tickType) {
         if(tickType == TickEvent.TickType.POST) return;
+        if(!canClick()) return;
 
         selectedtarget = null;
+        fakeblocking = false;
 
         for(Entity e : mc.theWorld.loadedEntityList) {
 
@@ -98,10 +101,18 @@ public class Killaura extends Module {
                     } else {
                         selectedtarget = e;
                     }
+                    switch (targetMode.currentValue) {
+                        case "Singe":
+                            if(selectedtarget == null || selectedtarget.isDead) {
+                                selectedtarget = e;
+                            }
+                            break;
+                        case "Multi":
+                            selectedtarget = e;
+                            break;
+                    }
 
                     manageAutoblock(selectedtarget);
-
-                    if(!canClick()) return;
 
                     mc.thePlayer.swingItem();
                     mc.playerController.attackEntity(mc.thePlayer, selectedtarget);
@@ -111,8 +122,8 @@ public class Killaura extends Module {
 
                 }
             }
-            fakeblocking = false;
         }
+
 
     }
 

@@ -7,6 +7,7 @@ import peak.events.RenderEvent;
 import peak.managers.render.RenderManager;
 import peak.modules.Module;
 import peak.modules.combat.AntiBot;
+import peak.modules.combat.Killaura;
 
 import java.awt.*;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ESP extends Module {
 
     Color espColor = new Color(255, 50, 50, 180);
 
-    AntiBot antiBot = (AntiBot) Client.getModulebyName("AntiBot");
+    Killaura killaura = (Killaura) Client.getModulebyName("Killaura");
 
     @Override
     public void onRender(RenderEvent renderEvent) {
@@ -27,7 +28,7 @@ public class ESP extends Module {
         List<EntityPlayer> loadedPlayers = mc.theWorld.playerEntities;
 
         for(EntityPlayer player : loadedPlayers) {
-            if(player == mc.thePlayer) continue;
+            if(player == mc.thePlayer || killaura.flaggedEntities.contains(player)) continue;
             RenderManager.drawEntityESP(player, renderEvent.getPartialTicks(), espColor);
         }
 

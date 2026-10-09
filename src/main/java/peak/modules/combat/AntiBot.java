@@ -5,6 +5,8 @@ import peak.Client;
 import peak.events.TickEvent;
 import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
+import peak.ui.notifications.Notification;
+import peak.ui.notifications.NotificationManager;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,9 @@ public class AntiBot extends Module {
                 for(Entity e : mc.theWorld.playerEntities) {
                     if(e.getName().equalsIgnoreCase("Watchdog") && !killaura.flaggedEntities.contains(e)) {
                         killaura.flaggedEntities.add(e);
+                        Notification n = new Notification("AntiBot", "A Bot has appeared!",
+                                Notification.NotificationType.WARNING, 5000);
+                        NotificationManager.addNotification(n);
                     }
                 }
         }

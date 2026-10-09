@@ -104,6 +104,15 @@ public class Module {
         return settings;
     }
 
+    public Setting getSettingbyName(String name) {
+        for(Setting s : settings) {
+            if(s.name.equalsIgnoreCase(name)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     public enum Category {
         COMBAT,
         MOVEMENT,

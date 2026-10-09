@@ -3,10 +3,7 @@ package peak.commands.listeners;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import peak.commands.Command;
-import peak.commands.impl.Bind;
-import peak.commands.impl.Teleport;
-import peak.commands.impl.Test;
-import peak.commands.impl.VClip;
+import peak.commands.impl.*;
 import peak.events.PacketEvent;
 import peak.ui.notifications.NotificationManager;
 
@@ -22,7 +19,7 @@ public class CommandListener {
 
         if(packet instanceof C01PacketChatMessage) {
 
-            String message = ((C01PacketChatMessage) packet).getMessage().toLowerCase();
+            String message = ((C01PacketChatMessage) packet).getMessage();
 
             if(message.startsWith(prefix)) {
                 toggleCommands(message);
@@ -35,7 +32,7 @@ public class CommandListener {
 
     public static void toggleCommands(String message) {
         for(Command command : commands) {
-            if(message.startsWith("." + command.getName())) {
+            if(message.toLowerCase().startsWith("." + command.getName())) {
                 String[] args = message.split(" ");
 
                 command.onToggle(args);
@@ -50,6 +47,7 @@ public class CommandListener {
         commands.add(new VClip());
         commands.add(new Bind());
         commands.add(new Teleport());
+        commands.add(new Config());
     }
 
 }

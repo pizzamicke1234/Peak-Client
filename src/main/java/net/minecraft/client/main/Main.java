@@ -47,6 +47,7 @@ public class Main
         OptionSpec<String> optionspec17 = optionparser.accepts("assetIndex").withRequiredArg();
         OptionSpec<String> optionspec18 = optionparser.accepts("userType").withRequiredArg().defaultsTo("legacy", new String[0]);
         OptionSpec<String> optionspec19 = optionparser.nonOptions();
+
         OptionSet optionset = optionparser.parse(p_main_0_);
         List<String> list = optionset.valuesOf(optionspec19);
 
@@ -96,6 +97,10 @@ public class Main
         File file1 = (File)optionset.valueOf(optionspec2);
         File file2 = optionset.has(optionspec3) ? (File)optionset.valueOf(optionspec3) : new File(file1, "assets/");
         File file3 = optionset.has(optionspec4) ? (File)optionset.valueOf(optionspec4) : new File(file1, "resourcepacks/");
+
+        //FileManager.init(file1);
+
+
         String s4 = optionset.has(optionspec10) ? (String)optionspec10.value(optionset) : (String)optionspec9.value(optionset);
         String s5 = optionset.has(optionspec17) ? (String)optionspec17.value(optionset) : null;
         String s6 = (String)optionset.valueOf(optionspec);

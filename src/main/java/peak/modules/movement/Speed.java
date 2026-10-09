@@ -8,10 +8,13 @@ import peak.modules.Module;
 import peak.modules.settings.ModeSetting;
 import peak.events.TickEvent;
 import peak.modules.settings.NumberSetting;
+import peak.ui.notifications.NotificationManager;
+
+import java.nio.channels.NonReadableChannelException;
 
 public class Speed extends Module {
 
-    public static ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius");
+    public static ModeSetting speedMode = new ModeSetting("Mode", true, "Motion", "Motion", "VulcanYPort", "Advancius", "NoRules");
     NumberSetting speedValue = new NumberSetting("Speed", false, 0.1, 1, 0.5, 0.1);
 
     public Speed() {
@@ -22,6 +25,7 @@ public class Speed extends Module {
     boolean autojump = true;
     double jumpPos;
     boolean jumptoggle = true;
+    int nRlasthurttime = 99;
 
     public void onEnable() {
 
@@ -48,6 +52,10 @@ public class Speed extends Module {
             case "Advancius":
                 advanicus();
                 break;
+
+            case "NoRules":
+                noRules();
+                break;
         }
 
     }
@@ -71,6 +79,7 @@ public class Speed extends Module {
                     }
                 }
                 break;
+
         }
 
     }
@@ -136,6 +145,25 @@ public class Speed extends Module {
 
 
 
+    }
+
+    public void noRules() {
+
+        if(mc.thePlayer.onGround && autojump && MovementManager.isPressingMove()){
+            mc.thePlayer.jump();
+        }
+
+        if(mc.thePlayer.hurtTime != 0) {
+            nRlasthurttime = 0;
+        }
+
+        if(nRlasthurttime < 30) {
+            MovementManager.strafe(speedValue.cValue + 0.5D);
+        }else {
+            MovementManager.strafe(speedValue.cValue);
+        }
+
+        nRlasthurttime++;
     }
 
 }
