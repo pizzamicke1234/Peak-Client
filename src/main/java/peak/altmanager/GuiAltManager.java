@@ -13,6 +13,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import peak.altmanager.auth.AccountRect;
 import peak.altmanager.auth.Accounts;
+import peak.managers.file.FileManager;
+import peak.managers.file.altmanager.AccountListSave;
+import peak.managers.file.altmanager.SessionSave;
 import peak.managers.font.FontUtil;
 import peak.ui.mainmenus.PeakMainMenu;
 import peak.ui.mainmenus.elements.PeakButton;
@@ -27,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GuiAltManager extends GuiScreen {
     public final ResourceLocation background = new ResourceLocation("peak/backgrounds/menu1.png");
@@ -38,7 +40,7 @@ public class GuiAltManager extends GuiScreen {
 
     private final Color rectColor = new Color(16, 13, 13, 180);
 
-    private ArrayList<AccountRect> accountList = Accounts.accountList;
+    private ArrayList<AccountRect> accountList = this.getAccountSaves();
 
     @Override
     public void initGui() {
@@ -215,9 +217,28 @@ public class GuiAltManager extends GuiScreen {
 
     }
 
+
+
     @Override
     public void onGuiClosed() {
-        Accounts.accountList = accountList;
+        ArrayList<Session> sessions = new ArrayList<>();
+        for(AccountRect accountRect : accountList) {
+            sessions.add(accountRect.getAccountSession());
+        }
+        FileManager.createAccountListSave(sessions);
+        accountList = this.getAccountSaves();
+    }
+
+    private ArrayList<AccountRect> getAccountSaves() {
+        AccountListSave accountListSave = FileManager.getAccountListSave();
+        ArrayList<AccountRect> accountRects = new ArrayList<>();
+
+        for(SessionSave save : accountListSave.sessionSaves) {
+            Session s = new Session(save.name, save.playerID, save.token, save.type);
+            accountRects.add(new AccountRect(s));
+        }
+
+        return accountRects;
     }
 
     private void LoginWithMicrosoftWeb() {

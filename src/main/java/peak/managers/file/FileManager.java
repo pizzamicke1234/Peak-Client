@@ -3,14 +3,17 @@ package peak.managers.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
-import org.apache.commons.lang3.ObjectUtils;
+import net.minecraft.util.Session;
 import peak.Client;
+import peak.managers.file.altmanager.AccountListSave;
+import peak.managers.file.altmanager.SessionSave;
+import peak.managers.file.config.ConfigSave;
+import peak.managers.file.config.ModuleSave;
+import peak.managers.file.config.SettingsSave;
 import peak.modules.Module;
 import peak.modules.settings.BoolSetting;
 import peak.modules.settings.NumberSetting;
 import peak.modules.settings.Setting;
-import peak.ui.notifications.Notification;
-import peak.ui.notifications.NotificationManager;
 
 import java.io.File;
 import java.io.FileReader;
@@ -22,9 +25,10 @@ public class FileManager {
 
     private final static File clientDirectory = new File(Minecraft.getMinecraft().mcDataDir, Client.name);
     private final static File configDirectory = new File(clientDirectory, "configs");
+    private final static File altmanagerDirectory = new File(clientDirectory, "altmanager");
 
-    private static File configSaveFile;
-    private final static Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+    private static File configSaveFile, altmanagerSaveFile;
+    private final static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void createConfigSave(String configName) {
         createDirectory();
@@ -101,12 +105,55 @@ public class FileManager {
         return configSaves;
     }
 
+    public static void createAccountListSave(ArrayList<Session> sessions) {
+        createDirectory();
+
+        altmanagerSaveFile = new File(altmanagerDirectory, "accounts.json");
+
+        ArrayList<SessionSave> sessionSaves = new ArrayList<>();
+        for(Session s : sessions) {
+            sessionSaves.add(new SessionSave(s));
+        }
+        AccountListSave accountListSave = new AccountListSave(sessionSaves);
+        storeAccountListSave(accountListSave);
+    }
+
+    private static void storeAccountListSave(AccountListSave accountListSave) {
+        try {
+
+            FileWriter writer = new FileWriter(altmanagerSaveFile);
+            gson.toJson(accountListSave, writer);
+            writer.close();
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static AccountListSave getAccountListSave() {
+        try {
+            createDirectory();
+            File file = new File(altmanagerDirectory,"accounts.json");
+            FileReader reader = new FileReader(file);
+            AccountListSave accountListSave = gson.fromJson(reader, AccountListSave.class);
+            return accountListSave;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static void createDirectory() {
         if(!clientDirectory.exists()) {
             clientDirectory.mkdirs();
         }
         if(!configDirectory.exists()) {
             configDirectory.mkdirs();
+        }
+
+        if(!altmanagerDirectory.exists()) {
+            altmanagerDirectory.mkdirs();
         }
     }
 

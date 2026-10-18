@@ -1,4 +1,4 @@
-package peak.managers.file;
+package peak.managers.file.config;
 
 import peak.modules.Module;
 import peak.modules.settings.Setting;
